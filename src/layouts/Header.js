@@ -5,7 +5,7 @@ export default function Header() {
     <Layout.Header
       style={{ position: "sticky", top: 0, textAlign: "end", color: "#fff" }}
     >
-      Logout
+      Đăng xuất
     </Layout.Header>
   );
 }
