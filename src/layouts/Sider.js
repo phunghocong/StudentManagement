@@ -105,7 +105,7 @@ const Sider = ({ location }) => {
           textAlign: "center",
         }}
       >
-        LOGO
+        StudMana
       </div>
 
       <Menu
