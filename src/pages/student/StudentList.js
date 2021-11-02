@@ -11,6 +11,11 @@ export default function StudentList() {
   const columns = [
     { title: "ID", key: "id", dataIndex: "id" },
     { title: "Tên sinh viên", key: "name", dataIndex: "name" },
+    { title: "Năm sinh", key: "age", dataIndex: "age" },
+    { title: "Mã số sinh viên", key: "mssv", dataIndex: "mssv" },
+    { title: "Ngành học", key: "subject", dataIndex: "subject" },
+    { title: "Trạng thái", key: "status", dataIndex: "status" },
+    
     {
       title: "",
       key: "actions",
@@ -40,10 +45,14 @@ export default function StudentList() {
   ];
 
   const dataSource = [
-    ...Array.apply(null, Array(5)).map((_, i) => ({
+    ...Array.apply(null, Array(10)).map((_, i) => ({
       id: i,
       key: i,
       name: "Nguyen Van A",
+      age : "17/09/2000",
+      mssv : "18021014",
+      subject: "Khoa học máy tính",
+      status: "Đang online"
     })),
   ];
 

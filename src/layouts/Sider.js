@@ -37,7 +37,7 @@ const items = [
       },
       {
         key: rid(),
-        title: "Quản lý sinh viên",
+        title: "Kỷ luật",
         icon: <DashboardOutlined />,
         path: paths.DISCIPLINE,
         subs: [],
