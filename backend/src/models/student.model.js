@@ -5,7 +5,7 @@ module.exports = mongoose => {
       //Basic info
       firstName: String,
       surName: String,
-      birthday: Date,
+      birthday: String,
       national: String,//Viet nam
       ethnic: String,//King
       religion: String,//Dao phat
@@ -20,13 +20,13 @@ module.exports = mongoose => {
       //activity info
       //military
       isEnlisted : Boolean,
-      draftDate : Date,
+      draftDate: String,
 
       //school info
       school: String,// UET
       academyMethod : String, //chinh quy...
       levelOfAcademy: String, //University, Doctorate
-      schoolSessionGroup : String, //K64,.. ??
+      schoolYearGroup : String, //K64,.. ??
       baseClass: String, //CA-CLC4
       major: String,//Khoa hoc may tinh
       startedYear: String,
@@ -40,7 +40,7 @@ module.exports = mongoose => {
     { timestamps: true }
   );
 
-  studentSchema.method("toJSON", () => {
+  studentSchema.method("toJSON", function() {
     const { __v, _id, ...object } = this.toObject();
     object.id = _id;
     return object;

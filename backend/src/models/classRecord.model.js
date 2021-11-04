@@ -3,17 +3,18 @@ module.exports = mongoose => {
  
   var classRecordSchema = mongoose.Schema(
     {
-      classname: String,
-      subjectName: String,
-      subjectCredit: String,
-      belongToStudent: String,
-      midtermGrade: String,
-      grade: String,
-      paymentStatus: String,
+      classname: String, //INT2021_22
+      subjectName: String,//Toán cao cấp
+      subjectCredit: String,//2,3
+      belongToStudent: String,//MSSV
+      year: String,//2015
+      semeter: String,//1 or 2
+      midtermGrade: String,//0-10
+      grade: String,//0-10
     }
   );
  
-  classRecordSchema.method("toJSON", () => {
+  classRecordSchema.method("toJSON", function() {
     const { __v, _id, ...object } = this.toObject();
     object.id = _id;
     return object;

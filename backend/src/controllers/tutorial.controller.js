@@ -77,7 +77,7 @@ exports.findOne = (req, res) => {
 
 // Update a Tutorial by the id in the request
 exports.update = (req, res) => {
-  if (!req.body) {
+  if (req.body.constructor === Object && Object.keys(req.body).length === 0) {
     return res.status(400).send({
       message: "Data to update can not be empty!"
     });

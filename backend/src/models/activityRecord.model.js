@@ -8,7 +8,7 @@ module.exports = mongoose => {
     }
   );
   
-  activityRecordSchema.method("toJSON",  () => {
+  activityRecordSchema.method("toJSON",  function() {
     const { __v, _id, ...object } = this.toObject();
     object.id = _id;
     return object;

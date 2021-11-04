@@ -1,3 +1,4 @@
+const { students } = require("../models");
 const db = require("../models");
 const Student = db.students;
 /*
@@ -6,98 +7,138 @@ fix front end
 
 */
 //Will make studentID auto increment based on the student count at currentYear
-function studentCountThisYear(year)
-{
-  return Student.find({"startedYear":year}).count();
-}
-   function createStudentID() {
-     var currentYear = new Date().getFullYear();
-  return (int)(
-    (String)(currentYear) + 
-    (int)(studentCountThisYear(currentYear).padStart(4,"0"))++)
-}
+
 // Tạo 1 thông tin mới
 exports.create = (req, res) => {
   // Kiểm tra req. 
-  if (//!req.body.studentID ||
-    !req.body.firstName || !req.body.surName || !req.body.birthday || !req.body.national || !req.body.ethnic
+  if (!req.body.firstName || !req.body.surName || !req.body.birthday || !req.body.national || !req.body.ethnic
     || !req.body.religion || !req.body.bornAddress || !req.body.citizenCardId || !req.body.currentAddress
     || !req.body.phoneNumber || !req.body.email || !req.body.isEnlisted /* || !req.body.draftDate can be null*/
   ) {
     res.status(400).send({ message: "Some basic info is empty" });
     return;
   }
-  if (req.body.school || !req.body.academyMethod || !req.body.levelOfAcademy || !req.body.schoolSessionGroup
+  if (!req.body.school || !req.body.academyMethod || !req.body.levelOfAcademy || !req.body.schoolYearGroup
     || !req.body.baseClass || !req.body.major || !req.body.startedYear
   ) {
     res.status(400).send({ message: "Some school info is empty" });
     return;
   }
+  var year = req.body.startedYear;
   //Duplicate handling
-  Student.findOne({ "studentID": createStudentID(req.body.studentID) })
-    .then(data => {
-      if (!data) {
-        const tutorial = new Account({
-          //studentID: createStudentID(req.body.studentID),//19021111, need to make this auto increment
-          //Basic info
-          firstName: req.body.firstName,
-          surName: req.body.surName,
-          birthday: req.body.birthday,
-          national: req.body.national,//Viet nam
-          ethnic: req.body.ethnic,//King
-          religion: req.body.religion,//Dao phat
-          bornAddress: req.body.bornAddress,
-          citizenCardId: req.body.citizenCardId, //chung minh thu
+  Student
+    .countDocuments({ startedYear: year })
+    .then(docCount => {
+      //var currentYear = new Date().getFullYear();
 
-          //contact
-          currentAddress: req.body.currentAddress,
-          phoneNumber: req.body.phoneNumber,
-          email: req.body.email,
-
-          //activity info
-          //military
-          isEnlisted: req.body.isEnlisted,
-          draftDate: req.body.draftDate,
-
-          //school info
-          school: req.body.school,// UET
-          academyMethod: req.body.academyMethod, //chinh quy...
-          levelOfAcademy: req.body.levelOfAcademy, //University, Doctorate
-          schoolSessionGroup: req.body.schoolSessionGroup, //K64,.. ??
-          baseClass: req.body.baseClass, //CA-CLC4
-          major: req.body.major,//Khoa hoc may tinh
-          startedYear: req.body.startedYear,
+      var id = (String)(year) + (String)(docCount).padStart(4, "0");
+      const student = new Student({
+        studentID: id,
+        firstName: req.body.firstName,
+        surName: req.body.surName,
+        birthday: req.body.birthday,
+        national: req.body.national,
+        ethnic: req.body.ethnic,//King
+        religion: req.body.religion,//Dao phat
+        bornAddress: req.body.bornAddress,
+        citizenCardId: req.body.citizenCardId, //chung minh thu
+        currentAddress: req.body.currentAddress,
+        phoneNumber: req.body.phoneNumber,
+        email: req.body.email,
+        isEnlisted: req.body.isEnlisted,
+        draftDate: req.body.draftDate,
+        school: req.body.school,// UET
+        academyMethod: req.body.academyMethod, //chinh quy...
+        levelOfAcademy: req.body.levelOfAcademy, //University, Doctorate
+        schoolYearGroup: req.body.schoolYearGroup, //K64,.. ??
+        baseClass: req.body.baseClass, //CA-CLC4
+        major: req.body.major,//Khoa hoc may tinh
+        startedYear: req.body.startedYear,
+      });
+      student
+        .save(student)
+        .then(data => {
+          res.send(data);
+        })
+        .catch(err => {
+          res.status(500).send({
+            message: err.message + ", Error when create studentData."
+          });
         });
 
-        // Save Tutorial in the database
+
+    })
+    .catch(err => {
+      res.status(500).send({
+        message: err.message
+      })
+    });
+
+  // Save Tutorial in the database
+
+}
+exports.createMultiple = (req, res) => {
+  req.body.studentList.forEach(stu => {
+    var year = stu.startedYear;
+    Student
+      .countDocuments({ startedYear: year })
+      .then(docCount => {
+        var id = (String)(year) + (String)(docCount).padStart(4, "0");
+        const student = new Student({
+          studentID: id,
+          firstName: stu.firstName,
+          surName: stu.surName,
+          birthday: stu.birthday,
+          national: stu.national,
+          ethnic: stu.ethnic,//King
+          religion: stu.religion,//Dao phat
+          bornAddress: stu.bornAddress,
+          citizenCardId: stu.citizenCardId, //chung minh thu
+          currentAddress: stu.currentAddress,
+          phoneNumber: stu.phoneNumber,
+          email: stu.email,
+          isEnlisted: stu.isEnlisted,
+          draftDate: stu.draftDate,
+          school: stu.school,// UET
+          academyMethod: stu.academyMethod, //chinh quy...
+          levelOfAcademy: stu.levelOfAcademy, //University, Doctorate
+          schoolYearGroup: stu.schoolYearGroup, //K64,.. ??
+          baseClass: stu.baseClass, //CA-CLC4
+          major: stu.major,//Khoa hoc may tinh
+          startedYear: stu.startedYear,
+        });
         student
           .save(student)
           .then(data => {
-            res.send(data);
           })
           .catch(err => {
             res.status(500).send({
-              message:
-                err.message || "Error when create studentData."
+              message: err.message + ", Error when create studentData."
             });
           });
-      }
-      else {
-        console.log("Duplicated studentID");
-        res.status(400).send({ message: "Please choose a new studentID" });
-      }
-    })
-    .catch(err => {
-      res.status(500).send({ message: "Error when create studentData" });
+        log("added");
+      })
+      .catch(err => {
+
+      });
+  })
+
+  res.send({ message: "success" });
+
+  //res.send(req.body);
+}
+exports.countStudent = (req, res) => {
+  const year = req.query.year;
+  Student
+    .countDocuments({ startedYear: year })
+    .then(docCount => {
+      res.send(docCount)
     });
 };
-
 // Danh sách tất cả hs.
 exports.findAll = (req, res) => {
-  const title = req.query.title;
-  var condition = title ? { title: { $regex: new RegExp(title), $options: "i" } } : {};
-
-  Student.find(condition)
+  Student.find()
+    .sort({ "firstName": 1 })
     .then(data => {
       res.send(data);
     })
@@ -107,6 +148,22 @@ exports.findAll = (req, res) => {
           err.message || "Error."
       });
     });
+};
+
+exports.findRange = (req, res) => {
+  const page = req.query.page;
+  const range = req.query.range;
+
+  Student.find(/* $range: {(page - 1) * range, page * range, 1} */)
+    .then(data => {
+    res.send(data);
+  })
+  .catch(err => {
+    res.status(500).send({
+      message:
+        err.message || "Error."
+    });
+  });
 };
 
 exports.findOne = (req, res) => {
@@ -178,13 +235,13 @@ exports.deleteAll = (req, res) => {
   Student.deleteMany({})
     .then(data => {
       res.send({
-        message: `${data.deletedCount} Tutorials were deleted successfully!`
+        message: `${data.deletedCount} All student info were deleted successfully!`
       });
     })
     .catch(err => {
       res.status(500).send({
         message:
-          err.message || "Some error occurred while removing all tutorials."
+          err.message || "Some error occurred while removing all Student."
       });
     });
 };
