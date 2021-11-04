@@ -1,4 +1,3 @@
-const { students } = require("../models");
 const db = require("../models");
 const Student = db.students;
 /*
