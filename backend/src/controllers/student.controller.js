@@ -1,4 +1,6 @@
 const db = require("../models");
+const accounts = require("./account.controller");
+
 const Student = db.students;
 /*
 Đổi, sửa, xóa thông tin cá nhân
@@ -7,8 +9,8 @@ fix front end
 */
 //Will make studentID auto increment based on the student count at currentYear
 
-// Tạo 1 thông tin mới
-exports.create = (req, res) => {
+// Create a new student
+exports.createStudent = (req, res) => {
   // Kiểm tra req. 
   if (!req.body.firstName || !req.body.surName || !req.body.birthday || !req.body.national || !req.body.ethnic
     || !req.body.religion || !req.body.bornAddress || !req.body.citizenCardId || !req.body.currentAddress
@@ -24,12 +26,9 @@ exports.create = (req, res) => {
     return;
   }
   var year = req.body.startedYear;
-  //Duplicate handling
   Student
     .countDocuments({ startedYear: year })
     .then(docCount => {
-      //var currentYear = new Date().getFullYear();
-
       var id = (String)(year) + (String)(docCount).padStart(4, "0");
       const student = new Student({
         studentID: id,
@@ -47,7 +46,7 @@ exports.create = (req, res) => {
         isEnlisted: req.body.isEnlisted,
         draftDate: req.body.draftDate,
         school: req.body.school,// UET
-        academyMethod: req.body.academyMethod, //chinh quy...
+        academyMethod: req.body.academyMethod, //chinh quy...a
         levelOfAcademy: req.body.levelOfAcademy, //University, Doctorate
         schoolYearGroup: req.body.schoolYearGroup, //K64,.. ??
         baseClass: req.body.baseClass, //CA-CLC4
@@ -64,67 +63,130 @@ exports.create = (req, res) => {
             message: err.message + ", Error when create studentData."
           });
         });
+    })
+    .catch(err => {
+      res.status(500).send({
+        message: err.message
+      })
+    });  
+}
+exports.createStudentAndRegisterNewAccount = (req, res) => {
+  // Kiểm tra req. 
+  if (!req.body.firstName || !req.body.surName || !req.body.birthday || !req.body.national || !req.body.ethnic
+    || !req.body.religion || !req.body.bornAddress || !req.body.citizenCardId || !req.body.currentAddress
+    || !req.body.phoneNumber || !req.body.email || !req.body.isEnlisted /* || !req.body.draftDate can be null*/
+  ) {
+    res.status(400).send({ message: "Some basic info is empty" });
+    return;
+  }
+  if (!req.body.school || !req.body.academyMethod || !req.body.levelOfAcademy || !req.body.schoolYearGroup
+    || !req.body.baseClass || !req.body.major || !req.body.startedYear
+  ) {
+    res.status(400).send({ message: "Some school info is empty" });
+    return;
+  }
+  var year = req.body.startedYear;
+  Student
+    .countDocuments({ startedYear: year })
+    .then(docCount => {
+      var id = (String)(year) + (String)(docCount).padStart(4, "0");
+      const student = new Student({
+        studentID: id,
+        firstName: req.body.firstName,
+        surName: req.body.surName,
+        birthday: req.body.birthday,
+        national: req.body.national,
+        ethnic: req.body.ethnic,//King
+        religion: req.body.religion,//Dao phat
+        bornAddress: req.body.bornAddress,
+        citizenCardId: req.body.citizenCardId, //chung minh thu
+        currentAddress: req.body.currentAddress,
+        phoneNumber: req.body.phoneNumber,
+        email: req.body.email,
+        isEnlisted: req.body.isEnlisted,
+        draftDate: req.body.draftDate,
+        school: req.body.school,// UET
+        academyMethod: req.body.academyMethod, //chinh quy...a
+        levelOfAcademy: req.body.levelOfAcademy, //University, Doctorate
+        schoolYearGroup: req.body.schoolYearGroup, //K64,.. ??
+        baseClass: req.body.baseClass, //CA-CLC4
+        major: req.body.major,//Khoa hoc may tinh
+        startedYear: req.body.startedYear,
 
-
+      });
+      accounts.createAccountFromStudent(student);
+      student
+        .save(student)
+        .then(data => {
+          res.send(data);
+        })
+        .catch(err => {
+          res.status(500).send({
+            message: err.message + ", Error when create studentData."
+          });
+        });
     })
     .catch(err => {
       res.status(500).send({
         message: err.message
       })
     });
-
-  // Save Tutorial in the database
-
 }
-exports.createMultiple = (req, res) => {
-  req.body.studentList.forEach(stu => {
-    var year = stu.startedYear;
-    Student
-      .countDocuments({ startedYear: year })
-      .then(docCount => {
-        var id = (String)(year) + (String)(docCount).padStart(4, "0");
-        const student = new Student({
-          studentID: id,
-          firstName: stu.firstName,
-          surName: stu.surName,
-          birthday: stu.birthday,
-          national: stu.national,
-          ethnic: stu.ethnic,//King
-          religion: stu.religion,//Dao phat
-          bornAddress: stu.bornAddress,
-          citizenCardId: stu.citizenCardId, //chung minh thu
-          currentAddress: stu.currentAddress,
-          phoneNumber: stu.phoneNumber,
-          email: stu.email,
-          isEnlisted: stu.isEnlisted,
-          draftDate: stu.draftDate,
-          school: stu.school,// UET
-          academyMethod: stu.academyMethod, //chinh quy...
-          levelOfAcademy: stu.levelOfAcademy, //University, Doctorate
-          schoolYearGroup: stu.schoolYearGroup, //K64,.. ??
-          baseClass: stu.baseClass, //CA-CLC4
-          major: stu.major,//Khoa hoc may tinh
-          startedYear: stu.startedYear,
-        });
-        student
-          .save(student)
-          .then(data => {
-          })
-          .catch(err => {
-            res.status(500).send({
-              message: err.message + ", Error when create studentData."
-            });
+/**
+ * 
+  input will be like this :
+  {
+    "studentList" : [ 
+      "Insert sudent info json here"
+    ]
+  }
+ */
+exports.createMultipleStudent = (req, res) => {
+  var studentList = req.body.studentList;
+  const forLoop = async _ => {
+    // for (var index = 0; index < studentList.length; index++) {      
+    //    var stu = studentList[index];
+    for await (let stu of studentList) {
+      var year = stu.startedYear;
+      await Student
+        .countDocuments({ "startedYear": year })
+        .then(docCount => {
+          var id = year + (String)(docCount).padStart(4, "0");
+          const student = new Student({
+            studentID: id,
+            firstName: stu.firstName,
+            surName: stu.surName,
+            birthday: stu.birthday,
+            national: stu.national,
+            ethnic: stu.ethnic,//King
+            religion: stu.religion,//Dao phat
+            bornAddress: stu.bornAddress,
+            citizenCardId: stu.citizenCardId, //chung minh thu
+            currentAddress: stu.currentAddress,
+            phoneNumber: stu.phoneNumber,
+            email: stu.email,
+            isEnlisted: stu.isEnlisted,
+            draftDate: stu.draftDate,
+            school: stu.school,// UET
+            academyMethod: stu.academyMethod, //chinh quy...
+            levelOfAcademy: stu.levelOfAcademy, //University, Doctorate
+            schoolYearGroup: stu.schoolYearGroup, //K64,.. ??
+            baseClass: stu.baseClass, //CA-CLC4
+            major: stu.major,//Khoa hoc may tinh
+            startedYear: year,
           });
-        log("added");
-      })
-      .catch(err => {
-
-      });
-  })
-
-  res.send({ message: "success" });
-
-  //res.send(req.body);
+          student
+            .save(student)
+            .catch(err => {
+              res.status(500).send({
+                message: err.message + ", Error when create studentData."
+              });
+            });
+        });
+    }
+  }
+  forLoop();
+  res.send({ message: "successfully added " + studentList.length + " students" });
 }
 exports.countStudent = (req, res) => {
   const year = req.query.year;
@@ -148,40 +210,40 @@ exports.findAll = (req, res) => {
       });
     });
 };
-
+// not working
 exports.findRange = (req, res) => {
   const page = req.query.page;
   const range = req.query.range;
 
   Student.find(/* $range: {(page - 1) * range, page * range, 1} */)
     .then(data => {
-    res.send(data);
-  })
-  .catch(err => {
-    res.status(500).send({
-      message:
-        err.message || "Error."
+      res.send(data);
+    })
+    .catch(err => {
+      res.status(500).send({
+        message:
+          err.message || "Error."
+      });
     });
-  });
 };
 
-exports.findOne = (req, res) => {
-  const id = req.params.id;
+exports.findByID = (req, res) => {
+  const studentID = req.params.studentID;
 
-  Student.findById(id)
+  Student.find({ "studentID": studentID })
     .then(data => {
       if (!data)
-        res.status(404).send({ message: "Not found Tutorial with id " + id });
+        res.status(404).send({ message: "Not found student with id " + studentID });
       else res.send(data);
     })
     .catch(err => {
       res
         .status(500)
-        .send({ message: "Error retrieving Tutorial with id=" + id });
+        .send({ message: "Error retrieving student with id=" + studentID });
     });
 };
 
-// Update a Tutorial by the id in the request
+// Update a student by the studentID in the request
 exports.update = (req, res) => {
   if (!req.body) {
     return res.status(400).send({
@@ -189,47 +251,45 @@ exports.update = (req, res) => {
     });
   }
 
-  const id = req.params.id;
+  const studentID = req.params.studentID;
 
-  Student.findByIdAndUpdate(id, req.body, { useFindAndModify: false })
+  Student.findByIdAndUpdate(studentID, req.body, { useFindAndModify: false })
     .then(data => {
       if (!data) {
         res.status(404).send({
-          message: `Cannot update Tutorial with id=${id}. Maybe Tutorial was not found!`
+          message: `Cannot find student to update  with studentID=${studentID}!`
         });
-      } else res.send({ message: "Tutorial was updated successfully." });
+      } else res.send({ message: "Student info was updated successfully." });
     })
     .catch(err => {
       res.status(500).send({
-        message: "Error updating Tutorial with id=" + id
+        message: "Error updating student with studentID=" + studentID
       });
     });
 };
 
-// Delete a Tutorial with the specified id in the request
 exports.delete = (req, res) => {
-  const id = req.params.id;
+  const studentID = req.params.id;
 
-  Student.findByIdAndRemove(id, { useFindAndModify: false })
+  Student.findByIdAndRemove(studentID, { useFindAndModify: false })
     .then(data => {
       if (!data) {
         res.status(404).send({
-          message: `Cannot delete Tutorial with id=${id}. Maybe Tutorial was not found!`
+          message: `Cannot delete Student with studentID=${studentID}!`
         });
       } else {
         res.send({
-          message: "Tutorial was deleted successfully!"
+          message: "Student was deleted successfully!"
         });
       }
     })
     .catch(err => {
       res.status(500).send({
-        message: "Could not delete Tutorial with id=" + id
+        message: "Could not delete Student with studentID=" + studentID
       });
     });
 };
 
-// Delete all Tutorials from the database.
 exports.deleteAll = (req, res) => {
   Student.deleteMany({})
     .then(data => {
@@ -241,20 +301,6 @@ exports.deleteAll = (req, res) => {
       res.status(500).send({
         message:
           err.message || "Some error occurred while removing all Student."
-      });
-    });
-};
-
-// Find all published Tutorials
-exports.findAllPublished = (req, res) => {
-  Student.find({ published: true })
-    .then(data => {
-      res.send(data);
-    })
-    .catch(err => {
-      res.status(500).send({
-        message:
-          err.message || "Some error occurred while retrieving tutorials."
       });
     });
 };

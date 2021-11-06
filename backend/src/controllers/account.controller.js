@@ -46,7 +46,7 @@ exports.create = (req, res) => {
             firstName: req.body.firstName,
             surName: req.body.surName,
             email: req.body.email,
-            messageOn: req.body.messageOn ? req.body.messageOn : false,
+            messageOn: req.body.messageOn ? req.body.messageOn : true,
             isStudent: req.body.isStudent ? req.body.isStudent : true,
             avatarColor: req.body.avatarColor ? req.body.avatarColor : "#ffffff",
           });
