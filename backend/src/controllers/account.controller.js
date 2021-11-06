@@ -1,5 +1,7 @@
+const { response } = require("express");
 const db = require("../models");
 const Account = db.accounts;
+
 /*
 Tạo tài khoản cả sinh viên và quản lý.
 
@@ -22,6 +24,12 @@ function hashCode(password) {
   return hashed;
 }
 
+function dateToPassword(date) {
+  date = date.split("-");
+  date = date.join("");
+  return date;
+}
+
 // Tạo 1 tài khoản mới
 exports.create = (req, res) => {
   if (!req.body.username || !req.body.password || !req.body.firstName || !req.body.surName || !req.body.email) {
@@ -39,7 +47,7 @@ exports.create = (req, res) => {
             surName: req.body.surName,
             email: req.body.email,
             messageOn: req.body.messageOn ? req.body.messageOn : false,
-            isStudent: req.body.isStudent ? req.body.isStudent : false,
+            isStudent: req.body.isStudent ? req.body.isStudent : true,
             avatarColor: req.body.avatarColor ? req.body.avatarColor : "#ffffff",
           });
         
@@ -143,5 +151,39 @@ exports.getOne = (req, res) => {
       })
     });
 
+}
+
+// Tạo tài khoản từ thông tin sinh viên.
+exports.createAccountFromStudent = (student) => {
+  Account.findOne({"username": student.studentID})
+      .then(data => {
+        if (!data) {
+          const account = new Account({
+            username: student.studentID,
+            hashedPassword: hashCode(dateToPassword(student.birthday)),
+            firstName: student.firstName,
+            surName: student.surName,
+            email: student.email,
+            messageOn: false,
+            isStudent: true,
+            avatarColor: "#ffffff",
+          });
+        
+          account
+            .save(account)
+            .then(data => {
+              console.log(data);
+            })
+            .catch(err => {
+              console.log("Error when create data");
+            });
+        }
+        else {
+          console.log("Account for this student is exist");
+        }
+      })
+      .catch(err => {
+        console.log("Error when create account from student");
+      });
 }
 

@@ -6,7 +6,7 @@
 
 /backend/node_modules
 /backend/yarn.lock
-
+/backend/src/config/db.config.js
 /.pnp
 .pnp.js
 
