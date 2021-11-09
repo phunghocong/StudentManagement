@@ -1,6 +1,6 @@
 const shortid = require('shortid');
 module.exports = mongoose => {
-    var categorySchema = mongoose.Schema({
+    var subcategorySchema = mongoose.Schema({
         shortid: {
             type: String,
             unique: true,
@@ -27,12 +27,12 @@ module.exports = mongoose => {
         }, ],
     });
 
-    categorySchema.method("toJSON", function() {
+    subcategorySchema.method("toJSON", function() {
         const { __v, _id, ...object } = this.toObject();
         object.id = _id;
         return object;
     });
 
     const Subcategory = mongoose.model('Subcategory', subcategorySchema);
-    return Category;
+    return Subcategory;
 };

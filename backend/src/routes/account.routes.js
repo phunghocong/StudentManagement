@@ -14,7 +14,7 @@ module.exports = app => {
 
   // Lấy một model account về bằng username và password
   router.get('/', accounts.getOne);
-
+ 
   app.use("/api/accounts", router);
   };
   

@@ -8,14 +8,14 @@ exports.create = (req, res) => {
     return;
   }
   const tutorial = new ClassRecord({
-    classname: String, //INT2021_22
-    subjectName: String,//Toán cao cấp
-    subjectCredit: String,//2,3
-    belongToStudent: String,//MSSV
-    year: String,//2015
-    semeter: String,//1 or 2
-    midtermGrade: String,//0-10
-    grade: String,//0-10
+    classname: req.body.classname, //INT2021_22
+    subjectName: req.body.subjectName,//Toán cao cấp
+    subjectCredit: req.body.subjectCredit,//2,3
+    belongToStudent: req.body.belongToStudent,//MSSV
+    year: req.body.year,//2015
+    semeter: req.body.semeter,//1 or 2
+    midtermGrade: req.body.midtermGrade,//0-10
+    grade: req.body.grade,//0-10
   });
   tutorial
     .save(tutorial)
@@ -30,10 +30,8 @@ exports.create = (req, res) => {
     });
 }
 exports.findAll = (req, res) => {
-  const title = req.query.title;
-  var condition = title ? { title: { $regex: new RegExp(title), $options: "i" } } : {};
 
-  ClassRecord.find(condition)
+  ClassRecord.find({})
     .then(data => {
       res.send(data);
     })
