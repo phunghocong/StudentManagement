@@ -3,10 +3,17 @@ module.exports = app => {
 
   var router = require("express").Router();
 
+  // Login main
+  // router.post('/login/', accounts.authentication accounts.login);
+
+
+  // Login
+  router.post('/login/', accounts.login);
+
   // Tạo 1 object tài khoản
   router.post('/', accounts.create);
 
-  // Update một object tài khoản
+  // Update một object tài khoản.
   router.post('/:id', accounts.updateInfo);
   
   // Xóa một tài khoản

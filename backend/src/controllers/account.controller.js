@@ -1,6 +1,10 @@
+const bcrypt = require('bcryptjs');
 const { response } = require("express");
 const db = require("../models");
 const Account = db.accounts;
+
+// Salt round for hash
+const saltRound = 10;
 
 /*
 Tạo tài khoản cả sinh viên và quản lý.
@@ -12,22 +16,43 @@ Khi cần đổi cái gì chỉ cần sửa ở request gửi:
 - Thêm sửa thông tin sinh viên (Dành cho quản lý).
 
 Đăng nhập - Nếu là sinh viên / Nếu là quản lý
-
-
 */
-
-//HashFunction
-function hashCode(password) {
-  let hashed;
-  for (let i = 0; i < password.length; i++)
-    hashed = Math.imul(31, hashed) + password.charCodeAt(i) | 0;
-  return hashed;
-}
 
 function dateToPassword(date) {
   date = date.split("-");
   date = date.join("");
   return date;
+}
+
+function randomAvatarColor() {
+  let n = (Math.random() * 0xfffff * 1000000).toString(16);
+  return '#' + n.slice(0, 6);
+}
+
+exports.authentication = (req, res, next) => {
+  const token = req.headers.authorization.split(' ')[1];
+}
+
+exports.login = (req, res) => {
+  const {username, password} = req.body;
+  Account.findOne({username})
+    .then(async data => {
+      if (!data) {
+        res.status(404).send({message: "User doesn't exist"});
+      }
+
+      const isPasswordCorrect = await bcrypt.compare(password, data.password);
+      
+      if (!isPasswordCorrect) {
+        res.status(400).send({message: "Invalid password!"});
+      }
+      else {
+        res.status(200).send({message: "Password is correct"});
+      }
+    })
+    .catch(err => {
+      res.status(401).send({message: "error when login"});
+    });
 }
 
 // Tạo 1 tài khoản mới
@@ -38,17 +63,17 @@ exports.create = (req, res) => {
   }
   else {
     Account.findOne({ "username": req.body.username })
-      .then(data => {
+      .then(async data => {
         if (!data) {
           const account = new Account({
             username: req.body.username,
-            hashedPassword: hashCode(req.body.password),
+            password: bcrypt.hashSync(req.body.password, saltRound),
             firstName: req.body.firstName,
             surName: req.body.surName,
             email: req.body.email,
             messageOn: req.body.messageOn ? req.body.messageOn : true,
             isStudent: req.body.isStudent ? req.body.isStudent : true,
-            avatarColor: req.body.avatarColor ? req.body.avatarColor : "#ffffff",
+            avatarColor: req.body.avatarColor ? req.body.avatarColor : randomAvatarColor(),
           });
 
           account
@@ -105,9 +130,9 @@ exports.updateInfo = (req, res) => {
 
   const id = req.params.id;
   const password = req.body.password;
-  //Add hashedPassword property
+  //Add hash password property
   if (password) {
-    req.body.hashedPassword = hashCode(password);
+    req.body.password = bcrypt.hashSync(req.body.hashSync, saltRound);
   }
 
   Account.findByIdAndUpdate(id, req.body, { useFindAndModify: false })
@@ -134,7 +159,7 @@ exports.getOne = (req, res) => {
     return res.status(400).send({ message: "Username and password must be filled in" });
   }
 
-  Account.findOne({ username: req.body.username, hashedPassword: hashCode(req.body.password) },)
+  Account.findOne({ username: req.body.username, password: bcrypt.hashSync(req.body.password, saltRound) },)
     .then(data => {
       if (!data) {
         res.status(404).send({
@@ -160,7 +185,7 @@ exports.createAccountFromStudent = (student) => {
       if (!data) {
         const account = new Account({
           username: student.studentID,
-          hashedPassword: hashCode(dateToPassword(student.birthday)),
+          password: bcrypt.hashSync(dateToPassword(student.birthday), saltRound),
           firstName: student.firstName,
           surName: student.surName,
           email: student.email,

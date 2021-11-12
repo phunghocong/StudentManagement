@@ -2,7 +2,7 @@ module.exports = mongoose => {
   var accountSchema = mongoose.Schema(
     {
       username: String,
-      hashedPassword: String,
+      password: String,
       firstName: String,
       surName: String,
       email: String,
