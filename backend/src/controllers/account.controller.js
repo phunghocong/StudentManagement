@@ -1,6 +1,7 @@
 const bcrypt = require('bcryptjs');
-const { response } = require("express");
+const jwt = require('jsonwebtoken');
 const db = require("../models");
+const config = require('../config/config');
 const Account = db.accounts;
 
 // Salt round for hash
@@ -29,29 +30,29 @@ function randomAvatarColor() {
   return '#' + n.slice(0, 6);
 }
 
-exports.authentication = (req, res, next) => {
-  const token = req.headers.authorization.split(' ')[1];
-}
-
+// Đăng nhập sẽ nhận request gồm username và password - sau đó trả về JSON {username, _id của đối tượng acocunt trên database, jwtoken sử dụng cho phiên làm việc}.
 exports.login = (req, res) => {
+  // Tiếp nhận request
   const {username, password} = req.body;
+
   Account.findOne({username})
-    .then(async data => {
+    .then(async (data) => {
       if (!data) {
-        res.status(404).send({message: "User doesn't exist"});
+        return res.status(404).send({message: "User doesn't exist"});
       }
 
       const isPasswordCorrect = await bcrypt.compare(password, data.password);
       
       if (!isPasswordCorrect) {
-        res.status(400).send({message: "Invalid password!"});
+        return res.status(400).send({message: "Invalid password!"});
       }
-      else {
-        res.status(200).send({message: "Password is correct"});
-      }
+
+      const token =  jwt.sign({username: data.username}, config.ACCESS_TOKEN_STATIC, {expiresIn: "1h"});
+
+      res.status(200).send({username: username, id: data._id, token: token});
     })
     .catch(err => {
-      res.status(401).send({message: "error when login"});
+      res.status(500).send({message: "Something went wrong when login"});
     });
 }
 
@@ -60,8 +61,7 @@ exports.create = (req, res) => {
   if (!req.body.username || !req.body.password || !req.body.firstName || !req.body.surName || !req.body.email) {
     res.status(400).send({ message: "Necessary information can not be empty" });
     return;
-  }
-  else {
+  } else {
     Account.findOne({ "username": req.body.username })
       .then(async data => {
         if (!data) {
@@ -86,8 +86,7 @@ exports.create = (req, res) => {
                 message: err.message || "Error when create Account",
               });
             });
-        }
-        else {
+        } else {
           res.status(400).send({ message: "User name is not available" });
         }
       })
@@ -154,19 +153,37 @@ exports.updateInfo = (req, res) => {
 }
 
 // Lấy dữ liệu 1 model - Đăng nhập có lẽ sẽ dùng cái này
-exports.getOne = (req, res) => {
-  if (!req.body.username || !req.body.password) {
-    return res.status(400).send({ message: "Username and password must be filled in" });
+exports.getOneById = (req, res) => {
+  if (!req.params.id) {
+    return res.status(400).send({ message: "Username be filled in" });
   }
 
-  Account.findOne({ username: req.body.username, password: bcrypt.hashSync(req.body.password, saltRound) },)
+  Account.findById(req.params.id)
     .then(data => {
       if (!data) {
-        res.status(404).send({
-          message: "Wrong id or password.",
-        });
+        res.status(404).send({message: `There is no account with id: ${req.params.id}`});
+      } else {
+        res.status(200).send(data);
       }
-      else {
+    })
+    .catch(err => {
+      res.status(500).send({
+        message: "Error when get data",
+      })
+    });
+
+}
+
+exports.getOneByUsername = (req, res) => {
+  if (!req.body.username) {
+    return res.status(400).send({ message: "Username be filled in" });
+  }
+
+  Account.findOne({username: req.body.username})
+    .then(data => {
+      if (!data) {
+        res.status(404).send({message: `There is no account with id: ${req.params.id}`});
+      } else {
         res.status(200).send(data);
       }
     })
@@ -191,7 +208,7 @@ exports.createAccountFromStudent = (student) => {
           email: student.email,
           messageOn: false,
           isStudent: true,
-          avatarColor: "#ffffff",
+          avatarColor: randomAvatarColor(),
         });
 
         account
@@ -202,8 +219,7 @@ exports.createAccountFromStudent = (student) => {
           .catch(err => {
             console.log("Error when create data");
           });
-      }
-      else {
+      } else {
         console.log("Account for this student is exist");
       }
     })
