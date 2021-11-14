@@ -242,7 +242,21 @@ exports.findByID = (req, res) => {
         .send({ message: "Error retrieving student with id=" + studentID });
     });
 };
+exports.findByYear= (req, res) => {
+  const startedYear = req.params.startedYear;
 
+  Student.find({ "startedYear": startedYear })
+    .then(data => {
+      if (!data)
+        res.status(404).send({ message: "Not found student with id " + startedYear });
+      else res.send(data);
+    })
+    .catch(err => {
+      res
+        .status(500)
+        .send({ message: "Error retrieving student with id=" + startedYear });
+    });
+};
 // Update a student by the studentID in the request
 exports.update = (req, res) => {
   if (!req.body) {

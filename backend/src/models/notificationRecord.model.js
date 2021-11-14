@@ -1,7 +1,5 @@
 module.exports = mongoose => {
-
-
-  
+ 
   var notificationRecordSchema = mongoose.Schema(
     {
       id: Int32Array,
