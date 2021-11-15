@@ -3,14 +3,65 @@ import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { useRef } from "react";
 import StudentConfig from "./StudentConfig";
 import StudentDelete from "./StudentDelete";
+import { Input, Space } from 'antd';
+import { AudioOutlined,SearchOutlined } from '@ant-design/icons';
+
+
 
 export default function StudentList() {
   const configRef = useRef();
   const deleteRef = useRef();
 
+  const { Search } = Input;
+
+    const suffix = (
+        <AudioOutlined
+      style={{
+        fontSize: 16,
+        color: '#1890ff',
+      }}
+    />
+  );
+
+  const onSearch = value => console.log(value);
+
+      
+
+
   const columns = [
     { title: "ID", key: "id", dataIndex: "id" },
-    { title: "Tên sinh viên", key: "name", dataIndex: "name" },
+    { title: "Tên sinh viên", key: "name", dataIndex: "name" ,
+      filterDropdown: ({setSlectedKeys,selectedKeys,confirm,clearFilters}) =>{ 
+        return( 
+      <>
+        <Input 
+        autoFocus 
+        placeholder=" Type text here" 
+        value={selectedKeys[0]}
+        onChange={(e) =>{
+          setSlectedKeys(e.target.value ? [e.target.value]:[]);
+          confirm({closeDropdown : false});
+        }}
+        onPressEnter={() =>{
+          confirm()
+        }}
+        onBlur={() =>{
+          confirm()
+        }}></Input>
+        <Button onClick={() =>{confirm()}} type = 'primary'> Search</Button>
+        <Button onClick={() =>{clearFilters()}} type = 'danger'> Reset</Button>
+      </>
+        )
+      },
+
+      filterIcon: ()=>{
+        return <SearchOutlined />;
+      },
+      onFilter:(value,record)=>{
+        return record.name.toLowerCase().includes(value.toLowerCase());
+      }
+  
+        },
     { title: "Năm sinh", key: "age", dataIndex: "age" },
     { title: "Mã số sinh viên", key: "mssv", dataIndex: "mssv" },
     { title: "Ngành học", key: "subject", dataIndex: "subject" },

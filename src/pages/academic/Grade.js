@@ -1,5 +1,5 @@
-import { Button, Table, Row, Col } from "antd";
-import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
+import { Button, Table, Row, Col,Input } from "antd";
+import { DeleteOutlined, EditOutlined,SearchOutlined } from "@ant-design/icons";
 import { useRef } from "react";
 
 export default function Grade() {
@@ -8,7 +8,38 @@ export default function Grade() {
 
   const columns = [
     { title: "ID", key: "id", dataIndex: "id" },
-    { title: "Tên sinh viên", key: "name", dataIndex: "name" },
+    { title: "Tên sinh viên", key: "name", dataIndex: "name" ,
+    filterDropdown: ({setSlectedKeys,selectedKeys,confirm,clearFilters}) =>{ 
+      return( 
+    <>
+      <Input 
+      autoFocus 
+      placeholder=" Type text here" 
+      value={selectedKeys[0]}
+      onChange={(e) =>{
+        setSlectedKeys(e.target.value ? [e.target.value]:[]);
+        confirm({closeDropdown : false});
+      }}
+      onPressEnter={() =>{
+        confirm()
+      }}
+      onBlur={() =>{
+        confirm()
+      }}></Input>
+      <Button onClick={() =>{confirm()}} type = 'primary'> Search</Button>
+      <Button onClick={() =>{clearFilters()}} type = 'danger'> Reset</Button>
+    </>
+      )
+    },
+
+    filterIcon: ()=>{
+      return <SearchOutlined />;
+    },
+    onFilter:(value,record)=>{
+      return record.name.toLowerCase().includes(value.toLowerCase());
+    }
+
+      },
     { title: "Môn học", key: "subject", dataIndex: "subject" },
     { title: "Điểm số", key: "grade", dataIndex: "grade" },
     {

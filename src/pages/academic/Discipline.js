@@ -1,5 +1,5 @@
-import { Button, Table, Row, Col } from "antd";
-import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
+import { Button, Table, Row, Col,Input } from "antd";
+import { DeleteOutlined, EditOutlined,SearchOutlined } from "@ant-design/icons";
 import { useRef } from "react";
 // import StudentConfig from "./StudentConfig";
 // import StudentDelete from "./StudentDelete";``
@@ -12,7 +12,38 @@ export default function Discipline() {
 
   const columns = [
     { title: "ID", key: "id", dataIndex: "id" },
-    { title: "Tên sinh viên", key: "name", dataIndex: "name" },
+    { title: "Tên sinh viên", key: "name", dataIndex: "name" ,
+    filterDropdown: ({setSlectedKeys,selectedKeys,confirm,clearFilters}) =>{ 
+      return( 
+    <>
+      <Input 
+      autoFocus 
+      placeholder=" Type text here" 
+      value={selectedKeys[0]}
+      onChange={(e) =>{
+        setSlectedKeys(e.target.value ? [e.target.value]:[]);
+        confirm({closeDropdown : false});
+      }}
+      onPressEnter={() =>{
+        confirm()
+      }}
+      onBlur={() =>{
+        confirm()
+      }}></Input>
+      <Button onClick={() =>{confirm()}} type = 'primary'> Search</Button>
+      <Button onClick={() =>{clearFilters()}} type = 'danger'> Reset</Button>
+    </>
+      )
+    },
+
+    filterIcon: ()=>{
+      return <SearchOutlined />;
+    },
+    onFilter:(value,record)=>{
+      return record.name.toLowerCase().includes(value.toLowerCase());
+    }
+
+      },
     { title: "Cảnh báo", key: "warning", dataIndex: "warning" },
     {
       title: "",
