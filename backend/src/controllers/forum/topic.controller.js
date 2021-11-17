@@ -30,10 +30,6 @@ exports.getById = (req, res) => {
             },
             populate: {
                 path: 'author',
-                populate: {
-                    path: 'usergroup',
-                    select: '-users',
-                },
             },
         })
         .lean()

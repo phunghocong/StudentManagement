@@ -56,10 +56,7 @@ exports.addNewPost = (req, res) => {
                         .lean()
                         .populate({
                             path: 'author',
-                            populate: {
-                                path: 'usergroup',
-                                select: '-users',
-                            },
+
                         });
                 })
                 .then(populatedPost => {
