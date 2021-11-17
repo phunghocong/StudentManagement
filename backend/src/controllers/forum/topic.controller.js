@@ -1,6 +1,5 @@
 const db = require("../../models");
 const mongoose = require('mongoose');
-const passport = require('passport');
 
 const topicController = db.topicController;
 const Subcategory = require('../models/Subcategory');
@@ -10,7 +9,7 @@ const User = require('../models/account.model');
 
 
 // get info from a single topic
-topicController.get('/', (req, res) => {
+exports.getById = (req, res) => {
     const { id = null, sid = null, page = 1, limit = 10 } = req.query;
     const queryParams = {};
     let topicResult = {};
@@ -31,10 +30,6 @@ topicController.get('/', (req, res) => {
             },
             populate: {
                 path: 'author',
-                populate: {
-                    path: 'usergroup',
-                    select: '-users',
-                },
             },
         })
         .lean()
@@ -60,100 +55,90 @@ topicController.get('/', (req, res) => {
         .catch(err =>
             res.status(400).json({ msg: 'Failed to get info of topic', err })
         );
-});
-
+}
 
 // post a new topic
-topicController.post(
-    '/add',
-    passport.authenticate('jwt', { session: false }),
-    (req, res) => {
-        // Create a new topic, a new post then push the id to the subcategory topics array
-        // and to the user topics and posts array
-        const { title, subtitle, subcategory, author, message } = req.body;
-        const newTopicId = new mongoose.Types.ObjectId();
-        const newPostId = new mongoose.Types.ObjectId();
+exports.addNewTopic = (req, res) => {
+    // Create a new topic, a new post then push the id to the subcategory topics array
+    // and to the user topics and posts array
+    const { title, subtitle, subcategory, author, message } = req.body;
+    const newTopicId = new mongoose.Types.ObjectId();
+    const newPostId = new mongoose.Types.ObjectId();
 
-        const newTopic = new Topic({
-            _id: newTopicId,
-            title,
-            subtitle,
-            subcategory,
-            author,
-            posts: [newPostId],
-            lastpost: newPostId,
-        });
+    const newTopic = new Topic({
+        _id: newTopicId,
+        title,
+        subtitle,
+        subcategory,
+        author,
+        posts: [newPostId],
+        lastpost: newPostId,
+    });
 
-        const newPost = new Post({
-            _id: newPostId,
-            message,
-            author,
-            topic: newTopicId,
-        });
+    const newPost = new Post({
+        _id: newPostId,
+        message,
+        author,
+        topic: newTopicId,
+    });
 
-        newTopic
-            .save()
-            .then(() => {
-                return newPost.save();
-            })
-            .then(() => {
-                return Subcategory.findByIdAndUpdate(
-                    subcategory, {
-                        $push: { topics: newTopicId },
-                        $set: { lastpost: newPostId },
-                    }, { useFindAndModify: false }
-                );
-            })
-            .then(() => {
-                return User.findByIdAndUpdate(
-                    author, {
-                        $push: { posts: newPostId, topics: newTopicId },
-                    }, { useFindAndModify: false }
-                );
-            })
-            .then(() => res.status(200).send({ topic: newTopic }))
-            .catch(err => res.json({ msg: 'Failed to add a new topic', err }));
-    }
-);
+    newTopic
+        .save()
+        .then(() => {
+            return newPost.save();
+        })
+        .then(() => {
+            return Subcategory.findByIdAndUpdate(
+                subcategory, {
+                    $push: { topics: newTopicId },
+                    $set: { lastpost: newPostId },
+                }, { useFindAndModify: false }
+            );
+        })
+        .then(() => {
+            return User.findByIdAndUpdate(
+                author, {
+                    $push: { posts: newPostId, topics: newTopicId },
+                }, { useFindAndModify: false }
+            );
+        })
+        .then(() => res.status(200).send({ topic: newTopic }))
+        .catch(err => res.json({ msg: 'Failed to add a new topic', err }));
+}
+
 
 
 // update a topic
-topicController.post(
-    '/update',
-    passport.authenticate('jwt', { session: false }),
-    (req, res) => {
-        Topic.findByIdAndUpdate(req.body.id, req.body, {
-                useFindAndModify: false,
-            })
-            .then(topic => res.status(200).json({ msg: 'Topic updated', topic }))
-            .catch(err =>
-                res.status(400).json({ msg: 'Failed to update topic', err })
-            );
-    }
-);
+exports.update = (req, res) => {
+    Topic.findByIdAndUpdate(req.body.id, req.body, {
+            useFindAndModify: false,
+        })
+        .then(topic => res.status(200).json({ msg: 'Topic updated', topic }))
+        .catch(err =>
+            res.status(400).json({ msg: 'Failed to update topic', err })
+        );
+}
+
 
 
 // delete a topic
-topicController.post(
-    '/delete',
-    passport.authenticate('jwt', { session: false }),
-    (req, res) => {
-        const { id } = req.body;
+exports.delete = (req, res) => {
+    const { id } = req.body;
 
-        Topic.findByIdAndDelete(id)
-            .then(topic => {
-                Post.deleteMany({ topic: id })
-                    .then(() => {
-                        return User.updateMany({ posts: { $in: topic.posts }, topics: id }, { $pullAll: { posts: topic.posts }, $pull: { topics: id } });
-                    })
-                    .then(() => {
-                        res.status(200).send({ topic });
-                    });
-            })
-            .catch(err =>
-                res.status(400).json({ msg: 'Failed to delete topic', err })
-            );
-    }
-);
+    Topic.findByIdAndDelete(id)
+        .then(topic => {
+            Post.deleteMany({ topic: id })
+                .then(() => {
+                    return User.updateMany({ posts: { $in: topic.posts }, topics: id }, { $pullAll: { posts: topic.posts }, $pull: { topics: id } });
+                })
+                .then(() => {
+                    res.status(200).send({ topic });
+                });
+        })
+        .catch(err =>
+            res.status(400).json({ msg: 'Failed to delete topic', err })
+        );
+}
 
-module.exports = topicController;
+
+module.exports = exports.create;

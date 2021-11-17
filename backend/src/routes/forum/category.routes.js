@@ -1,17 +1,17 @@
 module.exports = app => {
-  const category = require("../controllers/forum/category.controller.js");
+    const category = require("../controllers/forum/category.controller.js");
 
-  var router = require("express").Router();
+    var router = require("express").Router();
 
-  router.get('/', category.getAll);
+    router.get('/', category.getAll);
 
-  router.get('/:id', category.getById);
+    router.get('/:id', category.getById);
 
-  router.post('/add', category.addNewCategory/* , passport.authenticate('jwt', { session: false }) */);
+    router.post('/add', category.addNewCategory);
 
-  router.post('/update', category.update/* , passport.authenticate('jwt', { session: false }) */);
+    router.post('/update', category.update);
 
-  router.delete('/delete', category.delete/* , passport.authenticate('jwt', { session: false }) */);
+    router.delete('/delete', category.delete);
 
-  app.use("/api/forum/category", router);
+    app.use("/api/forum/category", router);
 };

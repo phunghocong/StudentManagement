@@ -1,6 +1,5 @@
 const db = require("../../models");
 
-const ForumCategory = db.forumCategory;
 const Category = require('../../models/forum/Category');
 const Topic = require('../../models/forum/Topic');
 const Post = require('../../models/forum/Post');
@@ -16,11 +15,7 @@ exports.getAll = (req, res) => {
             populate: {
                 path: 'lastpost',
                 select: '-message',
-                // options: {
-                //   sort: {
-                //     createdAt: 'desc',
-                //   },
-                // },
+
                 populate: {
                     path: 'author',
                     select: '-posts -topics',
@@ -35,8 +30,8 @@ exports.getAll = (req, res) => {
                     category.subcategories,
                     (subcategory, callback) => {
                         Topic.countDocuments({
-                            subcategory: subcategory._id,
-                        })
+                                subcategory: subcategory._id,
+                            })
                             .then(topicCount => {
                                 subcategory.topics = topicCount;
                                 subcategory.posts = 0;
@@ -80,7 +75,7 @@ exports.getById = (req, res) => {
 };
 
 
-// add a new category post('/add',passport.authenticate('jwt', { session: false })
+// add a new category post
 exports.addNewCategory = (req, res) => {
     const { name } = req.body;
     const newCategory = new Category({
@@ -95,11 +90,11 @@ exports.addNewCategory = (req, res) => {
 
 
 
-// update a category post('/update',passport.authenticate('jwt', { session: false })
+// update a category post('/update',
 exports.update = (req, res) => {
     Category.findByIdAndUpdate(req.body.id, req.body, {
-        useFindAndModify: false,
-    })
+            useFindAndModify: false,
+        })
         .then(category =>
             res.status(200).json({ msg: 'Category updated', category })
         )
@@ -110,8 +105,7 @@ exports.update = (req, res) => {
 
 
 
-// delete a category post('/delete',passport.authenticate('jwt', { session: false }))
-//-> delete('/delete',passport.authenticate('jwt', { session: false })) at router 
+// delete a category post
 exports.delete = (req, res) => {
     Category.findByIdAndDelete(req.body.id)
         .then(() => res.status(200).json({ msg: 'Category deleted' }))
