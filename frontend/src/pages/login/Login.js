@@ -2,14 +2,17 @@ import { Button, Col, Form, Input, Row, notification } from "antd";
 import { useEffect } from "react";
 import { useState } from "react";
 import { useForm } from "antd/lib/form/Form";
+import "./Login.scss"
+import banner from "../../assets/img/unknown.png"
 
 
 export default function Login() {
   return (
-    <div className="login">
+    <div className="container">
+        <div className="login">
       <Row justify="space-between" align="middle">
         <Col lg={10}>
-          <img  alt="" />
+          <img  alt="" src={banner}/>
         </Col>
 
         <Col lg={12}>
@@ -41,5 +44,7 @@ export default function Login() {
         </Col>
       </Row>
     </div>
+    </div>
+    
   );
 }
