@@ -145,4 +145,4 @@ exports.delete = (req, res) => {
 }
 
 
-module.exports = topicController;
+module.exports = exports.create;

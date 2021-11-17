@@ -124,4 +124,4 @@ exports.delete = (req, res) => {
 }
 
 
-module.exports = subcategoryController;
+module.exports = exports.create;

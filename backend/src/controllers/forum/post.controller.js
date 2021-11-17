@@ -110,4 +110,4 @@ exports.delete = (req, res) => {
         );
 }
 
-module.exports = postController;
+module.exports = exports.create;

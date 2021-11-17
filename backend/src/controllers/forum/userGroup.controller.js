@@ -1,4 +1,3 @@
-const passport = require('passport');
 const db = require("../../models");
 
 const UserGroup = require('../models/UserGroup');
@@ -65,4 +64,4 @@ exports.delete = (req, res) => {
 }
 
 
-module.exports = userGroupController;
+module.exports = exports.create;
