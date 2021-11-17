@@ -35,8 +35,8 @@ exports.getAll = (req, res) => {
                     category.subcategories,
                     (subcategory, callback) => {
                         Topic.countDocuments({
-                            subcategory: subcategory._id,
-                        })
+                                subcategory: subcategory._id,
+                            })
                             .then(topicCount => {
                                 subcategory.topics = topicCount;
                                 subcategory.posts = 0;
@@ -98,8 +98,8 @@ exports.addNewCategory = (req, res) => {
 // update a category post('/update',passport.authenticate('jwt', { session: false })
 exports.update = (req, res) => {
     Category.findByIdAndUpdate(req.body.id, req.body, {
-        useFindAndModify: false,
-    })
+            useFindAndModify: false,
+        })
         .then(category =>
             res.status(200).json({ msg: 'Category updated', category })
         )

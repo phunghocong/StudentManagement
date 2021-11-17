@@ -1,13 +1,12 @@
 const db = require("../../models");
 
-const statsController = db.statsController;
 const Topic = require('../models/forum/Topic');
 const Post = require('../models/forum/Post');
 const User = require('../models/account.model');
 
 
-// get main stats
-statsController.get('/', (req, res) => {
+// get main statsus
+exports.getMainStatus = (req, res) => {
     const result = {};
     Topic.countDocuments()
         .then(topicCount => {
@@ -31,11 +30,11 @@ statsController.get('/', (req, res) => {
             res.status(200).json(result);
         })
         .catch(err => res.status(400).json({ err }));
-});
+}
 
 
 // get activty from website
-statsController.get('/activity', (req, res) => {
+exports.getActivity = (req, res) => {
     let result = [];
     Post.find()
         .populate({
@@ -96,6 +95,6 @@ statsController.get('/activity', (req, res) => {
             });
             res.status(200).json({ activities: result });
         });
-});
+}
 
 module.exports = statsController;
