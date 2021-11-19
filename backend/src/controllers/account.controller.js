@@ -226,4 +226,3 @@ exports.createAccountFromStudent = (student) => {
             console.log("Error when create account from student");
         });
 }
-module.exports = exports.create;

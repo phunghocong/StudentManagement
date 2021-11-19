@@ -2,7 +2,6 @@ module.exports = mongoose => {
  
   var notificationRecordSchema = mongoose.Schema(
     {
-      id: Int32Array,
       username: String, //user to notify
       read: Boolean,
       message: String

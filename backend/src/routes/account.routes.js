@@ -17,19 +17,19 @@ module.exports = app => {
   router.post('/login/', accounts.login);
 
   // Tạo 1 object tài khoản
-  router.post('/', auth.auth, accounts.create);
+  router.post('/create', accounts.create);
 
   // Update một object tài khoản.
-  router.post('/:id', auth.auth, accounts.updateInfo);
+  router.post('/update/:id', auth.auth, accounts.updateInfo);
   
   // Xóa một tài khoản
-  router.delete('/:id', auth.auth, accounts.delete);
+  router.delete('/delete/:id', auth.auth, accounts.delete);
 
   // Lấy một model account từ id
-  router.get('/:id', accounts.getOneById);
+  router.get('/get/:id', accounts.getOneById);
 
   // Lấy một model account từ username
-  router.get('/', accounts.getOneByUsername);
+  router.get('/get/', accounts.getOneByUsername);
  
   app.use("/api/accounts", router);
   };
