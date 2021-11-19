@@ -8,7 +8,7 @@ export default function RootRoute() {
     <BrowserRouter>
       <Switch>
         <Route exact path={paths.NOT_FOUND} component={NotFound} />
-        <Route exact path={paths.LOGIN} component={Login} />
+        <Route exact path={paths.DANG_NHAP} component={Login} />
         <Route path={paths.MAIN} component={MainRoutes} />
       </Switch>
     </BrowserRouter>

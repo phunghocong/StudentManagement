@@ -4,11 +4,10 @@ import { Switch, Route, Redirect } from "react-router-dom";
 import paths from "../constants/paths";
 import {
   Dashboard,
-  Account,
   Forum,
   StudentList,
-  Discipline,
-  Grade,
+  AccountList,
+  ClassList,
 } from "../pages";
 
 export default function MainRoutes() {
@@ -21,14 +20,21 @@ export default function MainRoutes() {
 
         <Content>
           <Switch>
-            <Route exact path={paths.DASHBOARD} component={Dashboard} />
-            <Route exact path={paths.STUDENT} component={StudentList} />
-            <Route exact path={paths.GRADE} component={Grade} />
-            <Route exact path={paths.DISCIPLINE} component={Discipline} />
-            <Route exact path={paths.FORUM} component={Forum} />
-            <Route exact path={paths.ACCOUNT} component={Account} />
+            <Route exact path={paths.BANG_DIEU_KHIEN} component={Dashboard} />
+            <Route
+              exact
+              path={paths.DANH_SACH_SINH_VIEN}
+              component={StudentList}
+            />
+            <Route exact path={paths.DANH_SACH_LOP_HOC} component={ClassList} />
+            <Route
+              exact
+              path={paths.DANH_SACH_TAI_KHOAN}
+              component={AccountList}
+            />
+            <Route exact path={paths.TAO_THONG_BAO} component={Forum} />
 
-            <Redirect exact from={paths.MAIN} to={paths.DASHBOARD} />
+            <Redirect exact from={paths.MAIN} to={paths.BANG_DIEU_KHIEN} />
             <Redirect to={paths.NOT_FOUND} />
           </Switch>
         </Content>

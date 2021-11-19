@@ -1,7 +1,6 @@
 import { Input, Form, Button, notification, Row, Col } from "antd";
 import { useEffect } from "react";
 
-
 export default function Account() {
   return (
     <div className="account">
@@ -11,7 +10,7 @@ export default function Account() {
 
       <h2>Đổi mật khẩu</h2>
 
-      <Form layout="vertical" >
+      <Form layout="vertical">
         <Row gutter={[{ md: 20 }, { sm: 20 }]}>
           <Col md={12}>
             <Form.Item
@@ -50,6 +49,4 @@ export default function Account() {
       </Form>
     </div>
   );
-};
-
-
+}

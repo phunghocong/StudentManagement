@@ -12,50 +12,35 @@ const items = [
     key: rid(),
     title: "Bảng điều khiển",
     icon: <DashboardOutlined />,
-    path: paths.DASHBOARD,
+    path: paths.BANG_DIEU_KHIEN,
     subs: [],
   },
   {
     key: rid(),
-    title: "Quản lý sinh viên",
+    title: "Danh sách sinh viên",
     icon: <DashboardOutlined />,
-    path: paths.STUDENT,
+    path: paths.DANH_SACH_SINH_VIEN,
     subs: [],
   },
   {
     key: rid(),
-    title: "Quản lý học vụ",
+    title: "Danh sách lớp học",
     icon: <DashboardOutlined />,
-    path: undefined,
-    subs: [
-      {
-        key: rid(),
-        title: "Điểm rèn luyện",
-        icon: <DashboardOutlined />,
-        path: paths.GRADE,
-        subs: [],
-      },
-      {
-        key: rid(),
-        title: "Kỷ luật",
-        icon: <DashboardOutlined />,
-        path: paths.DISCIPLINE,
-        subs: [],
-      },
-    ],
-  },
-  {
-    key: rid(),
-    title: "Diễn đàn",
-    icon: <DashboardOutlined />,
-    path: paths.FORUM,
+    path: paths.DANH_SACH_LOP_HOC,
     subs: [],
   },
   {
     key: rid(),
-    title: "Tài khoản",
+    title: "Danh sách tài khoản",
     icon: <DashboardOutlined />,
-    path: paths.ACCOUNT,
+    path: paths.DANH_SACH_TAI_KHOAN,
+    subs: [],
+  },
+  {
+    key: rid(),
+    title: "Tạo thông báo",
+    icon: <DashboardOutlined />,
+    path: paths.TAO_THONG_BAO,
     subs: [],
   },
 ];
@@ -96,7 +81,6 @@ const Sider = ({ location }) => {
       onCollapse={() => setCollapsed((val) => !val)}
     >
       <div
-        className=""
         style={{
           width: "100%",
           color: "#fff",
@@ -105,7 +89,7 @@ const Sider = ({ location }) => {
           textAlign: "center",
         }}
       >
-        StudMana
+        S
       </div>
 
       <Menu

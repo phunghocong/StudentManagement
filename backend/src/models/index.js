@@ -21,8 +21,8 @@ db.postController = require('./forum/post.controller');
 db.statsController = require('./forum/stats.controller');*/
 //end forum
 db.forumCategory = require("./forum/Category.js")(mongoose);
-db.forumPost = require('./forum/Post.js')(mongoose);
-db.forumSubcategory = require('./forum/Subcategory.js')(mongoose);
+db.forumPost = require("./forum/Post.js")(mongoose);
+db.forumSubcategory = require("./forum/Subcategory.js")(mongoose);
 db.forumTopic = require("./forum/Topic.js")(mongoose);
 db.forumCUsergroup = require("./forum/Usergroup.js")(mongoose);
 
@@ -30,6 +30,5 @@ db.forumCUsergroup = require("./forum/Usergroup.js")(mongoose);
 db.classRecords = require("./classRecord.model.js")(mongoose);
 //db.activityRecords = require("./activityRecord.model.js")(mongoose);
 //db.notificationRecords = require("./notificationRecord.model.js")(mongoose);
-
 
 module.exports = db;
