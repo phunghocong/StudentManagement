@@ -10,6 +10,11 @@ module.exports = mongoose => {
         isStudent: Boolean, //nếu là sinh viên
         avatarColor: String,
 
+        notification: [
+            { read: Boolean,
+            message: String,
+            createTime: String,
+            } ],
         posts: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Post' }],
         topics: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Topic' }]
     }, { timestamps: true });

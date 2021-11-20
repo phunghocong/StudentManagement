@@ -2,6 +2,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const db = require("../models");
 const config = require('../config/config');
+const Account = db.accounts;
 
 // Salt round for hash
 const saltRound = 10;
@@ -73,6 +74,7 @@ exports.create = (req, res) => {
                         messageOn: req.body.messageOn ? req.body.messageOn : true,
                         isStudent: req.body.isStudent ? req.body.isStudent : true,
                         avatarColor: req.body.avatarColor ? req.body.avatarColor : randomAvatarColor(),
+                        notification: req.body.notification ? req.body.notification : [],
                     });
 
                     account
@@ -208,6 +210,7 @@ exports.createAccountFromStudent = (student) => {
                     messageOn: false,
                     isStudent: true,
                     avatarColor: randomAvatarColor(),
+                    notification: [],
                 });
 
                 account
@@ -226,3 +229,5 @@ exports.createAccountFromStudent = (student) => {
             console.log("Error when create account from student");
         });
 }
+
+

@@ -17,7 +17,7 @@ module.exports = app => {
   router.post('/login/', accounts.login);
 
   // Tạo 1 object tài khoản
-  router.post('/create', accounts.create);
+  router.post('/create/', accounts.create);
 
   // Update một object tài khoản.
   router.post('/update/:id', auth.auth, accounts.updateInfo);
