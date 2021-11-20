@@ -30,6 +30,16 @@ function randomAvatarColor() {
     return '#' + n.slice(0, 6);
 }
 
+function getCurrentDateTimeString() {
+    let currentdate = new Date(); 
+    return currentdate.getDate() + "/"
+                + (currentdate.getMonth()+1)  + "/" 
+                + currentdate.getFullYear() + "-"
+                + currentdate.getHours() + ":"  
+                + currentdate.getMinutes() + ":" 
+                + currentdate.getSeconds();
+}
+
 // Đăng nhập sẽ nhận request gồm username và password - sau đó trả về JSON {username, _id của đối tượng acocunt trên database, jwtoken sử dụng cho phiên làm việc}.
 exports.login = (req, res) => {
     // Tiếp nhận request
@@ -228,6 +238,25 @@ exports.createAccountFromStudent = (student) => {
         .catch(err => {
             console.log("Error when create account from student");
         });
+}
+
+exports.createNotification = (req, res) => {
+    if (req.body.constructor === Object && Object.keys(req.body).length === 0) {
+        return res.status(400).send({
+            message: "Notification can not be empty!"
+        });
+    }
+
+    const idDest = req.body.destination;
+    const tempNotification = {read: false, message: req.body.message, createTime: getCurrentDateTimeString()};
+    
+    try {
+        Account.update({id: idDest}, {$push: {notification: tempNotification}});
+        res.status(200).send({message: "Created a new notification!", notifi: tempNotification});
+    } catch(error) {
+        console.log(error);
+    }
+
 }
 
 

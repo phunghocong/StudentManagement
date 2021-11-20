@@ -19,6 +19,9 @@ module.exports = app => {
   // Tạo 1 object tài khoản
   router.post('/create/', accounts.create);
 
+  // Tạo thông báo về tài khoản
+  router.post('/createNotification/', accounts.createNotification);
+
   // Update một object tài khoản.
   router.post('/update/:id', auth.auth, accounts.updateInfo);
   
