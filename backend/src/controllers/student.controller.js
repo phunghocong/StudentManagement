@@ -283,7 +283,7 @@ exports.update = (req, res) => {
 };
 
 exports.delete = (req, res) => {
-  const studentID = req.params.id;
+  const studentID = req.params.studentID;
 
   Student.findByIdAndRemove(studentID, { useFindAndModify: false })
     .then(data => {

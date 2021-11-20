@@ -12,14 +12,15 @@ module.exports = app => {
   router.get('/', students.findAll);
   //Get student by their studentID
   router.get('/:studentID', students.findByID);
-
-  router.put('/update', students.update);
+  //Update student info with ID
+  router.put('/update/:studentID', students.update);
 
   router.get('/range', students.findRange);
 
   router.get('/count/:year', students.countStudent);
 
   router.delete("/", students.deleteAll);
+  router.delete("/:studentID", students.delete);
 
   app.use("/api/students", router);
   };

@@ -1,3 +1,5 @@
+const { json } = require("body-parser");
+const { students } = require("../models");
 const db = require("../models");
 const ClassRecord = db.classRecords;
 const Student = db.students;
@@ -17,7 +19,9 @@ function getRandomInt(max) {
 }
 exports.generateMockData = (req, res) => {
   const step = async _ => {
-    var studentIdList = Student.find({}, { "studentID": 1, "_id": 0 });
+    var studentIdList = Student.find({}, {
+      "studentID": 1, "startedYear": 1, _id: 0
+    });
     for await (const doc of studentIdList) {
       var choose = getRandomInt(subjectName.length);
       var subjectNameLength = subjectName[choose].length;
@@ -30,6 +34,7 @@ exports.generateMockData = (req, res) => {
         subjectName[choose].charCodeAt(subjectNameLength / 6) +
         subjectName[choose].charCodeAt(subjectNameLength / 8) +
         subjectName[choose].charCodeAt(subjectNameLength - 1);
+
       const classRecord = new ClassRecord({
         classname:
           classNamePrefix[subjectCode % classNamePrefix.length] //INT
@@ -39,18 +44,24 @@ exports.generateMockData = (req, res) => {
         subjectName: subjectName[choose],//Toán cao cấp
         subjectCredit: 2 + (subjectCode % 3),//2,3
         belongToStudent: doc.studentID,//MSSV
-        year: '20' + (10 + getRandomInt(12)),//2015
+        year: parseInt(doc.startedYear) + getRandomInt(5),//2015
         semeter: semeterEnum[getRandomInt(semeterEnum.length)],//1 or 2
         midtermGrade: getRandomArbitrary(3, 10),//0-10
         grade: getRandomArbitrary(1, 10),//0-10
       });
-      classRecord.save().catch(err => {
-        res.send({ message: err.message })
-      });
+
+      classRecord
+        .save()
+        .catch(err => {
+          res.send({ message: err.message })
+        });
     }
   }
-  step();
-  res.send("succ")
+  step()
+    .then(() => {
+      res.send("finished")
+
+    })
 
 }
 exports.create = (req, res) => {
@@ -130,24 +141,69 @@ exports.findByStudentId = (req, res) => {
       else {
         res.send(data);
       }
-    })
+    }
+    )
     .catch(err => {
       res
         .status(500)
         .send({ message: "Error retrieving class record with student id=" + studentID });
     });
 };
+exports.getStudentGPA = (req, res) => {
+  const studentID = req.params.studentID;
+  var totalMid = 0, totalFinal = 0, count = 0;
+  const step = async _ => {
+    var classRecordList = ClassRecord.find({ "belongToStudent": studentID });
+    for await (const classRecord of classRecordList) {
+      totalMid += parseInt(classRecord.midtermGrade);
+      totalFinal += parseInt(classRecord.grade);
+      count++;
+    }
+  }
+  step()
+    .then(
+      () => {
+        res.send({ GPA: (totalMid * 0.4 + totalFinal * 0.6) * 0.4 / count })
+      })
+};
+exports.getStudentGPAYear = (req, res) => {
+  const studentID = req.params.studentID;
+  const year = req.params.year;
+
+  var totalMid = 0, totalFinal = 0, count = 0;
+  const step = async _ => {
+    var classRecordList = ClassRecord.find({ "belongToStudent": studentID, "year": year });
+    for await (const classRecord of classRecordList) {
+      totalMid += parseInt(classRecord.midtermGrade);
+      totalFinal += parseInt(classRecord.grade);
+      count++;
+    }
+  }
+  step()
+    .then(
+      () => {
+        res.send((totalMid * 0.4 + totalFinal * 0.6) * 0.4 / count)
+      })
+};
 exports.getStudentListFromClass = (req, res) => {
   const classname = req.params.classname;
-  ClassRecord.find({ "classname": classname }, { "belongToStudent": 1,"_id":0 })
-    .then(data => {
-        
+  var studentArray = [];
+  const step = async _ => {
+    var classRecordList = ClassRecord.find({ "classname": classname }, { "belongToStudent": 1, "_id": 0 });
+    for await (const classRecord of classRecordList) {
+      students.find({ "studentID": classRecord.belongToStudent })
+        .then(data => {
+          studentArray.push(data[0]);
+        })
+        .catch(err => {
+          res.send(err);
+        })
+    }
+  }
+  step()
+    .then(() => {
+      res.json(studentArray);
     })
-    .catch(err => {
-      res
-        .status(500)
-        .send({ message: "Error retrieving students from class record with name=" + classname });
-    });
 };
 exports.update = (req, res) => {
   if (req.body.constructor === Object && Object.keys(req.body).length === 0) {

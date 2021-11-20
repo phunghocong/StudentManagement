@@ -2,7 +2,14 @@ import axios from 'axios';
 
 const url = 'http://localhost:8080/api/students';
 
-export const getAccount = () => axios.get(url);
-export const createAccount = (newAccount) => axios.post(url, newAccount);
-export const updateAccount = (id, updatedAccount) => axios.post(`${url}/${id}`, updateAccount);
-export const deleteAccount = (id) => axios.delete(`${url}/${id}`);
+export const findAll = () => axios.get(url);
+export const findByID = (studentID) => axios.get(`${url}/${studentID}`);
+
+
+export const update = (studentID) => axios.put(`${url}/update/${studentID}`);
+
+export const createStudent = (newStudent) => axios.post(`${url}/createStudent`, newStudent);
+export const createStudentAndRegisterNewAccount = (newStudent) => axios.post(`${url}/createStudentAndRegisterNewAccount`, newStudent);
+
+export const deleteStudent = (studentID) => axios.delete(`${url}/${studentID}`);
+export const deleteAllStudent = () => axios.delete(url);
