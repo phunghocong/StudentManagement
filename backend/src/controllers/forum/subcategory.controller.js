@@ -2,7 +2,7 @@ const db = require("../../models");
 
 const subcategoryController = db.subcategoryController;
 const Subcategory = require('../models/forum/Subcategory');
-const Category = require('../models/forum/Category');
+// const Category = require('../models/forum/Category');
 const Topic = require('../models/forum/Topic');
 
 
@@ -77,27 +77,19 @@ exports.getAllTopic = (req, res) => {
 
 // add a new subcategory
 exports.addNewSubCategory = (req, res) => {
-    const { name, description, category } = req.body;
+    const { name, description /*,category*/ } = req.body;
     const newSubcategory = new Subcategory({
         name,
         description,
-        category,
+        // category,
     });
-
-    newSubcategory
-        .save()
-        .then(subcategory => {
-            Category.findById(category).then(c => {
-                c.subcategories.push(newSubcategory);
-                c.save().then(() => {
-                    res.status(200).json({ subcategory });
-                });
-            });
-        })
-        .catch(err => res.json({ msg: 'Failed to add a new subcategory', err }));
+    try {
+        const savedSubcategory = await newSubcategory.save();
+        res.status(200).json(savedSubcategory);
+    } catch (err) {
+        res.status(500).json(err);
+    }
 }
-
-
 
 // update a subcategory
 exports.update = (req, res) => {
