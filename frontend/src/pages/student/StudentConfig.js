@@ -42,7 +42,7 @@ const StudentConfig = forwardRef((props, ref) => {
       </h2>
 
       <Form form={form} layout="vertical" onFinish={onFinish}>
-        <Form.Item label="Họ và tên" name="name">
+        <Form.Item label="Họ" name="name">
           <Input />
         </Form.Item>
 

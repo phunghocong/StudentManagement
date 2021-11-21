@@ -213,7 +213,11 @@ exports.findAll = (req, res) => {
     });
 };
 exports.findAllToStudentList = (req, res) => {
-  Student.find({}, { _id: 0, "studentID": 1, "surName": 1, "firstName": 1, "birthday": 1, "major": 1, "baseClass": 1, "GPA": 1 })
+  Student.find({},
+    {
+      _id: 0, "studentID": 1, "surName": 1, "firstName": 1,
+      "birthday": 1, "major": 1, "baseClass": 1, "GPA": 1
+    })
     .sort({ "firstName": 1 })
     .then(data => {
       res.send(data);
@@ -267,6 +271,31 @@ exports.updateDatabaseGPA = (req, res) => {
       res.send("Finised updating GPA");
     })
 }
+exports.getAllClass = (req, res) => {
+  Student.find()
+    .distinct('baseClass')
+    .then(data => {
+      res.send(data);
+    })
+    .catch(err => {
+      res.send(err);
+    })
+}
+exports.findStudentsFromClass = (req, res) => {
+  const baseClass = req.params.baseClass;
+
+  Student.find({ "baseClass": baseClass })
+    .then(data => {
+      if (!data)
+        res.status(404).send({ message: "Not found students in class " + baseClass });
+      else res.send(data);
+    })
+    .catch(err => {
+      res
+        .status(500)
+        .send({ message: "Error retrieving student with baseClass=" + baseClass });
+    });
+};
 exports.findByID = (req, res) => {
   const studentID = req.params.studentID;
 

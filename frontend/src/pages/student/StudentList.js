@@ -3,13 +3,15 @@ import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { useRef } from "react";
 import StudentConfig from "./StudentConfig";
 import StudentDelete from "./StudentDelete";
+import { findAllToStudentList } from "../../api/students";
 
 export default function StudentList() {
   const configRef = useRef();
   const deleteRef = useRef();
-
+  var studentData;
   const onSearch = (value) => console.log(value);
-
+ // var x = findAllToStudentList().then(res=> {studentData = res.data;});
+  
   const columns = [
    /*  { title: "ID", key: "id", dataIndex: "id" }, */
     { title: "Mã số sinh viên", key: "studentID", dataIndex: "studentID" },
@@ -20,7 +22,6 @@ export default function StudentList() {
     { title: "Ngành học", key: "major", dataIndex: "major" },
     { title: "Lớp", key: "baseClass", dataIndex: "baseClass" },
     { title: "GPA", key: "GPA", dataIndex: "GPA"},//Cần chuyển 2.330000000 -> 2.34
-
     {
       title: "",
       key: "actions",
