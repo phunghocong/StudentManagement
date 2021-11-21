@@ -52,6 +52,7 @@ exports.createStudent = (req, res) => {
         baseClass: req.body.baseClass, //CA-CLC4
         major: req.body.major,//Khoa hoc may tinh
         startedYear: req.body.startedYear,
+        GPA: ""
       });
       student
         .save(student)
@@ -68,7 +69,7 @@ exports.createStudent = (req, res) => {
       res.status(500).send({
         message: err.message
       })
-    });  
+    });
 }
 exports.createStudentAndRegisterNewAccount = (req, res) => {
   // Kiểm tra req. 
@@ -112,7 +113,7 @@ exports.createStudentAndRegisterNewAccount = (req, res) => {
         baseClass: req.body.baseClass, //CA-CLC4
         major: req.body.major,//Khoa hoc may tinh
         startedYear: req.body.startedYear,
-
+        GPA: ""
       });
       accounts.createAccountFromStudent(student);
       student
@@ -174,6 +175,7 @@ exports.createMultipleStudent = (req, res) => {
             baseClass: stu.baseClass, //CA-CLC4
             major: stu.major,//Khoa hoc may tinh
             startedYear: year,
+            GPA: "",
           });
           student
             .save(student)
@@ -210,6 +212,19 @@ exports.findAll = (req, res) => {
       });
     });
 };
+exports.findAllToStudentList = (req, res) => {
+  Student.find({}, { _id: 0, "studentID": 1, "surName": 1, "firstName": 1, "birthday": 1, "major": 1, "baseClass": 1, "GPA": 1 })
+    .sort({ "firstName": 1 })
+    .then(data => {
+      res.send(data);
+    })
+    .catch(err => {
+      res.status(500).send({
+        message:
+          err.message || "Error."
+      });
+    });
+};
 // not working
 exports.findRange = (req, res) => {
   const page = req.query.page;
@@ -226,7 +241,32 @@ exports.findRange = (req, res) => {
       });
     });
 };
+exports.updateDatabaseGPA = (req, res) => {
+  const ClassRecord = require("./classRecord.controller");
+  const step = async _ => {
+    var studentIdList = await Student.find({}, {
+      "studentID": 1, "GPA": 1, _id: 0
+    });
 
+    for await (let stu of studentIdList) {
+      var GPA = await ClassRecord.getGPAof(stu.studentID).catch();
+
+      await Student
+        .updateOne({ "studentID": stu.studentID }, { "$set": { "GPA": GPA } })
+        .catch(err => {
+
+        })
+        ;
+    }
+  }
+
+  step()
+    .then(() => {
+      console.log("Finised updating GPA");
+
+      res.send("Finised updating GPA");
+    })
+}
 exports.findByID = (req, res) => {
   const studentID = req.params.studentID;
 
@@ -242,7 +282,7 @@ exports.findByID = (req, res) => {
         .send({ message: "Error retrieving student with id=" + studentID });
     });
 };
-exports.findByYear= (req, res) => {
+exports.findByYear = (req, res) => {
   const startedYear = req.params.startedYear;
 
   Student.find({ "startedYear": startedYear })

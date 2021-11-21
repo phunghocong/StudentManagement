@@ -32,7 +32,7 @@ module.exports = mongoose => {
       startedYear: String,
       //School activity
       majorAchievement: { type: Array, "default": [] },
-      GPA: { type: Array, "default": [] },
+      GPA: String/* { type: Array, "default": [] } */,
       conduct: { type: Array, "default": [] }
 
 

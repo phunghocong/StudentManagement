@@ -8,8 +8,12 @@ module.exports = app => {
   router.post('/createStudentAndRegisterNewAccount', students.createStudentAndRegisterNewAccount);
   //Create a bunch of student from an array
   router.post('/createMultipleStudent', students.createMultipleStudent);
+  router.post('/updateGPA', students.updateDatabaseGPA);
+
   //Get all student listed alphabetically
   router.get('/', students.findAll);
+  router.get('/smallList', students.findAllToStudentList);
+
   //Get student by their studentID
   router.get('/:studentID', students.findByID);
   //Update student info with ID

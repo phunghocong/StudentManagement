@@ -149,6 +149,16 @@ exports.findByStudentId = (req, res) => {
         .send({ message: "Error retrieving class record with student id=" + studentID });
     });
 };
+exports.getGPAof = async (studentID) => {
+  var totalMid = 0, totalFinal = 0, count = 0;
+  var classRecordList = await ClassRecord.find({ "belongToStudent": studentID });
+  for await (const classRecord of classRecordList) {
+    totalMid += parseInt(classRecord.midtermGrade);
+    totalFinal += parseInt(classRecord.grade);
+    count++;
+  }
+  return (totalMid * 0.4 + totalFinal * 0.6) * 0.4 / count;
+}
 exports.getStudentGPA = (req, res) => {
   const studentID = req.params.studentID;
   var totalMid = 0, totalFinal = 0, count = 0;
