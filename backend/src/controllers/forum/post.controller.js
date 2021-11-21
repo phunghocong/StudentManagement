@@ -1,10 +1,10 @@
 const db = require("../../models");
 
 const postController = db.postController;
-const Topic = require('../../models/forum/Topic');
-const Post = require('../../models/forum/Post');
-const User = require('../../models/account.model');
-const Subcategory = require('../models/forum/Subcategory');
+const Topic = db.forumTopic;
+const Post = db.forumPost;
+const User = db.accounts;
+const Subcategory = db.forumSubcategory;
 
 
 // get info from a single post

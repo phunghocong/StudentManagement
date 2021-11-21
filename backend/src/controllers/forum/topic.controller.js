@@ -2,10 +2,10 @@ const db = require("../../models");
 const mongoose = require('mongoose');
 
 const topicController = db.topicController;
-const Subcategory = require('../models/Subcategory');
-const Topic = require('../models/Topic');
-const Post = require('../models/Post');
-const User = require('../models/account.model');
+const Subcategory = db.forumSubcategory;
+const Topic = db.forumTopic;
+const Post = db.forumPost
+const User = db.accounts;
 
 
 // get info from a single topic

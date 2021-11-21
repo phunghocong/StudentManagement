@@ -1,5 +1,5 @@
 module.exports = app => {
-    const subcategory = require("../controllers/forum/subcategory.controller.js");
+    const subcategory = require("../../controllers/forum/subcategory.controller");
 
     var router = require("express").Router();
 

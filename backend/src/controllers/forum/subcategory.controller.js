@@ -1,9 +1,9 @@
 const db = require("../../models");
 
 const subcategoryController = db.subcategoryController;
-const Subcategory = require('../models/forum/Subcategory');
+const Subcategory = db.forumSubcategory;
 // const Category = require('../models/forum/Category');
-const Topic = require('../models/forum/Topic');
+const Topic = db.forumTopic;
 
 
 // retrieve all subcategories
@@ -76,17 +76,18 @@ exports.getAllTopic = (req, res) => {
 
 
 // add a new subcategory
-exports.addNewSubCategory = (req, res) => {
+exports.addNewSubCategory = async (req, res) => {
     const { name, description /*,category*/ } = req.body;
     const newSubcategory = new Subcategory({
-        name,
-        description,
+        name: name,
+        description: description,
         // category,
     });
     try {
         const savedSubcategory = await newSubcategory.save();
         res.status(200).json(savedSubcategory);
     } catch (err) {
+        console.log(err);
         res.status(500).json(err);
     }
 }
@@ -105,7 +106,6 @@ exports.update = (req, res) => {
 }
 
 
-
 // delete a subcategory
 exports.delete = (req, res) => {
     Subcategory.findByIdAndDelete(req.body.id)
@@ -114,6 +114,3 @@ exports.delete = (req, res) => {
             res.status(400).json({ msg: 'Failed to delete subcategory', err })
         );
 }
-
-
-module.exports = exports.create;
