@@ -13,11 +13,9 @@ import {
 export default function MainRoutes() {
   return (
     <Layout>
-      <Sider />
-
+      <Header />
       <Layout>
-        <Header />
-
+        <Sider />
         <Content>
           <Switch>
             <Route exact path={paths.BANG_DIEU_KHIEN} component={Dashboard} />

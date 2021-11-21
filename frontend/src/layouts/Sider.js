@@ -1,12 +1,19 @@
 import { Layout, Menu } from "antd";
 import { useEffect, useState } from "react";
-import { DashboardOutlined } from "@ant-design/icons";
+import {
+  DashboardOutlined, UnorderedListOutlined,
+  BarChartOutlined, GroupOutlined, CommentOutlined, CalendarOutlined, BookOutlined,
+  OrderedListOutlined, ToolOutlined, NotificationOutlined, NotificationFilled,
+  UserOutlined, InfoCircleOutlined, LogoutOutlined
+} from "@ant-design/icons";
 import randomString from "crypto-random-string";
 import paths from "../constants/paths";
 import { useHistory, withRouter } from "react-router-dom";
-
+import logo from "../assets/img/studmana.png";
 const rid = () => randomString({ length: 5 });
-
+//Chung là để render cho tất cả ng dùng
+//SV render cho sv
+//CVHT render cho cvht
 const items = [
   {
     key: rid(),
@@ -15,36 +22,115 @@ const items = [
     path: paths.BANG_DIEU_KHIEN,
     subs: [],
   },
-  {
+  {//CVHT
     key: rid(),
-    title: "Danh sách sinh viên",
-    icon: <DashboardOutlined />,
-    path: paths.DANH_SACH_SINH_VIEN,
+    title: "Công cụ cố vấn học tập",
+    icon: <ToolOutlined />,
+    path: undefined,
+    subs: [
+      {
+        key: rid(),
+        title: "Danh sách sinh viên",
+        icon: <UnorderedListOutlined />,
+        path: paths.DANH_SACH_SINH_VIEN,
+        subs: [],
+      },
+      {
+        key: rid(),
+        title: "Danh sách tài khoản",
+        icon: <UnorderedListOutlined />,
+        path: paths.DANH_SACH_TAI_KHOAN,
+        subs: [],
+      },
+      {
+        key: rid(),
+        title: "Danh sách lớp học",
+        icon: <UnorderedListOutlined />,
+        path: paths.DANH_SACH_LOP_HOC,
+        subs: [],
+      },
+      {
+        key: rid(),
+        title: "Danh sách sinh viên học tập tốt",
+        icon: <OrderedListOutlined />,
+        path: paths.DANH_SACH_SINH_VIEN_TOT,
+        subs: [],
+      },
+      {
+        key: rid(),
+        title: "Danh sách sinh viên học tập kém",
+        icon: <OrderedListOutlined />,
+        path: paths.DANH_SACH_SINH_VIEN_KEM,
+        subs: [],
+      },
+      {
+        key: rid(),
+        title: "Thống kê",
+        icon: <BarChartOutlined />,
+        path: paths.THONG_KE,
+        subs: [],
+      },
+      {
+        key: rid(),
+        title: "Tạo thông báo",
+        icon: <NotificationOutlined />,
+        path: paths.TAO_THONG_BAO,
+        subs: [],
+      },
+
+    ],
+  },
+  {//SV
+    key: rid(),
+    title: "Kết quả học tập",
+    icon: <BookOutlined />,
+    path: paths.KET_QUA_HOC_TAP,
     subs: [],
   },
-  {
+  {//Chung
     key: rid(),
-    title: "Danh sách lớp học",
-    icon: <DashboardOutlined />,
-    path: paths.DANH_SACH_LOP_HOC,
+    title: "Thông báo công việc cần làm",
+    icon: <CalendarOutlined />,
+    path: paths.CONG_VIEC_CAN_LAM,
     subs: [],
   },
-  {
+  {//Chung
     key: rid(),
-    title: "Danh sách tài khoản",
-    icon: <DashboardOutlined />,
-    path: paths.DANH_SACH_TAI_KHOAN,
+    title: "Chat với người khác",
+    icon: <CommentOutlined />,
+    path: paths.CHATTING,
     subs: [],
   },
-  {
+  {//Chung
     key: rid(),
-    title: "Tạo thông báo",
-    icon: <DashboardOutlined />,
-    path: paths.TAO_THONG_BAO,
+    title: "Diễn dàn trao đổi",
+    icon: <GroupOutlined />,
+    path: paths.DIEN_DAN,
     subs: [],
+  },
+  {//Chung
+    key: rid(),
+    title: "Tài khoản cá nhân",
+    icon: <UserOutlined />,
+    path: undefined,
+    subs: [
+      {//Chung
+      key: rid(),
+      title: "Xem thông tin tài khoản",
+        icon: <InfoCircleOutlined />,
+      path: paths.THONG_TIN_TAI_KHOAN,
+      subs: [],
+    },
+    {//Chung
+      key: rid(),
+      title: "Đăng xuất",
+      icon: <LogoutOutlined />,
+      path: paths.DANG_XUAT,
+      subs: [],
+    },],
   },
 ];
-
+var barWidth = 250;
 const Sider = ({ location }) => {
   const { pathname } = location;
   const history = useHistory();
@@ -75,22 +161,14 @@ const Sider = ({ location }) => {
         top: 0,
         overflow: "auto",
       }}
-      width={250}
+      width={barWidth}
       collapsible
       collapsed={collapsed}
       onCollapse={() => setCollapsed((val) => !val)}
     >
-      <div
-        style={{
-          width: "100%",
-          color: "#fff",
-          fontSize: 30,
-          padding: "10px 20px",
-          textAlign: "center",
-        }}
-      >
-        S
-      </div>
+ {/*      <div>
+        <img src={logo} alt="Logo" width="250"/>
+      </div> */}
 
       <Menu
         theme="dark"

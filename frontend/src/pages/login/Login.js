@@ -15,9 +15,9 @@ export default function Login() {
 
           <Form layout="vertical">
             <Form.Item
-              label="Số điện thoại"
-              name="phone"
-              rules={[{ required: true, message: "Hãy nhập số điện thoại" }]}
+              label="Tên người dùng"
+              name="username"
+              rules={[{ required: true, message: "Hãy nhập tên người dùng" }]}
             >
               <Input />
             </Form.Item>
