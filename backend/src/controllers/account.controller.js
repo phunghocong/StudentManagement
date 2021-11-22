@@ -163,7 +163,7 @@ exports.updateInfo = (req, res) => {
 
 }
 
-// Lấy dữ liệu 1 model - Đăng nhập có lẽ sẽ dùng cái này
+// Lấy dữ liệu 1 model
 exports.getOneById = (req, res) => {
     if (!req.params.id) {
         return res.status(400).send({ message: "Username be filled in" });
@@ -185,6 +185,7 @@ exports.getOneById = (req, res) => {
 
 }
 
+// lấy dữ liệu 1 model từ Tên đăng nhập.
 exports.getOneByUsername = (req, res) => {
     if (!req.body.username) {
         return res.status(400).send({ message: "Username be filled in" });
@@ -247,15 +248,16 @@ exports.createNotification = (req, res) => {
         });
     }
 
-    const idDest = req.body.destination;
+    const idDest = req.body.destinationID;
     const tempNotification = {read: false, message: req.body.message, createTime: getCurrentDateTimeString()};
     
-    try {
-        Account.update({id: idDest}, {$push: {notification: tempNotification}});
-        res.status(200).send({message: "Created a new notification!", notifi: tempNotification});
-    } catch(error) {
-        console.log(error);
-    }
+    Account.findOneAndUpdate({_id: idDest}, {$push: {notification: tempNotification}}, { useFindAndModify: false })
+        .then(data => {
+            res.status(200).send("Created a new notification!");
+        })
+        .catch(err => {
+            res.status(401).send("Error when create new notification");
+        });
 
 }
 

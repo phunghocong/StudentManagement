@@ -75,9 +75,7 @@ exports.addNewPost = (req, res) => {
 
 // update a post
 exports.update = (req, res) => {
-    Post.findByIdAndUpdate(req.body.id, req.body, {
-            useFindAndModify: false,
-        })
+    Post.findByIdAndUpdate(req.body.id, req.body, { useFindAndModify: false })
         .then(post => res.status(200).json({ msg: 'Post updated', post }))
         .catch(err =>
             res.status(400).json({ msg: 'Failed to update post', err })
@@ -106,5 +104,3 @@ exports.delete = (req, res) => {
             res.status(400).json({ msg: 'Failed to delete post', err })
         );
 }
-
-module.exports = exports.create;

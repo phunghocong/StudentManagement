@@ -23,10 +23,10 @@ module.exports = app => {
   router.post('/createNotification/', accounts.createNotification);
 
   // Update một object tài khoản.
-  router.post('/update/:id', auth.auth, accounts.updateInfo);
+  router.post('/update/:id', accounts.updateInfo);
   
   // Xóa một tài khoản
-  router.delete('/delete/:id', auth.auth, accounts.delete);
+  router.delete('/delete/:id', accounts.delete);
 
   // Lấy một model account từ id
   router.get('/get/:id', accounts.getOneById);

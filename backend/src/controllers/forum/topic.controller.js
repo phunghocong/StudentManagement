@@ -106,8 +106,6 @@ exports.addNewTopic = (req, res) => {
         .catch(err => res.json({ msg: 'Failed to add a new topic', err }));
 }
 
-
-
 // update a topic
 exports.update = (req, res) => {
     Topic.findByIdAndUpdate(req.body.id, req.body, {
@@ -118,7 +116,6 @@ exports.update = (req, res) => {
             res.status(400).json({ msg: 'Failed to update topic', err })
         );
 }
-
 
 
 // delete a topic
@@ -139,6 +136,3 @@ exports.delete = (req, res) => {
             res.status(400).json({ msg: 'Failed to delete topic', err })
         );
 }
-
-
-module.exports = exports.create;

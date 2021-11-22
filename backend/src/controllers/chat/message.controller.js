@@ -3,7 +3,7 @@ const Message = require('../../models/chat/Message');
 
 
 //add new message
-exports.addNewMessage = (req, res) => {
+exports.addNewMessage = async (req, res) => {
     const newMessage = new Message(req.body);
     try {
         const savedMessage = await newMessage.save();
@@ -14,7 +14,7 @@ exports.addNewMessage = (req, res) => {
 }
 
 //get message of a conversation
-exports.getMessage = (req, res) => {
+exports.getMessage = async (req, res) => {
     try {
         const messages = await Message.find({
             conversationId: req.params.conversationId,

@@ -2,7 +2,7 @@ const db = require("../../models");
 const Post = require('../../models/chat/Post');
 const Account = require('../models/account.model');
 //get a post
-exports.getById = (req, res) => {
+exports.getById = async (req, res) => {
     try {
         const post = await Post.findById(req.params.id);
         res.status(200).json(post);
@@ -12,7 +12,7 @@ exports.getById = (req, res) => {
 }
 
 //get all post of an account
-exports.getAllPost = (req, res) => {
+exports.getAllPost = async (req, res) => {
     try {
         const user = await Account.findOne({ username: req.params.username });
         const posts = await Post.find({ userId: user._id });
@@ -23,7 +23,7 @@ exports.getAllPost = (req, res) => {
 }
 
 //add new post
-exports.addNewPost = (req, res) => {
+exports.addNewPost = async (req, res) => {
     const newPost = new Post(req.body);
     try {
         const savedPost = await newPost.save();
@@ -34,7 +34,7 @@ exports.addNewPost = (req, res) => {
 }
 
 //update
-exports.update = (req, res) => {
+exports.update = async (req, res) => {
     try {
         const post = await Post.findById(req.params.id);
         if (post.userId === req.body.userId) {
@@ -49,7 +49,7 @@ exports.update = (req, res) => {
 }
 
 //delete
-exports.delete = (req, res) => {
+exports.delete = async (req, res) => {
     try {
         const post = await Post.findById(req.params.id);
         if (post.userId === req.body.userId) {
