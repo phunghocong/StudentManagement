@@ -1,16 +1,19 @@
 import { Button, Col, Form, Input, Row } from "antd";
 import loginStyle from "./login.module.scss";
 import logo from "../../assets/img/studmana.png";
-import { login } from "../../api/auth/userAuth"
+import { login } from "../../api/auth/userAuth";
+
+
 export default function Login() {
   const enterLogin = () => {
-    login(document.getElementsByName("username").values,document.getElementsByName("password").values)
-    .then(res=> {
+    //login(document.getElementsByName("username").values, document.getElementsByName("password").values)
+    login("nowano", "hentaiz.net")
+      .then(res => {
         console.log(res);
-    }).catch(err=> {
+      }).catch(err => {
         console.log(err);
-    }) 
-    
+      })
+
   }
   return (
     <div className={loginStyle["container"]}>
@@ -20,11 +23,13 @@ export default function Login() {
         </Col>
         <Col lg={12}>
           <h1>Đăng nhập</h1>
-          <Form layout="vertical" onFinish={enterLogin}>
+          <Form layout="vertical"
+
+            onFinish={enterLogin}>
             <Form.Item
               label="Tên người dùng"
               name="username"
-              
+
               rules={[{ required: true, message: "Hãy nhập tên người dùng" }]}
             >
               <Input />

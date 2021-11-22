@@ -173,7 +173,7 @@ exports.getStudentGPA = (req, res) => {
   step()
     .then(
       () => {
-        res.send({ GPA: (totalMid * 0.4 + totalFinal * 0.6) * 0.4 / count })
+        res.send({ GPA: (totalMid * 0.4 + totalFinal * 0.6) * 0.4 / count });
       })
 };
 exports.getStudentGPAYear = (req, res) => {
