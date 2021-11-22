@@ -5,6 +5,7 @@ export const findAllToStudentList = () => axios.get(`${url}/smallList`);
 export const findAll = () => axios.get(url);
 export const findByID = (studentID) => axios.get(`${url}/${studentID}`);
 export const findStudentsFromClass = (baseClass) => axios.get(`${url}/class/${baseClass}`);
+
 export const getAllClass = () => axios.get(`${url}/class/list`);
 
 export const update = (studentID) => axios.put(`${url}/update/${studentID}`);
