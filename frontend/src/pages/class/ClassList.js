@@ -9,11 +9,13 @@ function useForceUpdate() {
 let classList;
 export default function ClassList() {
   const forceUpdate = useForceUpdate();
-  useEffect(() => {
-    getAllClass()
+  useEffect(async () => {
+    await getAllClass()
       .then(res => {
         classList = res.data;
+        forceUpdate();
       }) 
+    
   })
   
 

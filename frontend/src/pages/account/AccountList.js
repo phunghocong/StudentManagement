@@ -14,6 +14,7 @@ export default function AccountList() {
     getAllAccount()
       .then(res => {
         accountData = res.data;
+        forceUpdate();
       })
   })
 

@@ -1,5 +1,5 @@
 import { Button, Table, Row, Col, Input, Select, Menu, Dropdown, message } from "antd";
-import { DeleteOutlined, EditOutlined, DownOutlined, SearchOutlined, ReloadOutlined } from "@ant-design/icons";
+import { DeleteOutlined, EditOutlined, DownOutlined, SearchOutlined, ReloadOutlined, LoadingOutlined } from "@ant-design/icons";
 import { useState, useEffect, useRef } from "react";
 import StudentConfig from "./StudentConfig";
 import StudentDelete from "./StudentDelete";
@@ -8,7 +8,7 @@ function useForceUpdate() {
   const [loaded, setLoaded] = useState(0);
   return () => setLoaded(loaded => loaded + 1); // update the state to force render
 }
-var mode = "any";
+var mode = "any", justChangedMode = true;
 let studentData;
 export default function StudentList() {
 
@@ -20,14 +20,24 @@ export default function StudentList() {
   const onSearch = (value) => console.log(value);
   const changeMode = ({ key }) => {
     mode = key;
+    justChangedMode = true;
+    forceUpdate();
+    studentData = null;
     console.log(mode);
   }
   useEffect(() => {
-    findAllToStudentList(mode)
-      .then(res => {
-        studentData = res.data;
-        forceUpdate();
-      })
+    if (studentData == null) {
+      forceUpdate();
+
+    }
+    if (justChangedMode) {
+      justChangedMode = false;
+      findAllToStudentList(mode)
+        .then(res => {
+          studentData = res.data;
+          forceUpdate();
+        })
+    }
   })
   const menu = (
     <Menu onClick={changeMode}>
@@ -83,7 +93,8 @@ export default function StudentList() {
       ),
     },
   ];
-
+  if (studentData == null)
+    return (<LoadingOutlined />);
   return (
     <div className="">
       <Row align="middle">
