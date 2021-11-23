@@ -4,9 +4,6 @@ const db = require("../models");
 const config = require('../config/config');
 const Account = db.accounts;
 
-// Salt round for hash
-const saltRound = 10;
-
 /*
 Tạo tài khoản cả sinh viên và quản lý.
 
@@ -124,7 +121,7 @@ exports.delete = (req, res) => {
             }
         })
         .catch(err => {
-            res.status(500).send({
+            res.status(401).send({
                 message: "Could not delete Account with id=" + id
             });
         });
@@ -142,7 +139,8 @@ exports.updateInfo = (req, res) => {
     const password = req.body.password;
     //Add hash password property
     if (password) {
-        req.body.password = bcrypt.hashSync(req.body.hashSync, saltRound);
+        const salt = 10;
+        req.body.password = bcrypt.hashSync(req.body.password, salt);
     }
 
     Account.findByIdAndUpdate(id, req.body, { useFindAndModify: false })
@@ -156,7 +154,7 @@ exports.updateInfo = (req, res) => {
             }
         })
         .catch(err => {
-            res.status(500).send({
+            res.status(401).send({
                 message: "Error when update information!"
             });
         });
@@ -186,28 +184,32 @@ exports.getOneById = (req, res) => {
 }
 
 // lấy dữ liệu 1 model từ Tên đăng nhập.
-exports.getOneByUsername = (req, res) => {
-    if (!req.body.username) {
-        return res.status(400).send({ message: "Username be filled in" });
-    }
 
-    Account.findOne({ username: req.body.username })
-        .then(data => {
-            if (!data) {
-                res.status(404).send({ message: `There is no account with id: ${req.params.id}` });
-            } else {
-                res.status(200).send(data);
-            }
-        })
-        .catch(err => {
-            res.status(500).send({
-                message: "Error when get data",
-            })
-        });
+// exports.getOneByUsername = (req, res) => {
+//     // if (!req.body.username) {
+//     //     return res.status(400).send({ message: "Username be filled in" });
+//     // }
 
-}
+//     const {username} = req.body;
+
+//     Account.findOne({ username: username })
+//         .then(data => {
+//             if (!data) {
+//                 res.status(404).send({ message: `There is no account with username: ${req.body.username}`});
+//             } else {
+//                 res.status(200).send(data);
+//             }
+//         })
+//         .catch(err => {
+//             res.status(500).send({
+//                 message: "Error when get data",
+//             })
+//         });
+
+// }
 
 // Tạo tài khoản từ thông tin sinh viên.
+
 exports.createAccountFromStudent = (student) => {
     Account.findOne({ "username": student.studentID })
         .then(data => {
