@@ -243,6 +243,7 @@ exports.createAccountFromStudent = (student) => {
         });
 }
 
+// Tạo thông báo cho 1 tài khoản.=
 exports.createNotification = (req, res) => {
     if (req.body.constructor === Object && Object.keys(req.body).length === 0) {
         return res.status(400).send({
@@ -263,4 +264,22 @@ exports.createNotification = (req, res) => {
 
 }
 
+// Lấy danh sách tất cả các object model tài khoản.
+exports.getAll = (req, res) => {
+
+    Account.find({})
+        .then(data => {
+            if (!data) {
+                res.status(404).send({ message: "There is no account in database!" });
+            } else {
+                res.status(200).send(data);
+            }
+        })
+        .catch(err => {
+            res.status(500).send({
+                message: "Error when get data",
+            })
+        });
+
+}
 

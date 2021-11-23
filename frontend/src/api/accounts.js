@@ -18,8 +18,11 @@ export const updateAccount = (id, updatedAccount) => axios.post(`${url}/update/$
 // Nhận vào string _id xóa object
 export const deleteAccount = (id) => axios.delete(`${url}/delete/${id}`);
 
-//Nhận vào object gồm {destinationID(id tài khoản cần tạo thông báo), message}
+// Nhận vào object gồm {destinationID(id tài khoản cần tạo thông báo), message}
 export const createNotification = (notification) => axios.post(`${url}/createNotification/`, notification);
+
+// Nhận vào không gì cả trả về array chứa các đối tượng thuộc model accounts
+export const getAllAccount = () => axios.get(`${url}/getAll/`);
 
 
 
