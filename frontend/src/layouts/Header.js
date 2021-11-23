@@ -3,7 +3,7 @@ import logo from "../assets/img/studmana.png";
 
 export default function Header() {
   return (
-    <Layout.Header//Can doi mau header 
+    <Layout.Header
       style={{ top: 0, color: "#ffffff", height: 75, backgroundColor: "fff" }}
     >
       <div>
