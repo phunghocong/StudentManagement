@@ -213,7 +213,14 @@ exports.findAll = (req, res) => {
     });
 };
 exports.findAllToStudentList = (req, res) => {
-  Student.find({},
+  const mode = req.params.mode;
+  var condition
+    = (mode == "good") ? {
+      "GPA": { $gt: 3.6 }
+    } : (mode == "bad" ? {
+      "GPA": { $lt: 2 }
+    } : {})
+  Student.find(condition,
     {
       _id: 0, "studentID": 1, "surName": 1, "firstName": 1,
       "birthday": 1, "major": 1, "baseClass": 1, "GPA": 1

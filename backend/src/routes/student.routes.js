@@ -13,7 +13,7 @@ module.exports = app => {
   //Get all student listed alphabetically
   router.get('/', students.findAll);
   //Get all student listed alphabetically and smaller size
-  router.get('/smallList', students.findAllToStudentList);
+  router.get('/smallList/:mode', students.findAllToStudentList);
   //get all base class (CA clc...)
   router.get('/class/list', students.getAllClass)
   //Find students from class X

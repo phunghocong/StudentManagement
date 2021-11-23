@@ -1,7 +1,8 @@
 import axios from 'axios';
 
 const url = 'http://localhost:8080/api/students';
-export const findAllToStudentList = () => axios.get(`${url}/smallList`);
+//mode can be "any","good","bad"
+export const findAllToStudentList = (mode) => axios.get(`${url}/smallList/${mode}`);
 export const findAll = () => axios.get(url);
 export const findByID = (studentID) => axios.get(`${url}/${studentID}`);
 export const findStudentsFromClass = (baseClass) => axios.get(`${url}/class/${baseClass}`);

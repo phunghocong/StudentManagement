@@ -11,8 +11,9 @@ const paths = {
   DANH_SACH_LOP_HOC: "/danh-sach-lop-hoc",
   TAO_THONG_BAO: "/tao-thong-bao",
   //Chua co
-  DANH_SACH_SINH_VIEN_TOT: "",
-  DANH_SACH_SINH_VIEN_KEM: "",
+  DANG_KY_TAI_KHOAN: "",
+  //DANH_SACH_SINH_VIEN_TOT: "",
+  //DANH_SACH_SINH_VIEN_KEM: "",
   KET_QUA_HOC_TAP: "",
   CONG_VIEC_CAN_LAM: "",
   CHATTING: "",

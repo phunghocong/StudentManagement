@@ -4,7 +4,7 @@ import {
   DashboardOutlined, UnorderedListOutlined,
   BarChartOutlined, GroupOutlined, CommentOutlined, CalendarOutlined, BookOutlined,
   OrderedListOutlined, ToolOutlined, NotificationOutlined, NotificationFilled,
-  UserOutlined, InfoCircleOutlined, LogoutOutlined
+  UserOutlined, InfoCircleOutlined, LogoutOutlined, UsergroupAddOutlined
 } from "@ant-design/icons";
 import randomString from "crypto-random-string";
 import paths from "../constants/paths";
@@ -31,7 +31,7 @@ const items = [
       {
         key: rid(),
         title: "Danh sách sinh viên",
-        icon: <UnorderedListOutlined />,
+        icon: <OrderedListOutlined />,
         path: paths.DANH_SACH_SINH_VIEN,
         subs: [],
       },
@@ -49,7 +49,7 @@ const items = [
         path: paths.DANH_SACH_LOP_HOC,
         subs: [],
       },
-      {
+      /* {
         key: rid(),
         title: "Danh sách sinh viên học tập tốt",
         icon: <OrderedListOutlined />,
@@ -62,7 +62,7 @@ const items = [
         icon: <OrderedListOutlined />,
         path: paths.DANH_SACH_SINH_VIEN_KEM,
         subs: [],
-      },
+      }, */
       {
         key: rid(),
         title: "Thống kê",
@@ -77,7 +77,13 @@ const items = [
         path: paths.TAO_THONG_BAO,
         subs: [],
       },
-
+      {
+        key: rid(),
+        title: "Tạo tài khoản mới",
+        icon: <UsergroupAddOutlined />,
+        path: paths.DANG_KY_TAI_KHOAN,
+        subs: [],
+      },
     ],
   },
   {//SV
