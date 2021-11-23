@@ -31,6 +31,8 @@ module.exports = app => {
   // Lấy một model account từ id
   router.get('/get/:id', accounts.getOneById);
 
+  router.get('/getAll/', accounts.getAll);
+
   // // Lấy một model account từ username
   // router.get('/get/', accounts.getOneByUsername);
  

@@ -1,7 +1,7 @@
 const db = require("../models");
 const accounts = require("./account.controller");
-
 const Student = db.students;
+
 /*
 Đổi, sửa, xóa thông tin cá nhân
 fix front end
@@ -258,19 +258,16 @@ exports.updateDatabaseGPA = (req, res) => {
     var studentIdList = await Student.find({}, {
       "studentID": 1, "GPA": 1, _id: 0
     });
-
     for await (let stu of studentIdList) {
       var GPA = await ClassRecord.getGPAof(stu.studentID).catch();
 
       await Student
         .updateOne({ "studentID": stu.studentID }, { "$set": { "GPA": GPA } })
         .catch(err => {
-
         })
         ;
     }
   }
-
   step()
     .then(() => {
       console.log("Finised updating GPA");
@@ -358,10 +355,9 @@ exports.update = (req, res) => {
     });
 };
 
-exports.delete = (req, res) => {
+exports.deleteWithID = (req, res) => {
   const studentID = req.params.studentID;
-
-  Student.findByIdAndRemove(studentID, { useFindAndModify: false })
+  Student.deleteMany({ "studentID": studentID })
     .then(data => {
       if (!data) {
         res.status(404).send({
@@ -375,11 +371,31 @@ exports.delete = (req, res) => {
     })
     .catch(err => {
       res.status(500).send({
-        message: "Could not delete Student with studentID=" + studentID
+        message: err.message + "Could not delete Student with studentID=" + studentID
       });
     });
 };
+exports.deleteWithFirstname = (req, res) => {
+  const firstName = req.params.firstName;
 
+  Student.findByIdAndRemove(firstName, { useFindAndModify: false })
+    .then(data => {
+      if (!data) {
+        res.status(404).send({
+          message: `Cannot delete Student with firstName=${firstName}!`
+        });
+      } else {
+        res.send({
+          message: "Student was deleted successfully!"
+        });
+      }
+    })
+    .catch(err => {
+      res.status(500).send({
+        message: err + "Could not delete Student with firstName=" + firstName
+      });
+    });
+};
 exports.deleteAll = (req, res) => {
   Student.deleteMany({})
     .then(data => {
@@ -394,3 +410,54 @@ exports.deleteAll = (req, res) => {
       });
     });
 };
+
+/* const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const Account = db.accounts;
+
+function dateToPassword(date) {
+  date = date.split("-");
+  date = date.join("");
+  return date;
+}
+
+function randomAvatarColor() {
+  let n = (Math.random() * 0xfffff * 1000000).toString(16);
+  return '#' + n.slice(0, 6);
+}
+
+exports.generateStudentAccount = (req, res) => {
+  const step = async _ => {
+    var studentIdList = Student.find({}, {
+      "studentID": 1, "birthday": 1, "firstName": 1, "surName": 1, "email": 1, _id: 0
+    });
+    for await (const student of studentIdList) {
+
+      const account = new Account({
+        username: student.studentID,
+        password: bcrypt.hashSync(dateToPassword(student.birthday), 10),
+        firstName: student.firstName,
+        surName: student.surName,
+        email: student.email,
+        messageOn: false,
+        isStudent: true,
+        avatarColor: randomAvatarColor(),
+        notification: [],
+      });
+
+      account
+        .save(account)
+        .then(data => {
+          console.log(data);
+        })
+        .catch(err => {
+          console.log("Error when create data");
+        });
+    }
+  }
+  step()
+    .then(() => {
+      res.send("finished")
+
+    })
+}; */

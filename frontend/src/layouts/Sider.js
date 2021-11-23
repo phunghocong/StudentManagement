@@ -166,6 +166,7 @@ const Sider = ({ location }) => {
         position: "sticky",
         top: 0,
         overflow: "auto",
+        backgroundColor: "coral"
       }}
       width={barWidth}
       collapsible

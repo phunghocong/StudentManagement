@@ -34,7 +34,26 @@ exports.generateMockData = (req, res) => {
         subjectName[choose].charCodeAt(subjectNameLength / 6) +
         subjectName[choose].charCodeAt(subjectNameLength / 8) +
         subjectName[choose].charCodeAt(subjectNameLength - 1);
-
+      var roll1 = getRandomArbitrary(0, 100), roll2 = getRandomArbitrary(0, 100);
+      var midtermGrade, grade;
+      if (roll1 < 15) {
+        midtermGrade = getRandomArbitrary(1, 3)
+      } else if (roll1 < 40) {
+        midtermGrade = getRandomArbitrary(3, 6)
+      } else if (roll1 < 85) {
+        midtermGrade = getRandomArbitrary(6, 8)
+      } else {
+        midtermGrade = getRandomArbitrary(8, 10)
+      }
+      if (roll2 < 10) {
+        grade = getRandomArbitrary(0, 2)
+      } else if (roll1 < 60) {
+        grade = getRandomArbitrary(2, 6)
+      } else if (roll1 < 90) {
+        grade = getRandomArbitrary(6, 8)
+      } else {
+        grade = getRandomArbitrary(8, 10)
+      }
       const classRecord = new ClassRecord({
         classname:
           classNamePrefix[subjectCode % classNamePrefix.length] //INT
@@ -46,8 +65,8 @@ exports.generateMockData = (req, res) => {
         belongToStudent: doc.studentID,//MSSV
         year: parseInt(doc.startedYear) + getRandomInt(5),//2015
         semeter: semeterEnum[getRandomInt(semeterEnum.length)],//1 or 2
-        midtermGrade: getRandomArbitrary(3, 10),//0-10
-        grade: getRandomArbitrary(1, 10),//0-10
+        midtermGrade: midtermGrade,//0-10
+        grade: grade,//0-10
       });
 
       classRecord
@@ -157,7 +176,7 @@ exports.getGPAof = async (studentID) => {
     totalFinal += parseInt(classRecord.grade);
     count++;
   }
-  return (totalMid * 0.4 + totalFinal * 0.6) * 0.4 / count;
+  return Math.round((totalMid * 0.4 + totalFinal * 0.6) * 40 / count) / 100;
 }
 exports.getStudentGPA = (req, res) => {
   const studentID = req.params.studentID;

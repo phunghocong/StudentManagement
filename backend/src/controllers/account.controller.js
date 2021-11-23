@@ -28,13 +28,13 @@ function randomAvatarColor() {
 }
 
 function getCurrentDateTimeString() {
-    let currentdate = new Date(); 
+    let currentdate = new Date();
     return currentdate.getDate() + "/"
-                + (currentdate.getMonth()+1)  + "/" 
-                + currentdate.getFullYear() + "-"
-                + currentdate.getHours() + ":"  
-                + currentdate.getMinutes() + ":" 
-                + currentdate.getSeconds();
+        + (currentdate.getMonth() + 1) + "/"
+        + currentdate.getFullYear() + "-"
+        + currentdate.getHours() + ":"
+        + currentdate.getMinutes() + ":"
+        + currentdate.getSeconds();
 }
 
 // Đăng nhập sẽ nhận request gồm username và password - sau đó trả về JSON {username, _id của đối tượng acocunt trên database, jwtoken sử dụng cho phiên làm việc}.
@@ -43,15 +43,15 @@ exports.login = (req, res) => {
     const { username, password } = req.body;
 
     Account.findOne({ username })
-        .then(async(data) => {
+        .then(async (data) => {
             if (!data) {
-                return res.status(404).send({ message: "User doesn't exist" });
+                return res.status(401).send({ message: "User doesn't exist" });
             }
 
             const isPasswordCorrect = await bcrypt.compare(password, data.password);
 
             if (!isPasswordCorrect) {
-                return res.status(400).send({ message: "Invalid password!" });
+                return res.status(401).send({ message: "Invalid username or password!" });
             }
 
             const token = jwt.sign({ username: data.username }, config.ACCESS_TOKEN_STATIC, { expiresIn: "1h" });
@@ -216,7 +216,7 @@ exports.createAccountFromStudent = (student) => {
             if (!data) {
                 const account = new Account({
                     username: student.studentID,
-                    password: bcrypt.hashSync(dateToPassword(student.birthday), saltRound),
+                    password: bcrypt.hashSync(dateToPassword(student.birthday), salt),
                     firstName: student.firstName,
                     surName: student.surName,
                     email: student.email,
@@ -252,9 +252,9 @@ exports.createNotification = (req, res) => {
     }
 
     const idDest = req.body.destinationID;
-    const tempNotification = {read: false, message: req.body.message, createTime: getCurrentDateTimeString()};
-    
-    Account.findOneAndUpdate({_id: idDest}, {$push: {notification: tempNotification}}, { useFindAndModify: false })
+    const tempNotification = { read: false, message: req.body.message, createTime: getCurrentDateTimeString() };
+
+    Account.findOneAndUpdate({ _id: idDest }, { $push: { notification: tempNotification } }, { useFindAndModify: false })
         .then(data => {
             res.status(200).send("Created a new notification!");
         })
@@ -267,7 +267,7 @@ exports.createNotification = (req, res) => {
 // Lấy danh sách tất cả các object model tài khoản.
 exports.getAll = (req, res) => {
 
-    Account.find({})
+    Account.find()
         .then(data => {
             if (!data) {
                 res.status(404).send({ message: "There is no account in database!" });

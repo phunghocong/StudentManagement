@@ -8,6 +8,8 @@ module.exports = app => {
   router.post('/createStudentAndRegisterNewAccount', students.createStudentAndRegisterNewAccount);
   //Create a bunch of student from an array
   router.post('/createMultipleStudent', students.createMultipleStudent);
+  //router.post('/createMultipleAccountFromExistingStudent', students.generateStudentAccount);
+
   router.post('/updateGPA', students.updateDatabaseGPA);
 
   //Get all student listed alphabetically
@@ -29,7 +31,9 @@ module.exports = app => {
   router.get('/count/:year', students.countStudent);
 
   router.delete("/", students.deleteAll);
-  router.delete("/:studentID", students.delete);
+  
+  router.delete("/id/:studentID", students.deleteWithID);
+  router.delete("/firstname/:firstname", students.deleteWithFirstname);
 
   app.use("/api/students", router);
   };

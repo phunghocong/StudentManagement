@@ -96,7 +96,7 @@ export default function StudentList() {
         </Button>
         <Dropdown overlay={menu}>
           <Button className="ant-dropdown-link" onClick={e => e.preventDefault()}>
-            Phân loại học tập<DownOutlined />
+            Kết quả học tập <DownOutlined />
           </Button>
         </Dropdown>
       </Row>

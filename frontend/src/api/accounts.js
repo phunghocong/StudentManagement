@@ -4,7 +4,14 @@ export const url = 'http://localhost:8080/api/accounts';
 
 // Nhận vào {username: username, password: password} trả về thông tin đăng nhập cho phiên giao dịch
 // JSON {username, _id của đối tượng acocunt trên database, jwtoken sử dụng cho phiên làm việc}.
-export const login = (username, password) => axios.post(`${url}/login/`, {username: username, password: password});
+export const login = (username, password) => axios
+.post(`${url}/login/`, { username: username, password: password })
+.then(res => {
+        if (res.data.token) {
+            localStorage.setItem("user", JSON.stringify(res.data));
+        }
+        return res.data;
+    });
 
 // Nhận vào string id trả về object accounts
 export const getAccount = (id) => axios.get(`${url}/get/${id}/`);
@@ -38,7 +45,7 @@ export default function authHeader() {
 }
 
 const url = 'http://localhost:8080/api/accounts';
-export const login = (username, password) => 
+export const login = (username, password) =>
     axios.post(url + "/login/", { username: username, password: password })
         .then(res => {
             if (res.data.token) {
