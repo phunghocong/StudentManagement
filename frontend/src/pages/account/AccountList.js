@@ -1,7 +1,8 @@
 import { Button, Table, Row, Col, Input, Select, Menu, Dropdown, message } from "antd";
 import { DeleteOutlined, EditOutlined, DownOutlined, ReloadOutlined } from "@ant-design/icons";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, Image, View } from "react";
 import { getAllAccount } from "../../api/accounts";
+
 function useForceUpdate() {
   const [loaded, setLoaded] = useState(0);
   return () => setLoaded(loaded => loaded + 1); // update the state to force render
@@ -11,19 +12,28 @@ export default function AccountList() {
 
   const forceUpdate = useForceUpdate();
   useEffect(() => {
+
     getAllAccount()
       .then(res => {
         accountData = res.data;
-        forceUpdate();
       })
   })
 
 
   const columns = [
+    {
+      title: 'Avatar',
+      dataIndex: "imageUrl",
+      width: "7%",
+      render: theImageURL =>
+        <img
+          border-radius="50%" width="40px" alt={theImageURL} tintColor='red'
+          src={"https://icon-library.com/images/avatar-png-icon/avatar-png-icon-3.jpg"} />
+    },
     { title: "Tên người dùng", key: "username", dataIndex: "username" },
     { title: "Họ", key: "surName", dataIndex: "surName", },
     { title: "Tên", key: "firstName", dataIndex: "firstName", },
-    { title: "Email", key: "email", dataIndex: "email" },    
+    { title: "Email", key: "email", dataIndex: "email" },
     {
       title: "",
       key: "actions",
@@ -60,7 +70,7 @@ export default function AccountList() {
         </Button>,
       </Row>
       <br />
-{/*       <Row justify="space-between" gutter={10}>
+      {/*       <Row justify="space-between" gutter={10}>
         <Col flex="200px">
           <Select style={{ width: "100%" }}></Select>
         </Col>

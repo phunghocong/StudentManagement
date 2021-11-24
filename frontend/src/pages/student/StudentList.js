@@ -26,10 +26,7 @@ export default function StudentList() {
     console.log(mode);
   }
   useEffect(() => {
-    if (studentData == null) {
-      forceUpdate();
-
-    }
+    
     if (justChangedMode) {
       justChangedMode = false;
       findAllToStudentList(mode)

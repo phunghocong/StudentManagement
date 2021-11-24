@@ -217,7 +217,7 @@ exports.createAccountFromStudent = (student) => {
             if (!data) {
                 const account = new Account({
                     username: student.studentID,
-                    password: bcrypt.hashSync(dateToPassword(student.birthday), salt),
+                    password: bcrypt.hashSync(dateToPassword(student.birthday), saltRound),
                     firstName: student.firstName,
                     surName: student.surName,
                     email: student.email,

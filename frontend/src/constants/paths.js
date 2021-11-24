@@ -20,7 +20,7 @@ const paths = {
   DIEN_DAN: "",
   THONG_KE: "",
   THONG_TIN_TAI_KHOAN: "",
-  DANG_XUAT: "",
+  DANG_XUAT: "/dang-xuat",
 };
 //bar width = 250
 export default paths;

@@ -6,6 +6,7 @@ import Login from "./login/Login";
 import StudentList from "./student/StudentList";
 import AccountList from "./account/AccountList";
 import ClassList from "./class/ClassList";
+import Logout from "./logout/Logout";
 
 export {
   Account,
@@ -16,4 +17,5 @@ export {
   StudentList,
   AccountList,
   ClassList,
+  Logout,
 };

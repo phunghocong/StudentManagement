@@ -1,9 +1,15 @@
 import { Button, Col, Form, Input, Row } from "antd";
 import style from "./login.module.scss";
 import logo from "../../assets/img/studmana.png";
-import { login } from "../../api/accounts";
-
+import { login, getCurrentUser } from "../../api/accounts";
+import { useState, useEffect, useRef } from "react";
+import { Redirect } from "react-router";
+function useForceUpdate() {
+  const [loaded, setLoaded] = useState(0);
+  return () => setLoaded(loaded => loaded + 1); // update the state to force render
+}
 export default function Login() {
+  const forceUpdate = useForceUpdate();
   const enterLogin = () => {
     // login(document.getElementsByName("username").values, document.getElementsByName("password").values)
     // login("nowano", "hentaiz.net")
@@ -51,7 +57,16 @@ export default function Login() {
 
 
   }
+  var state = {
+    loggedIn: false
+  }
+  const redirectToDashboard = () => {
+    //console.log(getCurrentUser);
+    // if(getCurrentUser) {
 
+    return <Redirect to="/danh-sach-sinh-vien/" />;
+    //}
+  }
   const onFinish = values => {
     login(values.username, values.password)
       .then(res => {
@@ -63,7 +78,13 @@ export default function Login() {
       .catch(err => {
         alert("Tên đăng nhập hoặc mật khẩu bạn vừa nhập đã sai.\nXin hãy nhập lại.");
       })
+    redirectToDashboard();
+
   }
+  useEffect(() => {
+    return <Redirect to="/danh-sach-sinh-vien/" />;
+
+  })
   const onFinishFailed = () => {
 
   }
