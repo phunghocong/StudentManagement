@@ -4,6 +4,8 @@ const db = require("../models");
 const config = require('../config/config');
 const Account = db.accounts;
 
+const saltRound = 10;
+
 /*
 Tạo tài khoản cả sinh viên và quản lý.
 
@@ -56,7 +58,7 @@ exports.login = (req, res) => {
 
             const token = jwt.sign({ username: data.username }, config.ACCESS_TOKEN_STATIC, { expiresIn: "1h" });
 
-            res.status(200).send({ username: username, id: data._id, token: token });
+            res.status(200).send({ username: username, isStudent: data.isStudent, id: data._id, token: token });
         })
         .catch(err => {
             res.status(500).send({ message: "Something went wrong when login" });
@@ -139,8 +141,7 @@ exports.updateInfo = (req, res) => {
     const password = req.body.password;
     //Add hash password property
     if (password) {
-        const salt = 10;
-        req.body.password = bcrypt.hashSync(req.body.password, salt);
+        req.body.password = bcrypt.hashSync(req.body.password, saltRound);
     }
 
     Account.findByIdAndUpdate(id, req.body, { useFindAndModify: false })

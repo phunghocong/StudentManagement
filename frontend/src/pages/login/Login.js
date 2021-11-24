@@ -55,11 +55,13 @@ export default function Login() {
   const onFinish = values => {
     login(values.username, values.password)
       .then(res => {
-
+        if (res.data.token) {
+          localStorage.setItem("user", JSON.stringify(res.data));
+        }
+        console.log(localStorage);
       })
       .catch(err => {
         alert("Tên đăng nhập hoặc mật khẩu bạn vừa nhập đã sai.\nXin hãy nhập lại.");
-
       })
   }
   const onFinishFailed = () => {
