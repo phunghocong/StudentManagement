@@ -37,14 +37,6 @@ export const createNotification = (notification) => axios.post(`${url}/createNot
 // Nhận vào không gì cả trả về array chứa các đối tượng thuộc model accounts
 export const getAllAccount = () => axios.get(`${url}/getAll/`);
 
-export const logout = () => {
-    localStorage.removeItem("user");
-}
-
-export const getCurrentUser = () => {
-    return JSON.parse(localStorage.getItem("user"))
-}
-
 
 
 /*
