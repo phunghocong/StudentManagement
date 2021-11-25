@@ -4,15 +4,21 @@ export const url = 'http://localhost:8080/api/accounts';
 
 // Nhận vào {username: username, password: password} trả về thông tin đăng nhập cho phiên giao dịch
 // JSON {username, _id của đối tượng acocunt trên database, jwtoken sử dụng cho phiên làm việc}.
+
 export const login = (username, password) => axios
-.post(`${url}/login/`, { username: username, password: password })
-.then(res => {
+    .post(`${url}/login/`, { username: username, password: password })
+    .then(res => {
         if (res.data.token) {
             localStorage.setItem("user", JSON.stringify(res.data));
         }
         return res.data;
     });
-
+export const logout = () => {
+    localStorage.removeItem("user")
+};
+export const getCurrentUser = () => {
+    return JSON.parse(localStorage.getItem("user"))
+};
 // Nhận vào string id trả về object accounts
 export const getAccount = (id) => axios.get(`${url}/get/${id}/`);
 
@@ -53,6 +59,7 @@ export const login = (username, password) =>
             }
             return res.data;
         });
+
 export const logout = () => {
     localStorage.removeItem("user")
 }

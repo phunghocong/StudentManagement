@@ -1,20 +1,21 @@
-import { Layout } from "antd";
-import logo from "../assets/img/studmana.png";
+import { Layout, Row } from "antd";
+import { LogoTrans } from "../assets/img";
+import keys from "../constants/keys";
+import layouts from "./layouts.module.scss";
 
 export default function Header() {
+  const handleLogout = () => {
+    localStorage.removeItem(keys.USER);
+    window.location.reload();
+  };
+
   return (
-    <Layout.Header
-      style={{ top: 0, color: "#ffffff", height: 75, backgroundColor: "fff" }}
-    >
-      <div>
-        <img src={logo} alt="Logo"
-        style={{
-            width: 250
-          }} />
-      </div>
+    <Layout.Header className={layouts["header-container"]}>
+      <Row justify="space-between" align="middle">
+        <img src={LogoTrans} alt="" />
+
+        <span onClick={handleLogout}>Đăng xuất</span>
+      </Row>
     </Layout.Header>
-
-
-
   );
 }
