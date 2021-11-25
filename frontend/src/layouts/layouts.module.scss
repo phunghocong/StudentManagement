@@ -1,0 +1,41 @@
+@import "../assets/scss/utils.scss";
+
+.sider-container {
+  background-color: #000 !important;
+  height: calc(100vh - #{$header-height} - 4px);
+  position: sticky !important;
+  top: calc(#{$header-height} + 4px);
+  overflow: auto;
+
+  .sider-top {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: $header-height;
+  }
+}
+
+.header-container {
+  height: $header-height;
+  padding: 0 20px !important;
+  position: sticky !important;
+  top: 0;
+  z-index: 9;
+
+  * {
+    color: #fff;
+  }
+
+  img {
+    height: 50px;
+  }
+
+  span {
+    cursor: pointer;
+    padding-left: 20px;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}

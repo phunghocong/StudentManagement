@@ -1,0 +1,44 @@
+.container {
+  background-color: #1f1c2d;
+  height: 100vh;
+
+  .inner {
+    max-width: 1200px;
+    margin: 0 auto !important;
+    backdrop-filter: blur(3em);
+    -webkit-backdrop-filter: blur(3em);
+    background: #ffffff50;
+    transform: translateY(calc(50vh - 60%));
+    padding: 50px 0 70px 0;
+    border-radius: 20px;
+
+    .banner {
+      width: 100%;
+    }
+
+    .right-col {
+      h1 {
+        color: #fff;
+      }
+
+      .logo {
+        padding-right: 50px;
+        text-align: center;
+        margin-bottom: 50px;
+        margin-top: 10px;
+
+        img {
+          width: 250px;
+        }
+      }
+
+      .form {
+        padding-right: 50px;
+      }
+    }
+  }
+
+  label {
+    color: #fff !important;
+  }
+}

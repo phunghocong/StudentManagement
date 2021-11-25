@@ -1,149 +1,122 @@
 import { Layout, Menu } from "antd";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
-  DashboardOutlined, UnorderedListOutlined,
-  BarChartOutlined, GroupOutlined, CommentOutlined, CalendarOutlined, BookOutlined,
-  OrderedListOutlined, ToolOutlined, NotificationOutlined, NotificationFilled,
-  UserOutlined, InfoCircleOutlined, LogoutOutlined, UsergroupAddOutlined
+  DashboardOutlined,
+  NotificationFilled,
+  UserOutlined,
+  MessageFilled,
+  BellFilled,
+  FlagFilled,
+  InsertRowAboveOutlined,
+  SolutionOutlined,
+  ProfileOutlined,
 } from "@ant-design/icons";
-import 'boxicons'
-
 import randomString from "crypto-random-string";
 import paths from "../constants/paths";
 import { useHistory, withRouter } from "react-router-dom";
-import logo from "../assets/img/studmana.png";
+import layouts from "./layouts.module.scss";
+import keys from "../constants/keys";
+
 const rid = () => randomString({ length: 5 });
-//Chung là để render cho tất cả ng dùng
-//SV render cho sv
-//CVHT render cho cvht
-const items = [
-  {
-    key: rid(),
-    title: "Bảng điều khiển",
-    icon: <box-icon name='dashboard' type='solid' color='white' ></box-icon>,
-    path: paths.BANG_DIEU_KHIEN,
-    subs: [],
-  },
-  {//CVHT
-    key: rid(),
-    title: "Công cụ cố vấn học tập",
-    icon: <box-icon name='wrench' color='white'></box-icon>,
-    path: undefined,
-    subs: [
-      {
-        key: rid(),
-        title: "Danh sách sinh viên",
-        icon: <box-icon name='list-ol' color='white'></box-icon>,
-        path: paths.DANH_SACH_SINH_VIEN,
-        subs: [],
-      },
-      {
-        key: rid(),
-        title: "Danh sách tài khoản",
-        icon: <box-icon name='list-ul' color='white'></box-icon>,
-        path: paths.DANH_SACH_TAI_KHOAN,
-        subs: [],
-      },
-      {
-        key: rid(),
-        title: "Danh sách lớp học",
-        icon: <box-icon name='grid-horizontal' color='white' ></box-icon>,
-        path: paths.DANH_SACH_LOP_HOC,
-        subs: [],
-      },
-      /* {
-        key: rid(),
-        title: "Danh sách sinh viên học tập tốt",
-        icon: <OrderedListOutlined />,
-        path: paths.DANH_SACH_SINH_VIEN_TOT,
-        subs: [],
-      },
-      {
-        key: rid(),
-        title: "Danh sách sinh viên học tập kém",
-        icon: <OrderedListOutlined />,
-        path: paths.DANH_SACH_SINH_VIEN_KEM,
-        subs: [],
-      }, */
-      {
-        key: rid(),
-        title: "Thống kê",
-        icon: <box-icon name='line-chart' color='white' ></box-icon>,
-        path: paths.THONG_KE,
-        subs: [],
-      },
-      {
-        key: rid(),
-        title: "Tạo thông báo",
-        icon: <box-icon name='megaphone' type='solid' color='white'></box-icon>,
-        path: paths.TAO_THONG_BAO,
-        subs: [],
-      },
-      {
-        key: rid(),
-        title: "Tạo tài khoản mới",
-        icon: <box-icon type='solid' name='user-plus' color='white'></box-icon>,
-        path: paths.DANG_KY_TAI_KHOAN,
-        subs: [],
-      },
-    ],
-  },
-  {//SV
-    key: rid(),
-    title: "Kết quả học tập",
-    icon: <box-icon name='book-bookmark' color='white'></box-icon>,
-    path: paths.KET_QUA_HOC_TAP,
-    subs: [],
-  },
-  {//Chung
-    key: rid(),
-    title: "Thông báo công việc cần làm",
-    icon: <box-icon name='calendar-check' color='white'></box-icon>,
-    path: paths.CONG_VIEC_CAN_LAM,
-    subs: [],
-  },
-  {//Chung
-    key: rid(),
-    title: "Chat với người khác",
-    icon: <box-icon name='chat' color='white'></box-icon>,
-    path: paths.CHATTING,
-    subs: [],
-  },
-  {//Chung
-    key: rid(),
-    title: "Diễn dàn trao đổi",
-    icon: <box-icon name='comment-detail' color='white' ></box-icon>,
-    path: paths.DIEN_DAN,
-    subs: [],
-  },
-  {//Chung
-    key: rid(),
-    title: "Tài khoản cá nhân",
-    icon: <box-icon name='user' type='solid' color='white'></box-icon>,
-    path: undefined,
-    subs: [
-      {//Chung
-      key: rid(),
-      title: "Xem thông tin tài khoản",
-        icon: <box-icon name='user-account' type='solid' color='white'></box-icon>,
-      path: paths.THONG_TIN_TAI_KHOAN,
-      subs: [],
-    },
-    {//Chung
-      key: rid(),
-      title: "Đăng xuất",
-      icon: <box-icon name='log-out-circle' flip='vertical' color='white'></box-icon>,
-      path: paths.DANG_XUAT,
-      subs: [],
-    },],
-  },
-];
-var barWidth = 250;
+
+const SIDER_WIDTH = 220;
+
 const Sider = ({ location }) => {
   const { pathname } = location;
   const history = useHistory();
   const [collapsed, setCollapsed] = useState(false);
   const [current, setCurrent] = useState();
+
+  const isStudent = !!JSON.parse(localStorage.getItem(keys.USER)).isStudent;
+
+  const items = useMemo(() => {
+    let arr = [
+      {
+        //Chung
+        key: rid(),
+        title: "Bảng điều khiển",
+        icon: <DashboardOutlined />,
+        path: paths.BANG_DIEU_KHIEN,
+        subs: [],
+      },
+      {
+        //Chung
+        key: rid(),
+        title: "Thông báo",
+        icon: <BellFilled />,
+        path: paths.THONG_BAO,
+        subs: [],
+      },
+      {
+        //Chung
+        key: rid(),
+        title: "Nhắn tin",
+        icon: <MessageFilled />,
+        path: paths.CHAT,
+        subs: [],
+      },
+      {
+        //Chung
+        key: rid(),
+        title: "Diễn đàn",
+        icon: <NotificationFilled />,
+        path: paths.FORUM,
+        subs: [],
+      },
+      {
+        //Chung
+        key: rid(),
+        title: "Hồ sơ",
+        icon: <UserOutlined />,
+        path: paths.HO_SO,
+        subs: [],
+      },
+    ];
+
+    if (isStudent) {
+      arr.splice(1, 0, {
+        //SV
+        key: rid(),
+        title: "Kết quả học tập",
+        icon: <FlagFilled />,
+        path: paths.KET_QUA_HOC_TAP,
+        subs: [],
+      });
+      arr.join();
+    } else {
+      arr.splice(
+        1,
+        0,
+        {
+          //CVHT
+          key: rid(),
+          title: "Danh sách sinh viên",
+          icon: <ProfileOutlined />,
+          path: paths.DANH_SACH_SINH_VIEN,
+          subs: [],
+        },
+        {
+          //CVHT
+          key: rid(),
+          title: "Danh sách tài khoản",
+          icon: <SolutionOutlined />,
+          path: paths.DANH_SACH_TAI_KHOAN,
+          subs: [],
+        },
+        {
+          //CVHT
+          key: rid(),
+          title: "Danh sách lớp học",
+          icon: <InsertRowAboveOutlined />,
+          path: paths.DANH_SACH_LOP_HOC,
+          subs: [],
+        }
+      );
+      arr.join();
+    }
+
+    return arr;
+  }, [isStudent]);
 
   useEffect(() => {
     items.forEach((item) => {
@@ -159,25 +132,16 @@ const Sider = ({ location }) => {
         return;
       }
     });
-  }, [pathname]);
+  }, [items, pathname]);
 
   return (
     <Layout.Sider
-      style={{
-        height: "100vh",
-        position: "sticky",
-        top: 0,
-        overflow: "auto",
-      }}
-      width={barWidth}
+      width={SIDER_WIDTH}
       collapsible
       collapsed={collapsed}
       onCollapse={() => setCollapsed((val) => !val)}
+      className={layouts["sider-container"]}
     >
- {/*      <div>
-        <img src={logo} alt="Logo" width="250"/>
-      </div> */}
-
       <Menu
         theme="dark"
         mode="inline"
