@@ -44,44 +44,44 @@ export default function MainPage() {
             <Row gutter={20}>
               <Col span={12}>
                 <Form.Item name="name" label="Tên">
-                  <Input />
+                  <Input placeholder="Name" type="text" />
                 </Form.Item>
               </Col>
 
               <Col span={12}>
                 <Form.Item name="lastname" label="Họ">
-                  <Input />
+                  <Input placeholder="surname" type="text"/>
                 </Form.Item>
               </Col>
             </Row>
             <Form.Item name="maSV" label="Mã sinh viên">
-              <Input />
+              <Input placeholder="VD:18021014" type="text" />
             </Form.Item>
 
             <Form.Item name="birthday" label="Ngày sinh">
-              <Input />
+              <Input placeholder="enter your birthday" type="text"/>
             </Form.Item>
 
             <Form.Item name="phone" label="Số điện thoại">
-              <Input />
+              <Input placeholder="enter your phone number" type="text" />
             </Form.Item>
 
             <Form.Item name="email" label="Email">
-              <Input />
+              <Input placeholder="your email" type="text"/>
             </Form.Item>
 
             <Form.Item name="address" label="Địa chỉ thường trú">
-              <Input />
+              <Input placeholder=" address line 1" type="text"/>
             </Form.Item>
 
             <Form.Item name="que" label="Quê quán">
-              <Input />
+              <Input placeholder="address line 2" type="text" />
             </Form.Item>
 
             <Form.Item name="dantoc" label="Dân tộc">
               <Input />
             </Form.Item>
-            
+
             <Form.Item name="class" label="Lớp">
               <Input />
             </Form.Item>

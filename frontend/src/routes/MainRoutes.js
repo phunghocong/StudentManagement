@@ -8,6 +8,7 @@ import {
   StudentList,
   AccountList,
   ClassList,
+  Account,
 } from "../pages";
 
 import Mainpage from "../pages/studentpages/mainpages/MainPage";
@@ -38,6 +39,8 @@ export default function MainRoutes() {
               path={paths.DANH_SACH_TAI_KHOAN}
               component={AccountList}
             />
+            <Route exact path={paths.TAI_KHOAN} component={Account} />
+
             <Route exact path={paths.TAO_THONG_BAO} component={Forum} />
             <Route exact path="/TRANG_CHINH_SINH_VIEN" component={Mainpage} />
 

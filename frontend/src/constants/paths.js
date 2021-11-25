@@ -12,6 +12,7 @@ const paths = {
   TAO_THONG_BAO: "/tao-thong-bao",
   //Chua co
   DANG_KY_TAI_KHOAN: "",
+  TAI_KHOAN : "my-account",
   //DANH_SACH_SINH_VIEN_TOT: "",
   //DANH_SACH_SINH_VIEN_KEM: "",
   KET_QUA_HOC_TAP: "",
