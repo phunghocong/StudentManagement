@@ -37,7 +37,7 @@ module.exports = mongoose => {
 
 
     },
-    { timestamps: true }
+    { timestamps: true } 
   );
   studentSchema.index()
   studentSchema.method("toJSON", function () {

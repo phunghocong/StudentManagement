@@ -195,6 +195,7 @@ exports.getStudentGPA = (req, res) => {
         res.send({ GPA: (totalMid * 0.4 + totalFinal * 0.6) * 0.4 / count });
       })
 };
+
 exports.getStudentGPAYear = (req, res) => {
   const studentID = req.params.studentID;
   const year = req.params.year;
