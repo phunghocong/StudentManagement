@@ -106,12 +106,12 @@ exports.create = (req, res) => {
             firstName: req.body.firstName,
             surName: req.body.surName,
             email: req.body.email,
-            messageOn: req.body.messageOn ? req.body.messageOn : true,
-            isStudent: req.body.isStudent ? req.body.isStudent : true,
-            avatarColor: req.body.avatarColor
+            messageOn: req.body.messageOn != null ? req.body.messageOn : true,
+            isStudent: req.body.isStudent != null ? req.body.isStudent : true,
+            avatarColor: req.body.avatarColor != null
               ? req.body.avatarColor
               : randomAvatarColor(),
-            notification: req.body.notification ? req.body.notification : [],
+            notification: req.body.notification != null ? req.body.notification : [],
           });
 
           account
@@ -252,7 +252,7 @@ exports.createAccountFromStudent = (student) => {
           firstName: student.firstName,
           surName: student.surName,
           email: student.email,
-          messageOn: false,
+          messageOn: true,
           isStudent: true,
           avatarColor: randomAvatarColor(),
           notification: [],
