@@ -1,11 +1,18 @@
 import { Row, Col, Avatar, Button, Form, Input } from "antd";
 import { UserOutlined } from "@ant-design/icons";
+import { useEffect, useRef, useState } from "react";
 
+import { findByID } from "../../api/students"
 export default function UserProfile() {
   const onFinish = (value) => {
     console.log(value);
   };
-
+  useEffect(() => {
+    findByID(JSON.parse(localStorage.getItem("user")).username)
+      .then(data => {
+        console.log(data);
+      });
+  }, []);
   return (
     <div>
       <Row>

@@ -6,7 +6,6 @@ import keys from "../../constants/keys";
 export default function StudyResult() {
   const [dataList, setDataList] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  var sumCredit, averageGPA;
 
   const columns = [
     { title: "Tên lớp học", key: "classname", dataIndex: "classname", width: "10%" },
@@ -47,6 +46,7 @@ export default function StudyResult() {
   ];
   useEffect(() => {
     getList(JSON.parse(localStorage.getItem("user")).username);
+
   }, []);
   const getGPAchar = (score) => {
     if (score < 4) return "F";
@@ -67,7 +67,8 @@ export default function StudyResult() {
   const getList = async (studentID) => {
     try {
       setIsLoading(true);
-      const res = await findByStudentId(studentID);
+      const res = await findByStudentId(studentID)
+      updateTotal(res.data);
       setDataList(
         res.data.map((item) => ({
           ...item,
@@ -81,17 +82,26 @@ export default function StudyResult() {
 
         }))
       );
-      sumCredit = dataList.map(i => i.subjectCredit).reduce((a, b) => parseInt(a) + parseInt(b));
-      averageGPA = dataList.map(i => i.totalGrade4).reduce((a, b) => parseInt(a) + parseInt(b));
-      averageGPA = shortenDigit(averageGPA / dataList.length, 1);
-      console.log(sumCredit);
-      console.log(averageGPA);
-
       setIsLoading(false);
+
     } catch (error) {
       console.log("get student list error", error);
     }
   };
+  const [sumCredit, setSumCredit] = useState(0);
+  const [averageGPA, setAverageGPA] = useState("0");
+  const updateTotal = classList => {
+
+    setSumCredit(classList.map(i => i.subjectCredit).reduce((a, b) => parseInt(a) + parseInt(b)));
+    var midTerm = (classList.map(i => i.midtermGrade).reduce((a, b) => parseFloat(a) + parseFloat(b)));
+    var final = (classList.map(i => i.grade).reduce((a, b) => parseFloat(a) + parseFloat(b)));
+
+    //gpa = (shortenDigit(gpa / classList.length, 1));
+    var gpa = shortenDigit((0.4 * midTerm + 0.6 * final) *0.4/ classList.length,1);
+    setAverageGPA(gpa);
+    console.log(sumCredit);
+    console.log(averageGPA);
+  }
   return (
     <div className="container">
       <h1>Kết quả học tập</h1>
@@ -103,11 +113,11 @@ export default function StudyResult() {
       <br />
 
       <Row gutter={50} >
-        <Col loading={isLoading}>
+        <Col >
           <p>Tổng số tín chỉ tích luỹ: {sumCredit}</p>
         </Col>
 
-        <Col loading={isLoading}>
+        <Col >
           <p>GPA trung bình: {averageGPA}</p>
         </Col>
       </Row>
