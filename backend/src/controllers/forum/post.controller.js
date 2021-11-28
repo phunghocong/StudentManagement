@@ -8,7 +8,7 @@ const Subcategory = db.forumSubcategory;
 
 
 // get info from a single post
-exports.getByID = (req, res) => {
+exports.getById = (req, res) => {
     Post.findById(req.params.id)
         .then(post => res.status(200).json({ post }))
         .catch(err =>
