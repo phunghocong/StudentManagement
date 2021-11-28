@@ -12,6 +12,7 @@ module.exports = mongoose => {
 
         notification: [
             { read: Boolean,
+            title: String,
             message: String,
             createTime: String,
             } ],
