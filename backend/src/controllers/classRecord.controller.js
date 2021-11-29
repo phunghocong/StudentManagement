@@ -38,19 +38,19 @@ exports.generateMockData = (req, res) => {
       var midtermGrade, grade;
       if (roll1 < 15) {
         midtermGrade = getRandomArbitrary(1, 3)
-      } else if (roll1 < 40) {
+      } else if (roll1 < 30) {
         midtermGrade = getRandomArbitrary(3, 6)
-      } else if (roll1 < 85) {
+      } else if (roll1 < 70) {
         midtermGrade = getRandomArbitrary(6, 8)
       } else {
         midtermGrade = getRandomArbitrary(8, 10)
-      }
+      } 
       if (roll2 < 10) {
-        grade = getRandomArbitrary(0, 2)
-      } else if (roll1 < 60) {
-        grade = getRandomArbitrary(2, 6)
-      } else if (roll1 < 90) {
-        grade = getRandomArbitrary(6, 8)
+        grade = getRandomArbitrary(0, 3)
+      } else if (roll1 < 35) {
+        grade = getRandomArbitrary(3, 5)
+      } else if (roll1 < 75) {
+        grade = getRandomArbitrary(5, 8)
       } else {
         grade = getRandomArbitrary(8, 10)
       }
@@ -172,11 +172,11 @@ exports.getGPAof = async (studentID) => {
   var totalMid = 0, totalFinal = 0, count = 0;
   var classRecordList = await ClassRecord.find({ "belongToStudent": studentID });
   for await (const classRecord of classRecordList) {
-    totalMid += parseInt(classRecord.midtermGrade);
-    totalFinal += parseInt(classRecord.grade);
+    totalMid += parseFloat(classRecord.midtermGrade);
+    totalFinal += parseFloat(classRecord.grade);
     count++;
   }
-  return Math.round((totalMid * 0.4 + totalFinal * 0.6) * 40 / count) / 100;
+  return Math.round((totalMid * 0.4 + totalFinal * 0.6) * 4 / count) / 10;
 }
 exports.getStudentGPA = (req, res) => {
   const studentID = req.params.studentID;
@@ -184,15 +184,15 @@ exports.getStudentGPA = (req, res) => {
   const step = async _ => {
     var classRecordList = ClassRecord.find({ "belongToStudent": studentID });
     for await (const classRecord of classRecordList) {
-      totalMid += parseInt(classRecord.midtermGrade);
-      totalFinal += parseInt(classRecord.grade);
+      totalMid += parseFloat(classRecord.midtermGrade);
+      totalFinal += parseFloat(classRecord.grade);
       count++;
     }
   }
   step()
     .then(
       () => {
-        res.send({ GPA: (totalMid * 0.4 + totalFinal * 0.6) * 0.4 / count });
+        res.send({ GPA: Math.round((totalMid * 0.4 + totalFinal * 0.6) * 4 / count) / 10 });
       })
 };
 
@@ -204,8 +204,8 @@ exports.getStudentGPAYear = (req, res) => {
   const step = async _ => {
     var classRecordList = ClassRecord.find({ "belongToStudent": studentID, "year": year });
     for await (const classRecord of classRecordList) {
-      totalMid += parseInt(classRecord.midtermGrade);
-      totalFinal += parseInt(classRecord.grade);
+      totalMid += parseFloat(classRecord.midtermGrade);
+      totalFinal += parseFloat(classRecord.grade);
       count++;
     }
   }

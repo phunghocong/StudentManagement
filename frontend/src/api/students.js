@@ -5,6 +5,9 @@ const url = 'http://localhost:8080/api/students';
 export const findAllToStudentList = (mode) => axios.get(`${url}/smallList/${mode}`);
 export const findAll = () => axios.get(url);
 export const findByID = (studentID) => axios.get(`${url}/${studentID}`);
+
+export const findByMod = (managedBy) => axios.get(`${url}/mod/${managedBy}`);
+
 export const findStudentsFromClass = (baseClass) => axios.get(`${url}/class/${baseClass}`);
 
 export const getAllClass = () => axios.get(`${url}/class/list`);
@@ -14,5 +17,5 @@ export const update = (studentID) => axios.put(`${url}/update/${studentID}`);
 export const createStudent = (newStudent) => axios.post(`${url}/createStudent`, newStudent);
 export const createStudentAndRegisterNewAccount = (newStudent) => axios.post(`${url}/createStudentAndRegisterNewAccount`, newStudent);
 
-export const deleteStudent = (studentID) => axios.delete(`${url}/${studentID}`);
-export const deleteAllStudent = () => axios.delete(url);
+export const deleteStudent = (studentID) => axios.delete(`${url}/id/${studentID}`);
+//export const deleteAllStudent = () => axios.delete(url);

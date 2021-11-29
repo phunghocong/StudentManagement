@@ -77,6 +77,7 @@ exports.login = (req, res) => {
           username: username,
           isStudent: data.isStudent,
           id: data._id,
+          authorityLevel: data.authorityLevel,
           token: token,
         });
     })
@@ -112,6 +113,7 @@ exports.create = (req, res) => {
               ? req.body.avatarColor
               : randomAvatarColor(),
             notification: req.body.notification != null ? req.body.notification : [],
+            authorityLevel: req.body.authorityLevel != null ? req.body.authorityLevel : ""
           });
 
           account
@@ -256,6 +258,7 @@ exports.createAccountFromStudent = (student) => {
           isStudent: true,
           avatarColor: randomAvatarColor(),
           notification: [],
+          authorityLevel: ""
         });
 
         account
@@ -316,6 +319,20 @@ exports.getAll = (req, res) => {
     .catch((err) => {
       res.status(500).send({
         message: "Error when get data",
+      });
+    });
+};
+exports.deleteAll = (req, res) => {
+  Account.deleteMany({})
+    .then(data => {
+      res.send({
+        message: `${data.deletedCount} All Accoumt info were deleted successfully!`
+      });
+    })
+    .catch(err => {
+      res.status(500).send({
+        message:
+          err.message || "Some error occurred while removing all Accoumt."
       });
     });
 };

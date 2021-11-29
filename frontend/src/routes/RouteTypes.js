@@ -1,7 +1,7 @@
 import { Route, Redirect } from "react-router-dom";
 import keys from "../constants/keys";
 import paths from "../constants/paths";
-
+import { currentUserIsStudent } from "../api/accounts";
 export const AuthRoute = ({ component: Component, ...remainingProps }) => {
   const isAuth = !!localStorage.getItem(keys.USER);
 
@@ -40,7 +40,7 @@ export const ConsultantRoute = ({
   component: Component,
   ...remainingProps
 }) => {
-  const isConsultant = !JSON.parse(localStorage.getItem(keys.USER)).isStudent;
+  const isConsultant = !currentUserIsStudent();
 
   return (
     <Route
@@ -57,7 +57,7 @@ export const ConsultantRoute = ({
 };
 
 export const StudentRoute = ({ component: Component, ...remainingProps }) => {
-  const isStudent = JSON.parse(localStorage.getItem(keys.USER)).isStudent;
+  const isStudent = currentUserIsStudent();
 
   return (
     <Route

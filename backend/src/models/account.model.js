@@ -1,3 +1,8 @@
+const authorityLevel = [
+    "", "NONE",
+    "MOD", "MODERATOR",
+    "CON", "CONSULTANT",
+    "ADMIN", "ADMINISTRATOR"]
 module.exports = mongoose => {
     var accountSchema = mongoose.Schema({
         username: String,
@@ -9,17 +14,18 @@ module.exports = mongoose => {
         messageOn: Boolean,
         isStudent: Boolean, //nếu là sinh viên
         avatarColor: String,
-
+        authorityLevel: String,
         notification: [
-            { read: Boolean,
-            message: String,
-            createTime: String,
-            } ],
+            {
+                read: Boolean,
+                message: String,
+                createTime: String,
+            }],
         posts: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Post' }],
         topics: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Topic' }]
     }, { timestamps: true });
 
-    accountSchema.method("toJSON", function() {
+    accountSchema.method("toJSON", function () {
         const { __v, _id, ...object } = this.toObject();
         object.id = _id;
         return object;

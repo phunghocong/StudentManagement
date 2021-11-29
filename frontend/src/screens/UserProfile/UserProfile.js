@@ -16,7 +16,7 @@ export default function UserProfile() {
   return (
     <div>
       <Row>
-        <Col flex="300px" style={{ textAlign: "center" }}>
+        <Col flex="300px" style={{ textAlign:  "center" }}>
           <Avatar size={120} icon={<UserOutlined />} />
           <p>Edogaru</p>
           <p>edogaru@gmail.com</p>

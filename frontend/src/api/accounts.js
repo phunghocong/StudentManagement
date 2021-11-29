@@ -1,9 +1,33 @@
 import axios from 'axios';
-
+import keys from '../constants/keys'
 export const url = 'http://localhost:8080/api/accounts';
 
 // Nhận vào {username: username, password: password} trả về thông tin đăng nhập cho phiên giao dịch
-// JSON {username, isStudent: có phải là sinh viên không, _id của đối tượng acocunt trên database, jwtoken sử dụng cho phiên làm việc}.
+// JSON {username, authorityLevel mức quyền, _id của đối tượng acocunt trên database, jwtoken sử dụng cho phiên làm việc}.
+//Kiểm tra xem có phải học sinh không
+export const isStudent= (authorityLevel) => {
+    return authorityLevel != "MODERATOR" && authorityLevel != "ADMINISTRATOR" && authorityLevel != "CONSULTANT" &&
+            authorityLevel!= "MOD" && authorityLevel != "ADMIN" && authorityLevel != "CON";
+}
+//Tự động lấy user hiện tại và kiểm tra có phải học sinh không
+export const currentUserIsStudent = () => {
+    return isStudent(JSON.parse(localStorage.getItem(keys.USER)).authorityLevel);
+}
+//Tự động lấy user hiện tại và kiểm tra có phải cố vấn học tập không
+export const currentUserIsCon = () => {
+    authorityLevel = JSON.parse(localStorage.getItem(keys.USER)).authorityLevel;
+    return authorityLevel == "CON" || authorityLevel == "CONSULTANT";
+}
+//Tự động lấy user hiện tại và kiểm tra có phải quản lý không
+export const currentUserIsMod = () => {
+    authorityLevel = JSON.parse(localStorage.getItem(keys.USER)).authorityLevel;
+    return authorityLevel == "MOD" || authorityLevel == "MODERATOR";
+}
+//Tự động lấy user hiện tại và kiểm tra có phải Admin không
+export const currentUserIsAdmin = () => {
+    authorityLevel = JSON.parse(localStorage.getItem(keys.USER)).authorityLevel;
+    return authorityLevel == "ADMIN" || authorityLevel == "ADMINISTRATOR";
+}
 
 export const login = (username, password) => axios
     .post(`${url}/login/`, { username: username, password: password })

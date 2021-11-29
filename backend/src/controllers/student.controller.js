@@ -14,7 +14,7 @@ exports.createStudent = (req, res) => {
   // Kiểm tra req. 
   if (!req.body.firstName || !req.body.surName || !req.body.birthday || !req.body.national || !req.body.ethnic
     || !req.body.religion || !req.body.bornAddress || !req.body.citizenCardId || !req.body.currentAddress
-    || !req.body.phoneNumber || !req.body.email || !req.body.isEnlisted /* || !req.body.draftDate can be null*/
+    || !req.body.phoneNumber || !req.body.email || !req.body.isEnlisted ||!req.body.gender/* || !req.body.draftDate can be null*/
   ) {
     res.status(400).send({ message: "Some basic info is empty" });
     return;
@@ -35,14 +35,18 @@ exports.createStudent = (req, res) => {
         firstName: req.body.firstName,
         surName: req.body.surName,
         birthday: req.body.birthday,
+        gender: req.body.gender,
         national: req.body.national,
-        ethnic: req.body.ethnic,//King
+        ethnic: req.body.ethnic,//King        
         religion: req.body.religion,//Dao phat
         bornAddress: req.body.bornAddress,
+        homeAddress: req.body.homeAddress,
         citizenCardId: req.body.citizenCardId, //chung minh thu
         currentAddress: req.body.currentAddress,
         phoneNumber: req.body.phoneNumber,
         email: req.body.email,
+        fatherPhoneNumber: req.body.fatherPhoneNumber,
+        motherPhoneNumber: req.body.motherPhoneNumber,
         isEnlisted: req.body.isEnlisted,
         draftDate: req.body.draftDate,
         school: req.body.school,// UET
@@ -52,7 +56,9 @@ exports.createStudent = (req, res) => {
         baseClass: req.body.baseClass, //CA-CLC4
         major: req.body.major,//Khoa hoc may tinh
         startedYear: req.body.startedYear,
-        GPA: ""
+        GPA: "",
+        managedBy: "",
+        note: ""
       });
       student
         .save(student)
@@ -96,14 +102,18 @@ exports.createStudentAndRegisterNewAccount = (req, res) => {
         firstName: req.body.firstName,
         surName: req.body.surName,
         birthday: req.body.birthday,
+        gender: req.body.gender,
         national: req.body.national,
-        ethnic: req.body.ethnic,//King
+        ethnic: req.body.ethnic,//King        
         religion: req.body.religion,//Dao phat
         bornAddress: req.body.bornAddress,
+        homeAddress: req.body.homeAddress,
         citizenCardId: req.body.citizenCardId, //chung minh thu
         currentAddress: req.body.currentAddress,
         phoneNumber: req.body.phoneNumber,
         email: req.body.email,
+        fatherPhoneNumber: req.body.fatherPhoneNumber,
+        motherPhoneNumber: req.body.motherPhoneNumber,
         isEnlisted: req.body.isEnlisted,
         draftDate: req.body.draftDate,
         school: req.body.school,// UET
@@ -113,7 +123,9 @@ exports.createStudentAndRegisterNewAccount = (req, res) => {
         baseClass: req.body.baseClass, //CA-CLC4
         major: req.body.major,//Khoa hoc may tinh
         startedYear: req.body.startedYear,
-        GPA: ""
+        GPA: "",
+        managedBy: "",
+        note: ""
       });
       accounts.createAccountFromStudent(student);
       student
@@ -157,15 +169,19 @@ exports.createMultipleStudent = (req, res) => {
             studentID: id,
             firstName: stu.firstName,
             surName: stu.surName,
+            gender: stu.gender,
             birthday: stu.birthday,
             national: stu.national,
             ethnic: stu.ethnic,//King
             religion: stu.religion,//Dao phat
+            homeAddress: stu.homeAddress,
             bornAddress: stu.bornAddress,
             citizenCardId: stu.citizenCardId, //chung minh thu
             currentAddress: stu.currentAddress,
             phoneNumber: stu.phoneNumber,
             email: stu.email,
+            fatherPhoneNumber: stu.fatherPhoneNumber,
+            motherPhoneNumber: stu.motherPhoneNumber,
             isEnlisted: stu.isEnlisted,
             draftDate: stu.draftDate,
             school: stu.school,// UET
@@ -176,6 +192,8 @@ exports.createMultipleStudent = (req, res) => {
             major: stu.major,//Khoa hoc may tinh
             startedYear: year,
             GPA: "",
+            managedBy: "",
+            note: ""
           });
           student
             .save(student)
@@ -302,7 +320,6 @@ exports.findStudentsFromClass = (req, res) => {
 };
 exports.findByID = (req, res) => {
   const studentID = req.params.studentID;
-
   Student.find({ "studentID": studentID })
     .then(data => {
       if (!data)
@@ -313,6 +330,20 @@ exports.findByID = (req, res) => {
       res
         .status(500)
         .send({ message: "Error retrieving student with id=" + studentID });
+    });
+};
+exports.findByMod = (req, res) => {
+  const managedBy = req.params.managedBy;
+  Student.find({ "managedBy": managedBy })
+    .then(data => {
+      if (!data)
+        res.status(404).send({ message: "Not found student managed by user " + managedBy });
+      else res.send(data);
+    })
+    .catch(err => {
+      res
+        .status(500)
+        .send({ message: "Error retrieving managed by user=" + managedBy });
     });
 };
 exports.findByYear = (req, res) => {
@@ -411,7 +442,7 @@ exports.deleteAll = (req, res) => {
     });
 };
 
-/* const bcrypt = require('bcryptjs');
+const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const Account = db.accounts;
 
@@ -443,21 +474,26 @@ exports.generateStudentAccount = (req, res) => {
         isStudent: true,
         avatarColor: randomAvatarColor(),
         notification: [],
+        authorityLevel: ""
       });
 
       account
         .save(account)
         .then(data => {
           console.log(data);
+
         })
         .catch(err => {
           console.log("Error when create data");
+
         });
     }
   }
   step()
     .then(() => {
-      res.send("finished")
+      res.send("finished");
 
     })
-}; */
+  res.send("finished");
+
+};

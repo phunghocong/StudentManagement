@@ -1,7 +1,8 @@
-import { Button, Col, Drawer, Form, Input, Row } from "antd";
+import { Button, Checkbox, Col, Drawer, Form, Input, Row, Switch } from "antd";
 import { useForm } from "antd/lib/form/Form";
-import { forwardRef, useImperativeHandle, useState } from "react";
-
+import { FormProvider } from "rc-field-form";
+import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
+import { update, createStudentAndRegisterNewAccount } from "../../api/students"
 const types = {
   NEW: "new",
   EDIT: "edit",
@@ -12,13 +13,17 @@ const fieldNames = {
   surName: "surName",
   birthday: "birthday",
   national: "national",
+  gender: "gender",
   ethnic: "ethnic", //King
   religion: "religion", //Dao phat
   bornAddress: "bornAddress",
   citizenCardId: "citizenCardId", //chung minh thu
+  homeAddress: "homeAddress",
   currentAddress: "currentAddress",
   phoneNumber: "phoneNumber",
   email: "email",
+  fatherPhoneNumber: "fatherPhoneNumber",
+  motherPhoneNumber: "motherPhoneNumber",
   isEnlisted: "isEnlisted",
   draftDate: "draftDate",
   school: "school", // UET
@@ -28,12 +33,15 @@ const fieldNames = {
   baseClass: "baseClass", //CA-CLC4
   major: "major", //Khoa hoc may tinh
   startedYear: "startedYear",
+  managedBy: "managedBy",
+  note: "note",
 };
 
 const StudentConfig = forwardRef((props, ref) => {
   const [visible, setVisible] = useState(false);
   const [currentType, setCurrentType] = useState();
   const [form] = useForm();
+  const [isEnlisted, setIsEnlisted] = useState(false);
 
   useImperativeHandle(ref, () => ({
     openNew() {
@@ -42,7 +50,10 @@ const StudentConfig = forwardRef((props, ref) => {
     },
     openEdit(data) {
       setVisible(true);
+
       setCurrentType(types.EDIT);
+      setIsEnlisted(data.isEnlisted);
+      console.log("openEdit" + isEnlisted);
 
       form.setFields(
         Object.values(fieldNames).map((name) => ({
@@ -52,9 +63,17 @@ const StudentConfig = forwardRef((props, ref) => {
       );
     },
   }));
+  useEffect(() => {
+    console.log("useEffect" + isEnlisted);
 
+  })
   const onFinish = (values) => {
-    console.log(values);
+    if (currentType == types.NEW) {
+
+    } else {
+
+    }
+
   };
 
   const onCancel = () => {
@@ -85,9 +104,10 @@ const StudentConfig = forwardRef((props, ref) => {
       }
     >
       <Form form={form} layout="vertical" onFinish={onFinish}>
+        Thông tin cơ bản
         <Row gutter={10}>
           <Col span={8}>
-            <Form.Item label="Họ" name={fieldNames.surName}>
+            <Form.Item label="Họ" name={fieldNames.surName} >
               <Input />
             </Form.Item>
           </Col>
@@ -103,26 +123,47 @@ const StudentConfig = forwardRef((props, ref) => {
               <Input />
             </Form.Item>
           </Col>
+
         </Row>
 
         <Row gutter={10}>
-          <Col span={12}>
+          <Col span={8}>
+            <Form.Item label="Giới tính" name={fieldNames.gender}>
+              <Input />
+            </Form.Item>
+          </Col>
+          <Col span={8}>
             <Form.Item label="Số điện thoại" name={fieldNames.phoneNumber}>
               <Input />
             </Form.Item>
           </Col>
 
-          <Col span={12}>
+          <Col span={8}>
             <Form.Item label="Email" name={fieldNames.email}>
               <Input />
             </Form.Item>
           </Col>
         </Row>
+        <Row gutter={10}>
 
-        <Form.Item label="Địa chỉ thường trú" name={fieldNames.bornAddress}>
+          <Col span={12}>
+            <Form.Item label="Số điện thoại bố" name={fieldNames.fatherPhoneNumber}>
+              <Input />
+            </Form.Item>
+          </Col>
+
+          <Col span={12}>
+            <Form.Item label="Số điện thoại mẹ" name={fieldNames.motherPhoneNumber}>
+              <Input />
+            </Form.Item>
+          </Col>
+        </Row>
+        <Form.Item label="Nơi sinh" name={fieldNames.bornAddress}>
           <Input />
         </Form.Item>
-
+        <Form.Item label="Địa chỉ thường trú" name={fieldNames.homeAddress}>
+          <Input />
+        </Form.Item>
         <Form.Item label="Địa chỉ hiện tại" name={fieldNames.currentAddress}>
           <Input />
         </Form.Item>
@@ -150,40 +191,69 @@ const StudentConfig = forwardRef((props, ref) => {
         <Form.Item label="CCCD" name={fieldNames.citizenCardId}>
           <Input />
         </Form.Item>
+        <Row gutter={10}>
+          <Col span={8}>
+            <Form.Item label="Đã đi nhập ngũ" name={fieldNames.isEnlisted}>
+              <Checkbox defaultChecked={isEnlisted} />
+            </Form.Item>
+          </Col>
+          <Col span={8}>
+            <Form.Item label="Ngày nhập ngũ" name={fieldNames.draftDate}>
+              <Input />
+            </Form.Item>
+          </Col>
+        </Row>
+        Thông tin trường
+        <Row gutter={10}>
+          <Col span={10}>
+            <Form.Item label="Trường học" name={fieldNames.school}>
+              <Input />
+            </Form.Item>
+          </Col>
+          <Col span={14}>
+            <Form.Item label="Ngành học" name={fieldNames.major}>
+              <Input />
+            </Form.Item>
+          </Col>
+        </Row>
+        <Row gutter={10}>
+          <Col span={10}>
+            <Form.Item label="Hình thức học tập" name={fieldNames.academyMethod}>
+              <Input />
+            </Form.Item>
+          </Col>
+          <Col span={14}>
+            <Form.Item label="Trình độ học vấn" name={fieldNames.levelOfAcademy}>
+              <Input />
+            </Form.Item>
+          </Col>
+        </Row>
+        <Row gutter={10}>
+          <Col span={8}>
+            <Form.Item label="Khóa" name={fieldNames.schoolYearGroup}>
+              <Input />
+            </Form.Item>
+          </Col>
+          <Col span={8}>
+            <Form.Item label="Lớp" name={fieldNames.baseClass}>
+              <Input />
+            </Form.Item>
+          </Col>
+          <Col span={8}>
+            <Form.Item label="Năm bắt đầu học" name={fieldNames.startedYear}>
+              <Input />
+            </Form.Item>
+          </Col>
+        </Row>
 
-        <Form.Item label="Is Enlisted?" name={fieldNames.isEnlisted}>
+
+
+
+
+        <Form.Item label="Quản lý bởi" name={fieldNames.managedBy}>
           <Input />
         </Form.Item>
-
-        <Form.Item label="Draft Date?" name={fieldNames.draftDate}>
-          <Input />
-        </Form.Item>
-
-        <Form.Item label="Trường" name={fieldNames.school}>
-          <Input />
-        </Form.Item>
-
-        <Form.Item label="Academy Method?" name={fieldNames.academyMethod}>
-          <Input />
-        </Form.Item>
-
-        <Form.Item label="Level of Academy?" name={fieldNames.levelOfAcademy}>
-          <Input />
-        </Form.Item>
-
-        <Form.Item label="School Year Group?" name={fieldNames.schoolYearGroup}>
-          <Input />
-        </Form.Item>
-
-        <Form.Item label="Base Class?" name={fieldNames.baseClass}>
-          <Input />
-        </Form.Item>
-
-        <Form.Item label="Ngành học" name={fieldNames.major}>
-          <Input />
-        </Form.Item>
-
-        <Form.Item label="Năm bắt đầu học" name={fieldNames.startedYear}>
+        <Form.Item label="Ghi chú SV" name={fieldNames.note}>
           <Input />
         </Form.Item>
       </Form>

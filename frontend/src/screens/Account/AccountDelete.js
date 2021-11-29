@@ -1,16 +1,19 @@
 import { Modal } from "antd";
 import { forwardRef, useImperativeHandle, useState } from "react";
-
+import { deleteAccount} from "../../api/accounts"
 const AccountDelete = forwardRef((props, ref) => {
   const [visible, setVisible] = useState(false);
+  const [id, setId] = useState("");
 
   useImperativeHandle(ref, () => ({
-    open() {
+    open(data) {
+      setId(data.id)
       setVisible(true);
     },
   }));
 
   const onOk = () => {
+    deleteAccount(id);
     setVisible(false);
   };
 

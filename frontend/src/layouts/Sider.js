@@ -16,7 +16,7 @@ import paths from "../constants/paths";
 import { useHistory, withRouter } from "react-router-dom";
 import layouts from "./layouts.module.scss";
 import keys from "../constants/keys";
-
+import { currentUserIsStudent } from "../api/accounts";
 const rid = () => randomString({ length: 5 });
 
 const SIDER_WIDTH = 220;
@@ -27,7 +27,7 @@ const Sider = ({ location }) => {
   const [collapsed, setCollapsed] = useState(false);
   const [current, setCurrent] = useState();
 
-  const isStudent = !!JSON.parse(localStorage.getItem(keys.USER)).isStudent;
+  const isStudent = !!currentUserIsStudent();
 
   const items = useMemo(() => {
     let arr = [

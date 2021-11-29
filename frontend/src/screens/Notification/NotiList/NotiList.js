@@ -1,11 +1,10 @@
 import { Button, Col, List, Row } from "antd";
 import notiList from "./notiList.module.scss";
-import keys from "../../../constants/keys";
 import { useRef } from "react";
 import NewNoti from "../NewNoti/NewNoti";
-
+import { currentUserIsStudent } from "../../../api/accounts";
 export default function NotiList() {
-  const isStudent = JSON.parse(localStorage.getItem(keys.USER)).isStudent;
+  const isStudent = currentUserIsStudent();
   const ref = useRef();
 
   return (

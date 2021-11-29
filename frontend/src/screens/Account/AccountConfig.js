@@ -1,7 +1,7 @@
 import { Button, Col, Drawer, Form, Input, Row } from "antd";
 import { useForm } from "antd/lib/form/Form";
 import { forwardRef, useImperativeHandle, useState } from "react";
-
+import { createAccount, updateAccount} from "../../api/accounts";
 const types = {
   NEW: "new",
   EDIT: "edit",
@@ -13,13 +13,14 @@ const fieldNames = {
   firstName: "firstName",
   surName: "surName",
   email: "email",
+  authorityLevel: "authorityLevel",
 };
 
 const AccountConfig = forwardRef((props, ref) => {
   const [visible, setVisible] = useState(false);
   const [currentType, setCurrentType] = useState();
   const [form] = useForm();
-
+  var passChanged = false;
   useImperativeHandle(ref, () => ({
     openNew() {
       setVisible(true);
@@ -39,7 +40,13 @@ const AccountConfig = forwardRef((props, ref) => {
   }));
 
   const onFinish = (values) => {
+    if(currentType==types.NEW) {
+      createAccount(values);
+    } else { 
+      
+    }
     console.log(values);
+
   };
 
   const onCancel = () => {
@@ -89,6 +96,11 @@ const AccountConfig = forwardRef((props, ref) => {
         <Form.Item label="Mật khẩu" name={fieldNames.password}>
           <Input.Password />
         </Form.Item>
+
+        <Form.Item label="Mức quyền" name={fieldNames.authorityLevel}>
+          <Input/>
+        </Form.Item>
+
       </Form>
     </Drawer>
   );

@@ -8,15 +8,18 @@ module.exports = mongoose => {
       birthday: String,
       national: String,//Viet nam
       ethnic: String,//King
+      gender: String,
       religion: String,//Dao phat
       bornAddress: String,
+      homeAddress: String,
       citizenCardId: String, //chung minh thu
 
       //contact
       currentAddress: String,
       phoneNumber: String,
       email: String,
-
+      fatherPhoneNumber: String,
+      motherPhoneNumber: String,
       //activity info
       //military
       isEnlisted: Boolean,
@@ -32,10 +35,11 @@ module.exports = mongoose => {
       startedYear: String,
       //School activity
       majorAchievement: { type: Array, "default": [] },
-      GPA: String/* { type: Array, "default": [] } */,
-      conduct: { type: Array, "default": [] }
-
-
+      GPA: String,
+      conduct: { type: Array, "default": [] },
+      //For moderator
+      managedBy: String,
+      note: String,
     },
     { timestamps: true } 
   );
