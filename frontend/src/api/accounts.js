@@ -29,6 +29,7 @@ export const currentUserIsAdmin = () => {
     return authorityLevel == "ADMIN" || authorityLevel == "ADMINISTRATOR";
 }
 
+// JSON {username, isStudent: có phải là sinh viên không, _id của đối tượng acocunt trên database, jwtoken sử dụng cho phiên làm việc}.
 export const login = (username, password) => axios
     .post(`${url}/login/`, { username: username, password: password })
     .then(res => {
@@ -37,9 +38,11 @@ export const login = (username, password) => axios
         }
         return res.data;
     });
+
 export const logout = () => {
     localStorage.removeItem("user")
 };
+
 export const getCurrentUser = () => {
     return JSON.parse(localStorage.getItem("user"))
 };
@@ -60,3 +63,10 @@ export const createNotification = (notification) => axios.post(`${url}/createNot
 
 // Nhận vào không gì cả trả về array chứa các đối tượng thuộc model accounts
 export const getAllAccount = () => axios.get(`${url}/getAll/`);
+
+// Nhận vào id object account trả về array chứa tất cả các object thông báo {title, message, createTime}
+export const getNotification = (id) => axios
+    .get(`${url}/getNotification/${id}`)
+    .then(data => {
+        return data;
+    });

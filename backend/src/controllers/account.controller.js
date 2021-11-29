@@ -280,7 +280,7 @@ exports.createAccountFromStudent = (student) => {
 
 // Tạo thông báo cho 1 tài khoản.=
 exports.createNotification = (req, res) => {
-  if (req.body.constructor === Object && Object.keys(req.body).length === 0) {
+  if (!req.body.title || !req.body.message || req.body.title == "" || req.body.message == "") {
     return res.status(400).send({
       message: "Notification can not be empty!",
     });
@@ -289,6 +289,7 @@ exports.createNotification = (req, res) => {
   const idDest = req.body.destinationID;
   const tempNotification = {
     read: false,
+    title: req.body.title,
     message: req.body.message,
     createTime: getCurrentDateTimeString(),
   };

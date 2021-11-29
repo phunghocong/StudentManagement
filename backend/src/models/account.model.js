@@ -16,11 +16,11 @@ module.exports = mongoose => {
         avatarColor: String,
         authorityLevel: String,
         notification: [
-            {
-                read: Boolean,
-                message: String,
-                createTime: String,
-            }],
+            { read: Boolean,
+            title: String,
+            message: String,
+            createTime: String,
+            } ],
         posts: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Post' }],
         topics: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Topic' }]
     }, { timestamps: true });
