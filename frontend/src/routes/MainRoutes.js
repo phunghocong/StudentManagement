@@ -14,6 +14,7 @@ import {
   StudyResult,
   UserProfile,
   DiscussionDetail,
+  StudentProfile,
 } from "../screens";
 import { ConsultantRoute, StudentRoute } from "./RouteTypes";
 
@@ -65,6 +66,7 @@ export default function MainRoutes() {
             />
 
             <Route exact path={paths.HO_SO} component={UserProfile} />
+            <Route exact path={paths.HO_SO_SINH_VIEN} component={StudentProfile} />
 
             <Route exact path={paths.ACCESS_DENIED} component={AccessDenied} />
 

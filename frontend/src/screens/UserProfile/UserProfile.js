@@ -1,26 +1,46 @@
 import { Row, Col, Avatar, Button, Form, Input } from "antd";
 import { UserOutlined } from "@ant-design/icons";
 import { useEffect, useRef, useState } from "react";
-
-import { findByID } from "../../api/students"
+import { getAccount } from "../../api/accounts";
+import { useForm } from "antd/lib/form/Form";
 export default function UserProfile() {
   const onFinish = (value) => {
     console.log(value);
   };
+  const fieldNames = {
+    username: "username",
+    password: "password",
+    firstName: "firstName",
+    surName: "surName",
+    email: "email",
+    messageOn: "messageOn",
+    avatarColor: "avatarColor",
+  };
+  const [email, setEmail] = useState("");
+  const [fullName, setFullName] = useState("")
+  const [form] = useForm();
   useEffect(() => {
-    findByID(JSON.parse(localStorage.getItem("user")).username)
-      .then(data => {
-        console.log(data);
+    getAccount(JSON.parse(localStorage.getItem("user")).id)
+      .then(res => {
+        setFullName(res.data.surName + " " + res.data.firstName)
+        setEmail(res.data.email);
+        console.log(res);
+        form.setFields(
+          Object.values(fieldNames).map((name) => ({
+            name: name,
+            value: res.data[name],
+          }))
+        );
       });
   }, []);
+
   return (
     <div>
       <Row>
-        <Col flex="300px" style={{ textAlign:  "center" }}>
-          <Avatar size={120} icon={<UserOutlined />} />
-          <p>Edogaru</p>
-          <p>edogaru@gmail.com</p>
-
+        <Col flex="300px" style={{ textAlign: "center" }}>
+          <Avatar size={120} icon={<UserOutlined />} /><br />
+          {fullName}<br />
+          {email}<br />
           <Button
             type="primary"
             style={{
@@ -29,68 +49,45 @@ export default function UserProfile() {
               margin: "20px auto",
             }}
           >
-            Sửa thông tin cá nhân
+            Xem thông tin sinh viên
           </Button>
           <Button type="primary">Đổi mật khẩu</Button>
         </Col>
 
         <Col flex="auto">
-          <h1>Profile Settings</h1>
-
-          <Form layout="vertical" onFinish={onFinish}>
-            <Row gutter={20}>
-              <Col span={12}>
-                <Form.Item name="name" label="Tên">
-                  <Input placeholder="Name" type="text" />
+          <h1>Sửa đổi thông tin cá nhân</h1>
+          <Form form={form} layout="vertical" onFinish={onFinish}>
+            <Row gutter={10}>
+              <Col span={8}>
+                <Form.Item label="Họ" name={fieldNames.surName} >
+                  <Input />
                 </Form.Item>
               </Col>
 
-              <Col span={12}>
-                <Form.Item name="lastname" label="Họ">
-                  <Input placeholder="surname" type="text" />
+              <Col span={8}>
+                <Form.Item label="Tên" name={fieldNames.firstName}>
+                  <Input />
                 </Form.Item>
               </Col>
             </Row>
-            <Form.Item name="maSV" label="Mã sinh viên">
-              <Input placeholder="VD:18021014" type="text" />
-            </Form.Item>
+            <Row gutter={10}>
+              <Col span={8}>
+                <Form.Item label="Tên đăng nhập" name={fieldNames.username} >
+                  <Input disabled/>
+                </Form.Item>
+              </Col>
 
-            <Form.Item name="birthday" label="Ngày sinh">
-              <Input placeholder="enter your birthday" type="text" />
-            </Form.Item>
+              <Col span={8}>
+                <Form.Item label="email" name={fieldNames.email}>
+                  <Input/>
+                </Form.Item>
+              </Col>
+            </Row>
 
-            <Form.Item name="phone" label="Số điện thoại">
-              <Input placeholder="enter your phone number" type="text" />
-            </Form.Item>
-
-            <Form.Item name="email" label="Email">
-              <Input placeholder="your email" type="text" />
-            </Form.Item>
-
-            <Form.Item name="address" label="Địa chỉ thường trú">
-              <Input placeholder=" address line 1" type="text" />
-            </Form.Item>
-
-            <Form.Item name="que" label="Quê quán">
-              <Input placeholder="address line 2" type="text" />
-            </Form.Item>
-
-            <Form.Item name="dantoc" label="Dân tộc">
-              <Input />
-            </Form.Item>
-
-            <Form.Item name="class" label="Lớp">
-              <Input />
-            </Form.Item>
-
-            <Form.Item name="object" label="Ngành học : không thể sửa">
-              <Input />
-            </Form.Item>
-
-            <Button type="primary" htmlType="submit">
-              Save Profile
-            </Button>
           </Form>
+          <Button type="primary" onClick={() => form.submit()}>
+            Lưu
+          </Button>
         </Col>
       </Row>
     </div>

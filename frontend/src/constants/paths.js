@@ -9,6 +9,7 @@ const paths = {
   FORUM: "/forum",
   CHAT: "/chat",
   HO_SO: "/ho-so",
+  HO_SO_SINH_VIEN: "/ho-so-sinh-vien",
   CHI_TIET_FORUM_wId: "/chi-tiet-thao-luan/:id",
   CHI_TIET_FORUM_nId: "/chi-tiet-thao-luan/",
 

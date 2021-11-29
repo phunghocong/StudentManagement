@@ -100,7 +100,7 @@ const StudentConfig = forwardRef((props, ref) => {
               {currentType === types.NEW ? "Tạo mới" : "Cập nhật"}
             </Button>
           </Col>
-        </Row>
+        </Row> 
       }
     >
       <Form form={form} layout="vertical" onFinish={onFinish}>

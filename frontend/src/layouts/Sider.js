@@ -10,6 +10,7 @@ import {
   InsertRowAboveOutlined,
   SolutionOutlined,
   ProfileOutlined,
+  FormOutlined, 
 } from "@ant-design/icons";
 import randomString from "crypto-random-string";
 import paths from "../constants/paths";
@@ -81,7 +82,15 @@ const Sider = ({ location }) => {
         icon: <FlagFilled />,
         path: paths.KET_QUA_HOC_TAP,
         subs: [],
-      });
+      },
+        {
+          //SV
+          key: rid(),
+          title: "Hồ sơ sinh viên",
+          icon: <FormOutlined />,
+          path: paths.HO_SO_SINH_VIEN,
+          subs: [],
+        });
       arr.join();
     } else {
       arr.splice(

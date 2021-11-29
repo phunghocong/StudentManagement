@@ -1,4 +1,5 @@
 import UserProfile from "./UserProfile/UserProfile";
+import StudentProfile from "./StudentProfile/StudentProfile"
 import StudyResult from "./StudyResult/StudyResult";
 import StudentList from "./Student/StudentList";
 import NotiList from "./Notification/NotiList/NotiList";
@@ -27,5 +28,6 @@ export {
   StudentList,
   StudyResult,
   UserProfile,
+  StudentProfile,
   DiscussionDetail,
 };

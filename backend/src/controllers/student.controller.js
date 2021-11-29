@@ -320,11 +320,11 @@ exports.findStudentsFromClass = (req, res) => {
 };
 exports.findByID = (req, res) => {
   const studentID = req.params.studentID;
-  Student.find({ "studentID": studentID })
+  Student.findOne({ "studentID": studentID })
     .then(data => {
       if (!data)
         res.status(404).send({ message: "Not found student with id " + studentID });
-      else res.send(data);
+      else res.status(200).send(data);
     })
     .catch(err => {
       res
