@@ -13,21 +13,21 @@ export const isStudent= (authorityLevel) => {
 export const currentUserIsStudent = () => {
     return isStudent(JSON.parse(localStorage.getItem(keys.USER)).authorityLevel);
 }
-//Tự động lấy user hiện tại và kiểm tra có phải cố vấn học tập không
+ //Tự động lấy user hiện tại và kiểm tra có phải cố vấn học tập không
 export const currentUserIsCon = () => {
-    authorityLevel = JSON.parse(localStorage.getItem(keys.USER)).authorityLevel;
+    var authorityLevel = JSON.parse(localStorage.getItem(keys.USER)).authorityLevel;
     return authorityLevel == "CON" || authorityLevel == "CONSULTANT";
 }
 //Tự động lấy user hiện tại và kiểm tra có phải quản lý không
 export const currentUserIsMod = () => {
-    authorityLevel = JSON.parse(localStorage.getItem(keys.USER)).authorityLevel;
+    var authorityLevel = JSON.parse(localStorage.getItem(keys.USER)).authorityLevel;
     return authorityLevel == "MOD" || authorityLevel == "MODERATOR";
 }
 //Tự động lấy user hiện tại và kiểm tra có phải Admin không
 export const currentUserIsAdmin = () => {
-    authorityLevel = JSON.parse(localStorage.getItem(keys.USER)).authorityLevel;
+    var authorityLevel = JSON.parse(localStorage.getItem(keys.USER)).authorityLevel;
     return authorityLevel == "ADMIN" || authorityLevel == "ADMINISTRATOR";
-}
+} 
 
 // JSON {username, isStudent: có phải là sinh viên không, _id của đối tượng acocunt trên database, jwtoken sử dụng cho phiên làm việc}.
 export const login = (username, password) => axios

@@ -471,7 +471,6 @@ exports.generateStudentAccount = (req, res) => {
         surName: student.surName,
         email: student.email,
         messageOn: false,
-        isStudent: true,
         avatarColor: randomAvatarColor(),
         notification: [],
         authorityLevel: ""

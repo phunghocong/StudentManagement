@@ -75,7 +75,6 @@ exports.login = (req, res) => {
         .status(200)
         .send({
           username: username,
-          isStudent: data.isStudent,
           id: data._id,
           authorityLevel: data.authorityLevel,
           token: token,
@@ -108,7 +107,6 @@ exports.create = (req, res) => {
             surName: req.body.surName,
             email: req.body.email,
             messageOn: req.body.messageOn != null ? req.body.messageOn : true,
-            isStudent: req.body.isStudent != null ? req.body.isStudent : true,
             avatarColor: req.body.avatarColor != null
               ? req.body.avatarColor
               : randomAvatarColor(),
@@ -255,7 +253,6 @@ exports.createAccountFromStudent = (student) => {
           surName: student.surName,
           email: student.email,
           messageOn: true,
-          isStudent: true,
           avatarColor: randomAvatarColor(),
           notification: [],
           authorityLevel: ""

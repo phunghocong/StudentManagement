@@ -1,8 +1,8 @@
 const authorityLevel = [
-    "", "NONE",
-    "MOD", "MODERATOR",
-    "CON", "CONSULTANT",
-    "ADMIN", "ADMINISTRATOR"]
+    "", "NONE",//Hoc sinh
+    "MOD", "MODERATOR",//Quan ly
+    "CON", "CONSULTANT",//Co van hoc tap
+    "ADMIN", "ADMINISTRATOR"]// Admin]
 module.exports = mongoose => {
     var accountSchema = mongoose.Schema({
         username: String,
@@ -12,7 +12,6 @@ module.exports = mongoose => {
         email: String,
         published: Boolean,
         messageOn: Boolean,
-        isStudent: Boolean, //nếu là sinh viên
         avatarColor: String,
         authorityLevel: String,
         notification: [
