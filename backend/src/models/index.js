@@ -22,10 +22,7 @@ db.topicController = require('./forum/topic.controller');
 db.postController = require('./forum/post.controller');
 db.statsController = require('./forum/stats.controller');*/
 //end forum
-// db.forumCategory = require("./forum/Category.js")(mongoose);
-db.forumPost = require("./forum/post.model.js")(mongoose);
-db.forumSubcategory = require("./forum/subcategory.model.js")(mongoose);
-db.forumTopic = require("./forum/topic.model.js")(mongoose);
+db.topic = require("./topic.model.js")(mongoose);
 // db.forumCUsergroup = require("./forum/Usergroup.js")(mongoose);
 
 //db.chatRecords = require("./chatRecord.model.js")(mongoose);

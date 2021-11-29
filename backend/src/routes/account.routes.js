@@ -20,7 +20,7 @@ module.exports = app => {
   router.post('/create/', accounts.create);
 
   // Tạo thông báo về tài khoản
-  router.post('/createNotification/', accounts.createNotification);
+  router.post('/createNotification/:id', accounts.createNotification);
 
   // Update một object tài khoản.
   router.post('/update/:id', accounts.updateInfo);
@@ -36,6 +36,8 @@ module.exports = app => {
   //Xóa tất cả, không dùng, chỉ để test
   router.delete("/delete/", accounts.deleteAll);
 
+  // Xóa 1 thông báo của 1 tài khoản
+  router.delete("/deleteNotification/", accounts.deleteNotification);
   // // Lấy một model account từ username
   // router.get('/get/', accounts.getOneByUsername);
  

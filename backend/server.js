@@ -39,7 +39,7 @@ require("./src/routes/turorial.routes")(app);
 require("./src/routes/account.routes")(app);
 require("./src/routes/student.routes")(app);
 require("./src/routes/classRecord.routes")(app);
-require("./src/routes/forum.routes")(app);
+require("./src/routes/topic.routes")(app);
 
 // set port, listen for requests
 const PORT = process.env.PORT || 8080;

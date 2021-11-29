@@ -283,7 +283,7 @@ exports.createNotification = (req, res) => {
     });
   }
 
-  const idDest = req.body.destinationID;
+  const accountId = req.params.id;
   const tempNotification = {
     read: false,
     title: req.body.title,
@@ -292,7 +292,7 @@ exports.createNotification = (req, res) => {
   };
 
   Account.findOneAndUpdate(
-    { _id: idDest },
+    { _id: accountId },
     { $push: { notification: tempNotification } },
     { useFindAndModify: false }
   )
@@ -303,6 +303,24 @@ exports.createNotification = (req, res) => {
       res.status(401).send("Error when create new notification");
     });
 };
+
+// Xóa 1 thông báo của 1 tài khoản.
+exports.deleteNotification = (req, res) => {
+  const accountId = req.body.accountId;
+  const notificationId = req.body.notificationId;
+
+  Account.findOneAndUpdate(
+      { _id: accountId },
+      { $pull: { notification: { _id: notificationId }} },
+      { safe: true, multi: false }
+  )
+  .then(data => {
+      res.status(200).send({message: "Deleted notification"});
+  })
+  .catch(error => {
+      res.status(500).send({message: `Error when delete comment ${error}`});
+  })
+}
 
 // Lấy danh sách tất cả các object model tài khoản.
 exports.getAll = (req, res) => {
@@ -320,6 +338,8 @@ exports.getAll = (req, res) => {
       });
     });
 };
+
+// Xóa tât cả các tài khoản.
 exports.deleteAll = (req, res) => {
   Account.deleteMany({})
     .then(data => {
