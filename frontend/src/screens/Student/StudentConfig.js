@@ -2,7 +2,7 @@ import { Button, Checkbox, Col, Drawer, Form, Input, Row, Switch } from "antd";
 import { useForm } from "antd/lib/form/Form";
 import { FormProvider } from "rc-field-form";
 import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
-import { update, createStudentAndRegisterNewAccount } from "../../api/students"
+import { update,updateByID, createStudentAndRegisterNewAccount } from "../../api/students"
 const types = {
   NEW: "new",
   EDIT: "edit",
@@ -35,6 +35,7 @@ const fieldNames = {
   startedYear: "startedYear",
   managedBy: "managedBy",
   note: "note",
+  id: "id"
 };
 
 const StudentConfig = forwardRef((props, ref) => {
@@ -68,12 +69,23 @@ const StudentConfig = forwardRef((props, ref) => {
 
   })
   const onFinish = (values) => {
+    console.log(values);
+
     if (currentType == types.NEW) {
-
+      delete values.id;
+      createStudentAndRegisterNewAccount(values)
+      .then(res => {
+        console.log(res);
+        if (res.status == 200)
+          window.location.reload(false);
+      })
     } else {
+      updateByID(values.id,values).then(res=> {
+        if(res.status==200)
+        window.location.reload(false);
 
+      });
     }
-
   };
 
   const onCancel = () => {
@@ -85,7 +97,7 @@ const StudentConfig = forwardRef((props, ref) => {
     <Drawer
       visible={visible}
       onClose={onCancel}
-      width={700}
+      width={800}
       title={
         currentType === types.NEW ? "Tạo mới sinh viên" : "Chỉnh sửa sinh viên"
       }
@@ -107,19 +119,19 @@ const StudentConfig = forwardRef((props, ref) => {
         Thông tin cơ bản
         <Row gutter={10}>
           <Col span={8}>
-            <Form.Item label="Họ" name={fieldNames.surName} >
+            <Form.Item label="Họ" name={fieldNames.surName} rules={[{ required: true, message: "Hãy nhập họ của sinh viên" }]}>
               <Input />
             </Form.Item>
           </Col>
 
           <Col span={8}>
-            <Form.Item label="Tên" name={fieldNames.firstName}>
+            <Form.Item label="Tên" name={fieldNames.firstName} rules={[{ required: true, message: "Hãy nhập tên của sinh viên" }]}>
               <Input />
             </Form.Item>
           </Col>
 
           <Col span={8}>
-            <Form.Item label="Ngày sinh" name={fieldNames.birthday}>
+            <Form.Item label="Ngày sinh" name={fieldNames.birthday} rules={[{ required: true, message: "Hãy nhập ngày sinh của sinh viên" }]}>
               <Input />
             </Form.Item>
           </Col>
@@ -128,18 +140,18 @@ const StudentConfig = forwardRef((props, ref) => {
 
         <Row gutter={10}>
           <Col span={8}>
-            <Form.Item label="Giới tính" name={fieldNames.gender}>
+            <Form.Item label="Giới tính" name={fieldNames.gender} rules={[{ required: true, message: "Hãy nhập giới tính của sinh viên" }]}>
               <Input />
             </Form.Item>
           </Col>
           <Col span={8}>
-            <Form.Item label="Số điện thoại" name={fieldNames.phoneNumber}>
+            <Form.Item label="Số điện thoại" name={fieldNames.phoneNumber} rules={[{ required: true, message: "Hãy nhập số điện thoại của sinh viên" }]}>
               <Input />
             </Form.Item>
           </Col>
 
           <Col span={8}>
-            <Form.Item label="Email" name={fieldNames.email}>
+            <Form.Item label="Email" name={fieldNames.email} rules={[{ required: true, message: "Hãy nhập email của sinh viên" }]}>
               <Input />
             </Form.Item>
           </Col>
@@ -147,7 +159,7 @@ const StudentConfig = forwardRef((props, ref) => {
         <Row gutter={10}>
 
           <Col span={12}>
-            <Form.Item label="Số điện thoại bố" name={fieldNames.fatherPhoneNumber}>
+            <Form.Item label="Số điện thoại bố" name={fieldNames.fatherPhoneNumber} >
               <Input />
             </Form.Item>
           </Col>
@@ -158,43 +170,45 @@ const StudentConfig = forwardRef((props, ref) => {
             </Form.Item>
           </Col>
         </Row>
-        <Form.Item label="Nơi sinh" name={fieldNames.bornAddress}>
+        <Form.Item label="Nơi sinh" name={fieldNames.bornAddress} rules={[{ required: true, message: "Hãy nhập nơi sinh của sinh viên" }]}>
           <Input />
         </Form.Item>
-        <Form.Item label="Địa chỉ thường trú" name={fieldNames.homeAddress}>
+        <Form.Item label="Địa chỉ thường trú" name={fieldNames.homeAddress} rules={[{ required: true, message: "Hãy nhập Địa chỉ thường trú của sinh viên" }]}>
           <Input />
         </Form.Item>
-        <Form.Item label="Địa chỉ hiện tại" name={fieldNames.currentAddress}>
+        <Form.Item label="Địa chỉ hiện tại" name={fieldNames.currentAddress} rules={[{ required: true, message: "Hãy nhập Địa chỉ hiện tại của sinh viên" }]}>
           <Input />
         </Form.Item>
 
         <Row gutter={10}>
           <Col span={8}>
-            <Form.Item label="Quốc tịch" name={fieldNames.national}>
+            <Form.Item label="Quốc tịch" name={fieldNames.national} rules={[{ required: true, message: "Hãy nhập Quốc tịch của sinh viên" }]}>
               <Input />
             </Form.Item>
           </Col>
 
           <Col span={8}>
-            <Form.Item label="Dân tộc" name={fieldNames.ethnic}>
+            <Form.Item label="Dân tộc" name={fieldNames.ethnic} rules={[{ required: true, message: "Hãy nhập Dân tộc của sinh viên" }]}>
               <Input />
             </Form.Item>
           </Col>
 
           <Col span={8}>
-            <Form.Item label="Tôn giáo" name={fieldNames.religion}>
+            <Form.Item label="Tôn giáo" name={fieldNames.religion} rules={[{ required: true, message: "Hãy nhập Tôn giáo của sinh viên. Để là 'Không Có' nếu không có" }]}>
               <Input />
             </Form.Item>
           </Col>
         </Row>
 
-        <Form.Item label="CCCD" name={fieldNames.citizenCardId}>
+        <Form.Item label="Căn cước công dân" name={fieldNames.citizenCardId} rules={[{ required: true, message: "Hãy nhập căn cước công dân của sinh viên" }]}>
           <Input />
         </Form.Item>
         <Row gutter={10}>
           <Col span={8}>
             <Form.Item label="Đã đi nhập ngũ" name={fieldNames.isEnlisted}>
-              <Checkbox defaultChecked={isEnlisted} />
+             {/*  <Checkbox defaultChecked={isEnlisted} /> */}
+              <Input />
+
             </Form.Item>
           </Col>
           <Col span={8}>
@@ -206,41 +220,41 @@ const StudentConfig = forwardRef((props, ref) => {
         Thông tin trường
         <Row gutter={10}>
           <Col span={10}>
-            <Form.Item label="Trường học" name={fieldNames.school}>
+            <Form.Item label="Tên trường" name={fieldNames.school} rules={[{ required: true, message: "Hãy nhập tên trường học của sinh viên" }]}>
               <Input />
             </Form.Item>
           </Col>
           <Col span={14}>
-            <Form.Item label="Ngành học" name={fieldNames.major}>
+            <Form.Item label="Ngành học" name={fieldNames.major} rules={[{ required: true, message: "Hãy nhập tên ngành học của sinh viên" }]}>
               <Input />
             </Form.Item>
           </Col>
         </Row>
         <Row gutter={10}>
           <Col span={10}>
-            <Form.Item label="Hình thức học tập" name={fieldNames.academyMethod}>
+            <Form.Item label="Hình thức học tập" name={fieldNames.academyMethod} rules={[{ required: true, message: "Hãy nhập Hình thức học tập của sinh viên" }]}>
               <Input />
             </Form.Item>
           </Col>
           <Col span={14}>
-            <Form.Item label="Trình độ học vấn" name={fieldNames.levelOfAcademy}>
+            <Form.Item label="Trình độ học vấn" name={fieldNames.levelOfAcademy} rules={[{ required: true, message: "Hãy nhập Trình độ học vấn của sinh viên" }]}>
               <Input />
             </Form.Item>
           </Col>
         </Row>
         <Row gutter={10}>
           <Col span={8}>
-            <Form.Item label="Khóa" name={fieldNames.schoolYearGroup}>
+            <Form.Item label="Khóa" name={fieldNames.schoolYearGroup} rules={[{ required: true, message: "Hãy nhập khóa của sinh viên" }]}>
               <Input />
             </Form.Item>
           </Col>
           <Col span={8}>
-            <Form.Item label="Lớp" name={fieldNames.baseClass}>
+            <Form.Item label="Lớp" name={fieldNames.baseClass} rules={[{ required: true, message: "Hãy nhập Lớp của sinh viên" }]}>
               <Input />
             </Form.Item>
           </Col>
           <Col span={8}>
-            <Form.Item label="Năm bắt đầu học" name={fieldNames.startedYear}>
+            <Form.Item label="Năm bắt đầu học" name={fieldNames.startedYear} rules={[{ required: true, message: "Hãy nhập Năm bắt đầu học của sinh viên" }]}>
               <Input />
             </Form.Item>
           </Col>
@@ -254,6 +268,9 @@ const StudentConfig = forwardRef((props, ref) => {
           <Input />
         </Form.Item>
         <Form.Item label="Ghi chú SV" name={fieldNames.note}>
+          <Input />
+        </Form.Item>
+        <Form.Item label="id" name={fieldNames.id} hidden={true}>
           <Input />
         </Form.Item>
       </Form>

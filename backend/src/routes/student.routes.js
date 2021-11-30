@@ -12,8 +12,8 @@ module.exports = app => {
 
   router.post('/updateGPA', students.updateDatabaseGPA);
 
-  //Get all student listed alphabetically
-  router.get('/', students.findAll);
+  //Get all student listed alphabetically 
+  router.get('/list/:mode', students.findAll);
   //Get all student listed alphabetically and smaller size
   router.get('/smallList/:mode', students.findAllToStudentList);
   //get all base class (CA clc...)
@@ -27,6 +27,7 @@ module.exports = app => {
   router.get('/mod/:managedBy', students.findByMod);
   //Update student info with ID
   router.put('/update/:studentID', students.update);
+  router.put('/update/id/:id', students.updateByID);
 
   router.get('/range', students.findRange);
 

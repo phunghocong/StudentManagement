@@ -14,7 +14,7 @@ exports.createStudent = (req, res) => {
   // Kiểm tra req. 
   if (!req.body.firstName || !req.body.surName || !req.body.birthday || !req.body.national || !req.body.ethnic
     || !req.body.religion || !req.body.bornAddress || !req.body.citizenCardId || !req.body.currentAddress
-    || !req.body.phoneNumber || !req.body.email || !req.body.isEnlisted ||!req.body.gender/* || !req.body.draftDate can be null*/
+    || !req.body.phoneNumber || !req.body.email || !req.body.isEnlisted || !req.body.gender/* || !req.body.draftDate can be null*/
   ) {
     res.status(400).send({ message: "Some basic info is empty" });
     return;
@@ -78,7 +78,9 @@ exports.createStudent = (req, res) => {
     });
 }
 exports.createStudentAndRegisterNewAccount = (req, res) => {
-  // Kiểm tra req. 
+  // Kiểm tra req.     
+  console.log(res.body);
+
   if (!req.body.firstName || !req.body.surName || !req.body.birthday || !req.body.national || !req.body.ethnic
     || !req.body.religion || !req.body.bornAddress || !req.body.citizenCardId || !req.body.currentAddress
     || !req.body.phoneNumber || !req.body.email || !req.body.isEnlisted /* || !req.body.draftDate can be null*/
@@ -131,7 +133,7 @@ exports.createStudentAndRegisterNewAccount = (req, res) => {
       student
         .save(student)
         .then(data => {
-          res.send(data);
+          res.status(200).send(data);
         })
         .catch(err => {
           res.status(500).send({
@@ -218,7 +220,14 @@ exports.countStudent = (req, res) => {
 };
 // Danh sách tất cả hs.
 exports.findAll = (req, res) => {
-  Student.find()
+  const mode = req.params.mode;
+  var condition
+    = (mode == "good") ? {
+      "GPA": { $gt: 3.6 }
+    } : (mode == "bad" ? {
+      "GPA": { $lt: 2 }
+    } : {});
+  Student.find(condition)
     .sort({ "firstName": 1 })
     .then(data => {
       res.send(data);
@@ -385,7 +394,34 @@ exports.update = (req, res) => {
       });
     });
 };
+exports.updateByID = (req, res) => {
+  if (req.body.constructor === Object && Object.keys(req.body).length === 0) {
+    return res.status(400).send({
+      message: "Data to update can not be empty!"
+    });
+  }
 
+  const id = req.params.id;
+  console.log(id);
+  console.log(req.body);
+
+  Student.findByIdAndUpdate(id, req.body)
+    .then(data => {
+      if (!data) {
+        res.status(404).send({
+          message: `Cannot update student with id=${id}. Maybe student was not found!`
+        });
+      } else {
+        res.status(200).send({message: "student was updated successfully."})
+
+      };
+    })
+    .catch(err => {
+      res.status(500).send({
+        message: "Error updating student with id=" + id
+      });
+    });
+};
 exports.deleteWithID = (req, res) => {
   const studentID = req.params.studentID;
   Student.deleteMany({ "studentID": studentID })
