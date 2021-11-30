@@ -343,7 +343,12 @@ exports.findByID = (req, res) => {
 };
 exports.findByMod = (req, res) => {
   const managedBy = req.params.managedBy;
-  Student.find({ "managedBy": managedBy })
+  const mode = req.params.mode;
+  var condition
+    = (mode == "good") ? { "GPA": { $gt: 3.6 }, "managedBy": managedBy}
+    : (mode == "bad" ? { "GPA": { $lt: 2 }, "managedBy": managedBy} : 
+      { "managedBy": managedBy });
+  Student.find(condition)
     .then(data => {
       if (!data)
         res.status(404).send({ message: "Not found student managed by user " + managedBy });

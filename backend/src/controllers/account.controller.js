@@ -354,3 +354,18 @@ exports.deleteAll = (req, res) => {
       });
     });
 };
+// Xóa tât cả các tài khoản.
+exports.deleteAllStudent = (req, res) => {
+  Account.deleteMany({"authorityLevel":["","NONE"]})
+    .then(data => {
+      res.send({
+        message: `${data.deletedCount} All student account info were deleted successfully!`
+      });
+    })
+    .catch(err => {
+      res.status(500).send({
+        message:
+          err.message || "Some error occurred while removing all student account."
+      });
+    });
+};

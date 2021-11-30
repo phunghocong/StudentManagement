@@ -41,7 +41,12 @@ const AccountConfig = forwardRef((props, ref) => {
 
   const onFinish = (values) => {
     if(currentType==types.NEW) {
-      createAccount(values);
+      createAccount(values)
+      .then(res=> {
+        if(res.status==200) {
+          window.location.reload(false);
+        }
+      });
     } else { 
       
     }

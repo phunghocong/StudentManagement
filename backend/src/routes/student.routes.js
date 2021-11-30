@@ -14,6 +14,9 @@ module.exports = app => {
 
   //Get all student listed alphabetically 
   router.get('/list/:mode', students.findAll);
+    //Get student by their manager
+  router.get('/list/mod/:mode&:managedBy', students.findByMod);
+
   //Get all student listed alphabetically and smaller size
   router.get('/smallList/:mode', students.findAllToStudentList);
   //get all base class (CA clc...)
@@ -23,8 +26,6 @@ module.exports = app => {
 
   //Get student by their studentID
   router.get('/:studentID', students.findByID);
-  //Get student by their manager
-  router.get('/mod/:managedBy', students.findByMod);
   //Update student info with ID
   router.put('/update/:studentID', students.update);
   router.put('/update/id/:id', students.updateByID);

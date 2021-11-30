@@ -5,11 +5,11 @@ import {
 } from "@ant-design/icons";
 import { Button, Col, Row, Table, Select } from "antd";
 import { useEffect, useRef, useState } from "react";
-import { findAll } from "../../api/students";
+import { findAll, findByMod } from "../../api/students";
 import StudentDelete from "./StudentDelete";
 import StudentConfig from "./StudentConfig";
 import StudentGrade from "./StudentGrade";
-
+import { currentUserIsCon, getCurrentUser } from "../../api/accounts";
 const studentType = {
   ANY: "any",
   GOOD: "good",
@@ -92,7 +92,13 @@ export default function StudentList() {
   const getList = async (mode = studentType.ANY) => {
     try {
       setIsLoading(true);
-      const res = await findAll(mode);
+      var res;
+      if(currentUserIsCon()) {
+        res = await findByMod(mode, getCurrentUser().username)
+        console.log(res);
+      } else {
+        res = await findAll(mode);
+      }
       setDataList(
         res.data.map((item) => ({
           ...item,

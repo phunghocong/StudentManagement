@@ -11,21 +11,21 @@ export const isStudent= (authorityLevel) => {
 }
 //Tự động lấy user hiện tại và kiểm tra có phải học sinh không
 export const currentUserIsStudent = () => {
-    return isStudent(JSON.parse(localStorage.getItem(keys.USER)).authorityLevel);
+    return isStudent(getCurrentUser().authorityLevel);
 }
  //Tự động lấy user hiện tại và kiểm tra có phải cố vấn học tập không
 export const currentUserIsCon = () => {
-    var authorityLevel = JSON.parse(localStorage.getItem(keys.USER)).authorityLevel;
+    var authorityLevel = getCurrentUser().authorityLevel;
     return authorityLevel == "CON" || authorityLevel == "CONSULTANT";
 }
 //Tự động lấy user hiện tại và kiểm tra có phải quản lý không
 export const currentUserIsMod = () => {
-    var authorityLevel = JSON.parse(localStorage.getItem(keys.USER)).authorityLevel;
+    var authorityLevel = getCurrentUser().authorityLevel;
     return authorityLevel == "MOD" || authorityLevel == "MODERATOR";
 }
 //Tự động lấy user hiện tại và kiểm tra có phải Admin không
 export const currentUserIsAdmin = () => {
-    var authorityLevel = JSON.parse(localStorage.getItem(keys.USER)).authorityLevel;
+    var authorityLevel = getCurrentUser().authorityLevel;
     return authorityLevel == "ADMIN" || authorityLevel == "ADMINISTRATOR";
 } 
 
@@ -44,7 +44,7 @@ export const logout = () => {
 };
 
 export const getCurrentUser = () => {
-    return JSON.parse(localStorage.getItem("user"))
+    return JSON.parse(localStorage.getItem(keys.USER))
 };
 // Nhận vào string id trả về object accounts
 export const getAccount = (id) => axios.get(`${url}/get/${id}`);

@@ -35,6 +35,8 @@ module.exports = app => {
   router.get('/getAll/', accounts.getAll);
   //Xóa tất cả, không dùng, chỉ để test
   router.delete("/delete/", accounts.deleteAll);
+  //Xóa tất cả hs, không dùng, chỉ để test
+  router.delete("/deleteStudent/", accounts.deleteAllStudent);
 
   // Xóa 1 thông báo của 1 tài khoản
   router.delete("/deleteNotification/", accounts.deleteNotification);

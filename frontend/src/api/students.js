@@ -1,12 +1,16 @@
 import axios from 'axios';
 
 const url = 'http://localhost:8080/api/students';
-//mode can be "any","good","bad"
+//mode can be "any","good","bad" 
+
 export const findAllToStudentList = (mode) => axios.get(`${url}/smallList/${mode}`);
 export const findAll = (mode) => axios.get(`${url}/list/${mode}`);
+    //Get student by their manager
+
+export const findByMod = (mode, managedBy) => axios.get(`${url}/list/mod/${mode}&${managedBy}`);
+
 export const findByID = (studentID) => axios.get(`${url}/${studentID}`);
 
-export const findByMod = (managedBy) => axios.get(`${url}/mod/${managedBy}`);
 
 export const findStudentsFromClass = (baseClass) => axios.get(`${url}/class/${baseClass}`);
 
