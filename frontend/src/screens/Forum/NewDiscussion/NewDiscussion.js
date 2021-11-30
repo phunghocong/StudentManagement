@@ -1,10 +1,22 @@
 import { Button, Col, Drawer, Form, Input, Row, Select } from "antd";
 import { useForm } from "antd/lib/form/Form";
-import { forwardRef, useImperativeHandle, useState } from "react";
+import { forwardRef, useEffect, useImperativeHandle, useState, useRef } from "react";
+import { createTopic } from "../../../api/forum";
+import { getAccountPoster } from "../../../api/accounts";
 
 const NewDiscussion = forwardRef((props, ref) => {
+  const [poster, setPoster] = useState("");
   const [visible, setVisible] = useState(false);
   const [form] = useForm();
+
+  const getPoster = async () => {
+    try {
+      const res = await getAccountPoster(JSON.parse(localStorage.getItem("user")).id);
+      setPoster(res);
+    } catch(error) {
+      console.log(error);
+    }
+  }
 
   useImperativeHandle(ref, () => ({
     open() {
@@ -17,9 +29,25 @@ const NewDiscussion = forwardRef((props, ref) => {
     setVisible(false);
   };
 
-  const onFinish = (values) => {
-    console.log({ ...values, danh_muc: JSON.parse(values.danh_muc) });
+  const onFinish = async (values) => {
+    try {
+      const newTopic = {...values, poster: poster};
+      createTopic(newTopic)
+        .then(data => {
+          console.log(data);
+
+        })
+        .catch(err => {
+          console.log(err);
+        })
+    } catch (error) {
+      console.log("error when create new topic", error);
+    }
   };
+
+  useEffect(() => {
+    getPoster();
+  }, []);
 
   return (
     <Drawer
@@ -45,29 +73,15 @@ const NewDiscussion = forwardRef((props, ref) => {
       <Form form={form} onFinish={onFinish} layout="vertical">
         <Form.Item
           label="Tiêu đề"
-          name="tieu_de"
+          name="title"
           rules={[{ required: true, message: "Nhập đầy đủ nội dung" }]}
         >
           <Input />
         </Form.Item>
 
         <Form.Item
-          label="Danh mục"
-          name="danh_muc"
-          rules={[{ required: true, message: "Hãy chọn đầy đủ" }]}
-        >
-          <Select>
-            {danhMucMau.map((item) => (
-              <Select.Option key={item.key} value={JSON.stringify(item)}>
-                {item.name}
-              </Select.Option>
-            ))}
-          </Select>
-        </Form.Item>
-
-        <Form.Item
           label="Nội dung"
-          name="noi_dung"
+          name="detail"
           rules={[{ required: true, message: "Nhập đầy đủ nội dung" }]}
         >
           <Input.TextArea rows={4} />
@@ -80,16 +94,4 @@ const NewDiscussion = forwardRef((props, ref) => {
 export default NewDiscussion;
 
 const danhMucMau = [
-  {
-    key: 1,
-    name: "Danh muc 1",
-  },
-  {
-    key: 2,
-    name: "Danh muc 2",
-  },
-  {
-    key: 3,
-    name: "Danh muc 3",
-  },
 ];

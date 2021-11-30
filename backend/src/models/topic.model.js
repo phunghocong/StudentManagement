@@ -3,15 +3,14 @@ module.exports = mongoose => {
     var topicSchema = mongoose.Schema({
         title: String,
         detail: String,
+        createdTime: String,
+        poster: String,
         comment: [{
           detail: String,
           poster: String,
-          createTime: String,
+          createdTime: String,
         }],
-        poster: String,
-      },
-      { timestamps: true }
-    );
+      }, { timestamps: true });
    
     topicSchema.method("toJSON", function () {
       const { __v, _id, ...object } = this.toObject();
@@ -19,7 +18,7 @@ module.exports = mongoose => {
       return object;
     });
   
-    const topic = mongoose.model("topic", topicSchema);
-    return topic;
+    const Topic = mongoose.model("topic", topicSchema);
+    return Topic;
   };
   

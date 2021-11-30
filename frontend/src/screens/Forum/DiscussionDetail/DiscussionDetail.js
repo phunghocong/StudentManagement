@@ -11,17 +11,74 @@ import {
   Input,
   Button,
 } from "antd";
-import { useHistory } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 import paths from "../../../constants/paths";
 import { CalendarOutlined } from "@ant-design/icons";
 import discussionDetail from "./discussionDetail.module.scss";
 import moment from "moment";
+import { useState, useEffect, useRef } from "react";
+import { getAllCommentOf, getTopic, createComment } from "../../../api/forum";
+import { getAccountPoster } from "../../../api/accounts";
 
 export default function DiscussionDetail() {
+  const loc = useLocation();
   const history = useHistory();
+  const topicId = loc.pathname.substring(paths.CHI_TIET_FORUM_nId.length)
 
-  const onFinish = (values) => {
-    console.log(values);
+  const [poster, setPoster] = useState("");
+  const [comment, setCommentList] = useState([]);
+  const [topic, setTopic] = useState({});
+
+  const getPoster = async () => {
+    try {
+      const res = await getAccountPoster(JSON.parse(localStorage.getItem("user")).id);
+      setPoster(res);
+    } catch(error) {
+      console.log(error);
+    }
+  }
+
+  const getTopicTemp = async () => {
+    try {
+      const res = await getTopic(topicId);
+      setTopic(res.data);
+    } catch(error) {
+      console.log(error);
+    }
+  };
+
+  const getList = async () => {
+    try {
+      const res = await getAllCommentOf(topicId);
+      setCommentList(
+        res.map((item) => ({
+          ...item,
+          key: item.id,
+        }))
+      );
+    } catch (error) {
+      console.log("get all comment error", error);
+    }
+  };
+
+  useEffect(() => {
+    getPoster();
+    getTopicTemp();
+    getList();
+  }, []);
+
+  const onFinish = async (values) => {
+    try {
+      createComment(topic.id, {...values, poster: poster,})
+        .then(data => {
+          console.log(data);
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    } catch(error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -29,7 +86,7 @@ export default function DiscussionDetail() {
       <PageHeader
         className={discussionDetail["page-header"]}
         onBack={() => history.push(paths.FORUM)}
-        title="Chu de so 1"
+        title={topic.title}
         ghost={false}
         footer={
           <Row
@@ -43,7 +100,7 @@ export default function DiscussionDetail() {
                   <Avatar size={25}>Author</Avatar>
                 </Col>
 
-                <Col className={discussionDetail["data"]}>Author</Col>
+                <Col className={discussionDetail["data"]}>{topic.poster}</Col>
               </Row>
             </Col>
 
@@ -53,12 +110,8 @@ export default function DiscussionDetail() {
                   <CalendarOutlined className={discussionDetail["data"]} />
                 </Col>
 
-                <Col className={discussionDetail["data"]}>21/11/2021</Col>
+                <Col className={discussionDetail["data"]}>{topic.createdTime}</Col>
               </Row>
-            </Col>
-
-            <Col>
-              <Tag color="orange">Danh muc so 1</Tag>
             </Col>
           </Row>
         }
@@ -68,18 +121,18 @@ export default function DiscussionDetail() {
         className={discussionDetail["comment-list"]}
         header={
           <span className={discussionDetail["count-ans"]}>
-            {data.length} trả lời
+            {comment.length} trả lời
           </span>
         }
         itemLayout="horizontal"
-        dataSource={data}
+        dataSource={comment}
         renderItem={(item) => (
           <li>
             <Comment
-              author={item.author}
-              avatar={item.avatar}
-              content={item.content}
-              datetime={item.datetime}
+              author={item.poster}
+              avatar={<Avatar src="https://joeschmoe.io/api/v1/random" alt="Error avt" />}
+              content={item.detail}
+              datetime={item.createdTime}
               className={discussionDetail["comment"]}
             />
           </li>
@@ -89,12 +142,12 @@ export default function DiscussionDetail() {
       <Comment
         className={discussionDetail["rep-comment"]}
         avatar={
-          <Avatar src="https://joeschmoe.io/api/v1/random" alt="Han Solo" />
+          <Avatar src="https://joeschmoe.io/api/v1/random" alt="Error avt" />
         }
         content={
           <Form onFinish={onFinish}>
             <Form.Item
-              name="comment"
+              name="detail"
               rules={[{ required: true, message: "Hãy điền bình luận" }]}
             >
               <Input.TextArea rows={4} />
@@ -111,42 +164,3 @@ export default function DiscussionDetail() {
     </div>
   );
 }
-
-const data = [
-  {
-    author: "Han Solo",
-    avatar: "https://joeschmoe.io/api/v1/random",
-    content: (
-      <span>
-        We supply a series of design principles, practical patterns and high
-        quality design resources (Sketch and Axure), to help people create their
-        product prototypes beautifully and efficiently.
-      </span>
-    ),
-    datetime: (
-      <Tooltip
-        title={moment().subtract(1, "days").format("YYYY-MM-DD HH:mm:ss")}
-      >
-        <span>{moment().subtract(1, "days").fromNow()}</span>
-      </Tooltip>
-    ),
-  },
-  {
-    author: "Han Solo",
-    avatar: "https://joeschmoe.io/api/v1/random",
-    content: (
-      <span>
-        We supply a series of design principles, practical patterns and high
-        quality design resources (Sketch and Axure), to help people create their
-        product prototypes beautifully and efficiently.
-      </span>
-    ),
-    datetime: (
-      <Tooltip
-        title={moment().subtract(1, "days").format("YYYY-MM-DD HH:mm:ss")}
-      >
-        <span>{moment().subtract(1, "days").fromNow()}</span>
-      </Tooltip>
-    ),
-  },
-];

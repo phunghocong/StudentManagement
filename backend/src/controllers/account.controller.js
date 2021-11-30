@@ -212,33 +212,6 @@ exports.getOneById = (req, res) => {
     });
 };
 
-// lấy dữ liệu 1 model từ Tên đăng nhập.
-
-// exports.getOneByUsername = (req, res) => {
-//     // if (!req.body.username) {
-//     //     return res.status(400).send({ message: "Username be filled in" });
-//     // }
-
-//     const {username} = req.body;
-
-//     Account.findOne({ username: username })
-//         .then(data => {
-//             if (!data) {
-//                 res.status(404).send({ message: `There is no account with username: ${req.body.username}`});
-//             } else {
-//                 res.status(200).send(data);
-//             }
-//         })
-//         .catch(err => {
-//             res.status(500).send({
-//                 message: "Error when get data",
-//             })
-//         });
-
-// }
-
-// Tạo tài khoản từ thông tin sinh viên.
-
 exports.createAccountFromStudent = (student) => {
   Account.findOne({ username: student.studentID })
     .then((data) => {

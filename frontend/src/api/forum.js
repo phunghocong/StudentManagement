@@ -5,7 +5,7 @@ export const url = 'http://localhost:8080/api/topic';
 // Nhận vào string id trả về object topic
 export const getTopic = (id) => axios.get(`${url}/get/${id}`);
 
-// Nhận vào object gồm {title, detail, topicPoster(username - tên người đăng)}
+// Nhận vào object gồm {title, detail, poster(username - tên người đăng)}
 export const createTopic = (newTopic) => axios.post(`${url}/create/`, newTopic);
 
 // Nhận vào object chứa các thông tin cần cập nhật cho Topic

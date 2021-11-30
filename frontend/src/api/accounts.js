@@ -73,3 +73,12 @@ export const getNotification = (id) => axios
 
 // Nhận vào object gồm {accountId, notificationId}
 export const deleteNotification = (body) => axios.delete(`${url}/deleteNotification`, body);
+
+// Nhận vào id trả về string(username - firstName - surName)
+export const getAccountPoster = (id) => axios
+    .get(`${url}/get/${id}`)
+    .then(data => {
+        let res = "";
+        res += data.data.username + " - " + data.data.firstName + " " + data.data.surName;
+        return res;
+    });

@@ -19,25 +19,25 @@ function getCurrentDateTimeString() {
   );
 }
 
-
 // Tạo 1 topic mới
 exports.createTopic = (req, res) => {
     if (req.body) {
-        const topic = new Topic({
-            title: req.body.title,
-            detail: req.body.detail,
-            comment: [],
-            topicPoster: req.body.poster,
-        });
+      const topic = new Topic({
+          title: req.body.title,
+          detail: req.body.detail,
+          comment: [],
+          poster: req.body.poster,
+          createdTime: getCurrentDateTimeString(),
+      });
 
-        topic
-        .save(topic)
-        .then((data) => {
-            res.status(200).send(data);
-        })
-        .catch(err => {
-            res.status(500).send({message: "error when create topic", err: err});
-        })
+      topic
+      .save(topic)
+      .then((data) => {
+          res.send(data);
+      })
+      .catch(err => {
+          res.status(500).send({message: "error when create topic", err: err});
+      })
     } else {
         res.status(400).send({message: "Data must be filled in"});
     }
@@ -165,7 +165,7 @@ exports.createComment = (req, res) => {
   const tempComment = {
     detail: req.body.detail,
     poster: req.body.poster,
-    createTime: getCurrentDateTimeString(),
+    createdTime: getCurrentDateTimeString(),
   };
 
   Topic.findOneAndUpdate(
