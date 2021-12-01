@@ -13,7 +13,7 @@ import AccountList from "./Account/AccountList";
 import ClassList from "./Class/ClassList";
 import Dashboard from "./Dashboard/Dashboard";
 import DiscussionDetail from "./Forum/DiscussionDetail/DiscussionDetail";
-
+import StudentClassList from "./Student/StudentClassList";
 export {
   AccessDenied,
   AccountList,
@@ -30,4 +30,5 @@ export {
   UserProfile,
   StudentProfile,
   DiscussionDetail,
+  StudentClassList
 };

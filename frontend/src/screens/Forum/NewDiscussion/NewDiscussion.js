@@ -2,7 +2,7 @@ import { Button, Col, Drawer, Form, Input, Row, Select } from "antd";
 import { useForm } from "antd/lib/form/Form";
 import { forwardRef, useEffect, useImperativeHandle, useState, useRef } from "react";
 import { createTopic } from "../../../api/forum";
-import { getAccountPoster } from "../../../api/accounts";
+import { getAccountPoster, getCurrentUser } from "../../../api/accounts";
 
 const NewDiscussion = forwardRef((props, ref) => {
   const [poster, setPoster] = useState("");
@@ -11,7 +11,7 @@ const NewDiscussion = forwardRef((props, ref) => {
 
   const getPoster = async () => {
     try {
-      const res = await getAccountPoster(JSON.parse(localStorage.getItem("user")).id);
+      const res = await getAccountPoster(getCurrentUser().id);
       setPoster(res);
     } catch(error) {
       console.log(error);
@@ -34,7 +34,7 @@ const NewDiscussion = forwardRef((props, ref) => {
       const newTopic = {...values, poster: poster};
       createTopic(newTopic)
         .then(data => {
-          console.log(data);
+          window.location.reload();
 
         })
         .catch(err => {

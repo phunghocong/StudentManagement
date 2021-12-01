@@ -18,6 +18,8 @@ const paths = {
   DANH_SACH_SINH_VIEN: "/danh-sach-sinh-vien",
   DANH_SACH_TAI_KHOAN: "/danh-sach-tai-khoan",
   DANH_SACH_LOP_HOC: "/danh-sach-lop-hoc",
+  DANH_SACH_SINH_VIEN_LOP_HOC: "/danh-sach-sinh-vien-lop-hoc/",
+
   TAO_THONG_BAO: "/tao-thong-bao",
 
   // Sinh vien

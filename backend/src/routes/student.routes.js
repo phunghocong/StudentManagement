@@ -21,8 +21,9 @@ module.exports = app => {
   router.get('/smallList/:mode', students.findAllToStudentList);
   //get all base class (CA clc...)
   router.get('/class/list', students.getAllClass)
+  //router.get('/class/:baseClass', students.findStudentsFromClass)
   //Find students from class X
-  router.get('/class/:baseClass', students.findStudentsFromClass)
+  router.get('/list/class/:mode&:baseClass', students.findStudentsFromClass)
 
   //Get student by their studentID
   router.get('/:studentID', students.findByID);

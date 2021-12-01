@@ -64,14 +64,14 @@ const Sider = ({ location }) => {
         path: paths.FORUM,
         subs: [],
       },
-      {
+      /* {
         //Chung
         key: rid(),
         title: "Hồ sơ",
         icon: <UserOutlined />,
         path: paths.HO_SO,
         subs: [],
-      },
+      }, */
     ];
 
     if (isStudent) {

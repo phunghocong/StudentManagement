@@ -54,7 +54,7 @@ const StudentConfig = forwardRef((props, ref) => {
 
       setCurrentType(types.EDIT);
       setIsEnlisted(data.isEnlisted);
-      console.log("openEdit" + isEnlisted);
+      //console.log("openEdit" + isEnlisted);
 
       form.setFields(
         Object.values(fieldNames).map((name) => ({
@@ -65,17 +65,15 @@ const StudentConfig = forwardRef((props, ref) => {
     },
   }));
   useEffect(() => {
-    console.log("useEffect" + isEnlisted);
+    //console.log("useEffect" + isEnlisted);
 
   })
   const onFinish = (values) => {
-    console.log(values);
 
     if (currentType == types.NEW) {
       delete values.id;
       createStudentAndRegisterNewAccount(values)
       .then(res => {
-        console.log(res);
         if (res.status == 200)
           window.location.reload(false);
       })

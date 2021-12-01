@@ -1,7 +1,7 @@
 import { Row, Col, Avatar, Button, Form, Input } from "antd";
 import { UserOutlined } from "@ant-design/icons";
 import { useEffect, useRef, useState } from "react";
-import { getAccount } from "../../api/accounts";
+import { getAccount,getCurrentUser,currentUserIsStudent } from "../../api/accounts";
 import { useForm } from "antd/lib/form/Form";
 export default function UserProfile() {
   const onFinish = (value) => {
@@ -20,7 +20,7 @@ export default function UserProfile() {
   const [fullName, setFullName] = useState("")
   const [form] = useForm();
   useEffect(() => {
-    getAccount(JSON.parse(localStorage.getItem("user")).id)
+    getAccount(getCurrentUser().id)
       .then(res => {
         setFullName(res.data.surName + " " + res.data.firstName)
         setEmail(res.data.email);
@@ -38,7 +38,7 @@ export default function UserProfile() {
     <div>
       <Row>
         <Col flex="300px" style={{ textAlign: "center" }}>
-          <Avatar size={120} icon={<UserOutlined />} /><br />
+          <Avatar size={120} src={"https://joeschmoe.io/api/v1/"+getCurrentUser().username+" - "+fullName} /><br />
           {fullName}<br />
           {email}<br />
           <Button
@@ -48,6 +48,8 @@ export default function UserProfile() {
               textAlign: "center",
               margin: "20px auto",
             }}
+            disabled={!currentUserIsStudent()}
+          
           >
             Xem thông tin sinh viên
           </Button>

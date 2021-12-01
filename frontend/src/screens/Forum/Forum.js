@@ -52,7 +52,7 @@ export default function Forum() {
         renderItem={(item) => (
           <List.Item className={forum["item"]} size="large">
             <List.Item.Meta
-              avatar={<Avatar src={item.avatar}>{item.poster}</Avatar>}
+              avatar={<Avatar src={"https://joeschmoe.io/api/v1/"+item.poster}>{item.poster}</Avatar>}
               title={
                 <Row justify="space-between" align="middle">
                   <Link to={paths.CHI_TIET_FORUM_nId + item.id}>

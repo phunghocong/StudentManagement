@@ -1,6 +1,9 @@
 import { Card, List } from "antd";
 import { useEffect, useState } from "react";
 import { getAllClass } from "../../api/students";
+import { Link } from "react-router-dom";
+
+import paths from "../../constants/paths";
 
 export default function ClassList() {
   const [dataList, setDataList] = useState([]);
@@ -30,7 +33,11 @@ export default function ClassList() {
         dataSource={dataList}
         renderItem={(item) => (
           <List.Item>
-            <Card title={item}></Card>
+            <Card title={item}>          
+              <Link to={paths.DANH_SACH_SINH_VIEN_LOP_HOC+ item}>
+                Xem lớp
+              </Link></Card>
+
           </List.Item>
         )}
       />

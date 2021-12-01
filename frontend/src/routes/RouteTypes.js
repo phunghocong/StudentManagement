@@ -1,9 +1,9 @@
 import { Route, Redirect } from "react-router-dom";
 import keys from "../constants/keys";
 import paths from "../constants/paths";
-import { currentUserIsStudent } from "../api/accounts";
+import { currentUserIsStudent,getCurrentUser } from "../api/accounts";
 export const AuthRoute = ({ component: Component, ...remainingProps }) => {
-  const isAuth = !!localStorage.getItem(keys.USER);
+  const isAuth = !!getCurrentUser();
 
   return (
     <Route
@@ -20,7 +20,7 @@ export const AuthRoute = ({ component: Component, ...remainingProps }) => {
 };
 
 export const PrivateRoute = ({ component: Component, ...remainingProps }) => {
-  const isAuth = !!localStorage.getItem(keys.USER);
+  const isAuth = !!getCurrentUser();
 
   return (
     <Route

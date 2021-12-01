@@ -6,18 +6,23 @@ import AccountDelete from "./AccountDelete";
 import AccountConfig from "./AccountConfig";
 
 export default function AccountList() {
+
   const columns = [
     {
       title: "Avatar",
       dataIndex: "imageUrl",
       width: "7%",
-      render: (theImageURL) => (
+      render: (theImageURL, row) => (
         <img
-          border-radius="50%"
-          width="40px"
+          style={{
+            borderRadius: 20,
+            width: 40,
+            height: 40,
+
+          }}
           alt={theImageURL}
           src={
-            "https://icon-library.com/images/avatar-png-icon/avatar-png-icon-3.jpg"
+            "https://joeschmoe.io/api/v1/" + row.username + " - " + row.surName + " " + row.firstName
           }
         />
       ),
@@ -26,6 +31,8 @@ export default function AccountList() {
     { title: "Họ", key: "surName", dataIndex: "surName" },
     { title: "Tên", key: "firstName", dataIndex: "firstName" },
     { title: "Email", key: "email", dataIndex: "email" },
+    { title: "Quyền hạn", key: "authorityLevel", dataIndex: "authorityLevel" },
+
     {
       title: "",
       key: "actions",

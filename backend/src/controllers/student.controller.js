@@ -314,8 +314,14 @@ exports.getAllClass = (req, res) => {
 }
 exports.findStudentsFromClass = (req, res) => {
   const baseClass = req.params.baseClass;
-
-  Student.find({ "baseClass": baseClass })
+  const mode = req.params.mode;
+  var condition
+    = (mode == "good") ? {
+      "GPA": { $gt: 3.6 }, "baseClass": baseClass
+    } : (mode == "bad" ? {
+        "GPA": { $lt: 2 }, "baseClass": baseClass
+      } : { "baseClass": baseClass});
+  Student.find(condition)
     .then(data => {
       if (!data)
         res.status(404).send({ message: "Not found students in class " + baseClass });

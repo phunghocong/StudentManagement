@@ -69,9 +69,11 @@ export default function DiscussionDetail() {
 
   const onFinish = async (values) => {
     try {
-      createComment(topic.id, {...values, poster: poster,})
+      createComment(topicId, {...values, poster: poster,})
         .then(data => {
-          console.log(data);
+          //console.log(data);
+          window.location.reload();
+
         })
         .catch(error => {
           console.log(error);
@@ -130,7 +132,7 @@ export default function DiscussionDetail() {
           <li>
             <Comment
               author={item.poster}
-              avatar={<Avatar src="https://joeschmoe.io/api/v1/random" alt="Error avt" />}
+              avatar={<Avatar src={"https://joeschmoe.io/api/v1/"+item.poster} alt="Error avt" />}
               content={item.detail}
               datetime={item.createdTime}
               className={discussionDetail["comment"]}
@@ -142,7 +144,7 @@ export default function DiscussionDetail() {
       <Comment
         className={discussionDetail["rep-comment"]}
         avatar={
-          <Avatar src="https://joeschmoe.io/api/v1/random" alt="Error avt" />
+          <Avatar src={"https://joeschmoe.io/api/v1/"+poster} alt="Error avt" />
         }
         content={
           <Form onFinish={onFinish}>

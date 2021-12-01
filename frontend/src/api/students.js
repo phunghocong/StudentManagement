@@ -5,14 +5,14 @@ const url = 'http://localhost:8080/api/students';
 
 export const findAllToStudentList = (mode) => axios.get(`${url}/smallList/${mode}`);
 export const findAll = (mode) => axios.get(`${url}/list/${mode}`);
-    //Get student by their manager
-
+//Get student by their manager
 export const findByMod = (mode, managedBy) => axios.get(`${url}/list/mod/${mode}&${managedBy}`);
+
+export const findStudentsFromClass = (mode, baseClass) => axios.get(`${url}/list/class/${mode}&${baseClass}`);
 
 export const findByID = (studentID) => axios.get(`${url}/${studentID}`);
 
 
-export const findStudentsFromClass = (baseClass) => axios.get(`${url}/class/${baseClass}`);
 
 export const getAllClass = () => axios.get(`${url}/class/list`);
 

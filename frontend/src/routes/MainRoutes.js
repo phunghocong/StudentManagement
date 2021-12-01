@@ -15,6 +15,7 @@ import {
   UserProfile,
   DiscussionDetail,
   StudentProfile,
+  StudentClassList,
 } from "../screens";
 import { ConsultantRoute, StudentRoute } from "./RouteTypes";
 
@@ -47,7 +48,11 @@ export default function MainRoutes() {
               path={paths.DANH_SACH_TAI_KHOAN}
               component={AccountList}
             />
-
+            <ConsultantRoute
+              
+              path={paths.DANH_SACH_SINH_VIEN_LOP_HOC}
+              component={StudentClassList}
+            />
             <Route exact path={paths.CHAT} component={Chat} />
 
             <Route exact path={paths.FORUM} component={Forum} />
