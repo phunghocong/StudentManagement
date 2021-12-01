@@ -76,12 +76,14 @@ const StudentConfig = forwardRef((props, ref) => {
       .then(res => {
         if (res.status == 200)
           window.location.reload(false);
+        else alert("Không thể tạo tài khoản. Lỗi server")
+
       })
     } else {
       updateByID(values.id,values).then(res=> {
         if(res.status==200)
         window.location.reload(false);
-
+        else alert("Không thể cập nhập tài khoản. Lỗi server")
       });
     }
   };

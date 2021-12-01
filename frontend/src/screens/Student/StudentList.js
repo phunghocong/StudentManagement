@@ -9,7 +9,7 @@ import { findAll, findByMod } from "../../api/students";
 import StudentDelete from "./StudentDelete";
 import StudentConfig from "./StudentConfig";
 import StudentGrade from "./StudentGrade";
-import { currentUserIsCon, getCurrentUser } from "../../api/accounts";
+import { currentUserIsCon, currentUserIsMod, getCurrentUser } from "../../api/accounts";
 const studentType = {
   ANY: "any",
   GOOD: "good",
@@ -116,7 +116,7 @@ export default function StudentList() {
       <Row justify="space-between" align="middle">
         <Row align="middle" gutter={20}>
           <Col>
-            <h1>Danh sách sinh viên</h1>
+            <h1>Danh sách sinh viên {currentUserIsCon()?" của cố vấn học tập "+getCurrentUser().username:""}</h1>
           </Col>
 
           <Col>

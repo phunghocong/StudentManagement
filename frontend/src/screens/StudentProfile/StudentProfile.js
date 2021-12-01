@@ -1,11 +1,9 @@
 import { Row, Col, Avatar, Button, Form, Input, Checkbox } from "antd";
 import { useEffect, useRef, useState } from "react";
-import { findByID } from "../../api/students";
+import { findByID, updateByID } from "../../api/students";
 import { useForm } from "antd/lib/form/Form";
 export default function UserProfile() {
-  const onFinish = (value) => {
-    console.log(value);
-  };
+
   const fieldNames = {
     firstName: "firstName",
     surName: "surName",
@@ -31,6 +29,7 @@ export default function UserProfile() {
     baseClass: "baseClass", //CA-CLC4
     major: "major", //Khoa hoc may tinh
     startedYear: "startedYear",
+    id: "id"
   };
   const [form] = useForm();
   useEffect(() => {
@@ -45,10 +44,17 @@ export default function UserProfile() {
         );
       });
   }, []);
+  const onFinish = (values) => {
+    updateByID(values.id, values).then(res => {
+      if (res.status == 200)
+        window.location.reload(false);
+      else alert("Không thể cập nhập tài khoản. Lỗi server")
+    });
 
+  };
   return (
     <div>
-        <Form form={form} layout="vertical" onFinish={onFinish}>
+      <Form form={form} layout="vertical" onFinish={onFinish}>
         <Row gutter={10}>
           <Col flex="500px">
             <b>Thông tin cơ bản</b>
@@ -109,33 +115,33 @@ export default function UserProfile() {
             </Form.Item>
             <b>Liên lạc</b>
 
-          <Row gutter={10}>
-            <Col span={12}>
-              <Form.Item label="Số điện thoại" name={fieldNames.phoneNumber}>
-                <Input />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item label="Email" name={fieldNames.email}>
-                <Input />
-              </Form.Item>
-            </Col>
-          </Row>
-          <Form.Item label="Địa chỉ hiện tại" name={fieldNames.currentAddress}>
-            <Input />
-          </Form.Item>
-          <Row gutter={10}>
-            <Col span={12}>
-              <Form.Item label="Số điện thoại bố" name={fieldNames.fatherPhoneNumber}>
-                <Input />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item label="Số điện thoại mẹ" name={fieldNames.motherPhoneNumber}>
-                <Input />
-              </Form.Item>
-            </Col>
-          </Row>
+            <Row gutter={10}>
+              <Col span={12}>
+                <Form.Item label="Số điện thoại" name={fieldNames.phoneNumber}>
+                  <Input />
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item label="Email" name={fieldNames.email}>
+                  <Input />
+                </Form.Item>
+              </Col>
+            </Row>
+            <Form.Item label="Địa chỉ hiện tại" name={fieldNames.currentAddress}>
+              <Input />
+            </Form.Item>
+            <Row gutter={10}>
+              <Col span={12}>
+                <Form.Item label="Số điện thoại bố" name={fieldNames.fatherPhoneNumber}>
+                  <Input />
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item label="Số điện thoại mẹ" name={fieldNames.motherPhoneNumber}>
+                  <Input />
+                </Form.Item>
+              </Col>
+            </Row>
           </Col>
 
           <Col flex="500px">
@@ -193,14 +199,17 @@ export default function UserProfile() {
                   <Input disabled />
                 </Form.Item>
               </Col>
+              <Form.Item label="" name={fieldNames.id} hidden>
+                <Input disabled />
+              </Form.Item>
             </Row>
           </Col>
-          </Row>
-        </Form>
+        </Row>
+      </Form>
 
-        <Button type="primary" onClick={() => form.submit()}>
-          Lưu
-        </Button>
+      <Button type="primary" onClick={() => form.submit()}>
+        Lưu
+      </Button>
     </div>
   );
 }
