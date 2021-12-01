@@ -2,7 +2,8 @@ import { Button, Checkbox, Col, Drawer, Form, Input, Row, Switch } from "antd";
 import { useForm } from "antd/lib/form/Form";
 import { FormProvider } from "rc-field-form";
 import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
-import { update,updateByID, createStudentAndRegisterNewAccount } from "../../api/students"
+import { update, updateByID, createStudentAndRegisterNewAccount } from "../../api/students"
+import { CalendarOutlined, PhoneOutlined } from "@ant-design/icons"
 const types = {
   NEW: "new",
   EDIT: "edit",
@@ -73,16 +74,16 @@ const StudentConfig = forwardRef((props, ref) => {
     if (currentType == types.NEW) {
       delete values.id;
       createStudentAndRegisterNewAccount(values)
-      .then(res => {
+        .then(res => {
+          if (res.status == 200)
+            window.location.reload(false);
+          else alert("Không thể tạo tài khoản. Lỗi server")
+
+        })
+    } else {
+      updateByID(values.id, values).then(res => {
         if (res.status == 200)
           window.location.reload(false);
-        else alert("Không thể tạo tài khoản. Lỗi server")
-
-      })
-    } else {
-      updateByID(values.id,values).then(res=> {
-        if(res.status==200)
-        window.location.reload(false);
         else alert("Không thể cập nhập tài khoản. Lỗi server")
       });
     }
@@ -112,7 +113,7 @@ const StudentConfig = forwardRef((props, ref) => {
               {currentType === types.NEW ? "Tạo mới" : "Cập nhật"}
             </Button>
           </Col>
-        </Row> 
+        </Row>
       }
     >
       <Form form={form} layout="vertical" onFinish={onFinish}>
@@ -145,7 +146,7 @@ const StudentConfig = forwardRef((props, ref) => {
             </Form.Item>
           </Col>
           <Col span={8}>
-            <Form.Item label="Số điện thoại" name={fieldNames.phoneNumber} rules={[{ required: true, message: "Hãy nhập số điện thoại của sinh viên" }]}>
+            <Form.Item  label="Số điện thoại" name={fieldNames.phoneNumber} rules={[{ required: true, message: "Hãy nhập số điện thoại của sinh viên" }]}>
               <Input />
             </Form.Item>
           </Col>
@@ -206,7 +207,7 @@ const StudentConfig = forwardRef((props, ref) => {
         <Row gutter={10}>
           <Col span={8}>
             <Form.Item label="Đã đi nhập ngũ" name={fieldNames.isEnlisted}>
-             {/*  <Checkbox defaultChecked={isEnlisted} /> */}
+              {/*  <Checkbox defaultChecked={isEnlisted} /> */}
               <Input />
 
             </Form.Item>

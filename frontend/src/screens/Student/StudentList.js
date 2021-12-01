@@ -124,6 +124,15 @@ export default function StudentList() {
               Tạo mới
             </Button>
           </Col>
+          <Col>
+            <Button type="primary" disabled onClick={() => {}}>
+              Nhập dữ liệu
+            </Button>
+          </Col>          <Col>
+            <Button type="primary" disabled onClick={() => {}}>
+              Xuất dữ liệu
+            </Button>
+          </Col>
         </Row>
 
         <Select
