@@ -1,11 +1,12 @@
 import { Button, Col, Drawer, Form, Input, Row } from "antd";
 import { useForm } from "antd/lib/form/Form";
-import { forwardRef, useImperativeHandle, useState } from "react";
+import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
 import { getIdByUsername, createNotification } from "../../../api/accounts";
 
 const NewNoti = forwardRef((props, ref) => {
   const [visible, setVisible] = useState(false);
   const [form] = useForm();
+  const [isUserValid, setIsUserValid] = useState("");
 
   useImperativeHandle(ref, () => ({
     open() {
@@ -20,16 +21,20 @@ const NewNoti = forwardRef((props, ref) => {
 
   const onFinish = async (values) => {
     try {
+      setIsUserValid("");
       const destinationId = await getIdByUsername(values.id);
       createNotification(destinationId, {title: values.title, message: values.message})
         .then(data => {
-          console.log(data);
+          // console.log(data);
+          window.location.reload();
         })
         .catch(error => {
           console.log(error);
         })
     } catch(error) {
-      console.log(error);
+      if (values.message && values.title) {
+        setIsUserValid("User is not exist!");
+      }
     }
   };
 
@@ -47,7 +52,11 @@ const NewNoti = forwardRef((props, ref) => {
           </Col>
 
           <Col>
-            <Button type="primary" onClick={() => form.submit()}>
+            <Button type="primary" onClick={() => {
+                form.submit();
+                setIsUserValid("");
+              }
+            }>
               Tạo mới
             </Button>
           </Col>
@@ -79,6 +88,8 @@ const NewNoti = forwardRef((props, ref) => {
           <Input />
         </Form.Item>
       </Form>
+      
+      <div role="alert">{isUserValid}</div>
     </Drawer>
   );
 });
