@@ -1,6 +1,7 @@
 import { Button, Col, Drawer, Form, Input, Row } from "antd";
 import { useForm } from "antd/lib/form/Form";
 import { forwardRef, useImperativeHandle, useState } from "react";
+import { getIdByUsername, createNotification } from "../../../api/accounts";
 
 const NewNoti = forwardRef((props, ref) => {
   const [visible, setVisible] = useState(false);
@@ -17,8 +18,19 @@ const NewNoti = forwardRef((props, ref) => {
     setVisible(false);
   };
 
-  const onFinish = (values) => {
-    console.log(values);
+  const onFinish = async (values) => {
+    try {
+      const destinationId = await getIdByUsername(values.id);
+      createNotification(destinationId, {title: values.title, message: values.message})
+        .then(data => {
+          console.log(data);
+        })
+        .catch(error => {
+          console.log(error);
+        })
+    } catch(error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -45,7 +57,7 @@ const NewNoti = forwardRef((props, ref) => {
       <Form form={form} onFinish={onFinish} layout="vertical">
         <Form.Item
           label="Tiêu đề"
-          name="tieu_de"
+          name="title"
           rules={[{ required: true, message: "Nhập đầy đủ nội dung" }]}
         >
           <Input />
@@ -53,10 +65,18 @@ const NewNoti = forwardRef((props, ref) => {
 
         <Form.Item
           label="Nội dung"
-          name="noi_dung"
+          name="message"
           rules={[{ required: true, message: "Nhập đầy đủ nội dung" }]}
         >
           <Input.TextArea rows={4} />
+        </Form.Item>
+
+        <Form.Item
+          label="Người nhận - Tên người dùng"
+          name="id"
+          rules={[{ required: true, message: "Nhập đầy đủ nội dung" }]}
+        >
+          <Input />
         </Form.Item>
       </Form>
     </Drawer>

@@ -33,15 +33,18 @@ module.exports = app => {
 
   // Lấy array tất cả các model account
   router.get('/getAll/', accounts.getAll);
+
   //Xóa tất cả, không dùng, chỉ để test
   router.delete("/delete/", accounts.deleteAll);
+
   //Xóa tất cả hs, không dùng, chỉ để test
   router.delete("/deleteStudent/", accounts.deleteAllStudent);
 
   // Xóa 1 thông báo của 1 tài khoản
   router.delete("/deleteNotification/", accounts.deleteNotification);
+  
   // // Lấy một model account từ username
-  // router.get('/get/', accounts.getOneByUsername);
+  router.get('/getByUsername/:username', accounts.getOneByUsername);
  
   app.use("/api/accounts", router);
   };
