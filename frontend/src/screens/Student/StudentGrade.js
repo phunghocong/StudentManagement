@@ -2,10 +2,13 @@ import { Col, Modal, Row, Table } from "antd";
 import { forwardRef, useImperativeHandle, useState } from "react";
 import { findByStudentId } from "../../api/classRecord"
 import { useEffect } from "react";
+import { findByID } from "../../api/students";
 
 const StudentGrade = forwardRef((props, ref) => {
   const [dataList, setDataList] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [totalCredit, setTotalCredit] = useState("0");
+
   const columns = [
     { title: "Tên lớp học", key: "classname", dataIndex: "classname", width: "10%" },
     {
@@ -86,6 +89,18 @@ const StudentGrade = forwardRef((props, ref) => {
       console.log("get student list error", error);
     }
   };
+  const getTotalCredit = async (studentID) => {
+    try {
+      const res = await findByID(studentID);
+      const majorLength = res.data.major.length;
+
+      setTotalCredit(majorLength * 5);
+
+
+    } catch (error) {
+      console.log("get student list error", error);
+    }
+  }
   const [sumCredit, setSumCredit] = useState(0);
   const [averageGPA, setAverageGPA] = useState("0");
   const updateTotal = classList => {
@@ -109,7 +124,7 @@ const StudentGrade = forwardRef((props, ref) => {
 
       setInitdata(data);
       getList(JSON.parse(initdata.studentID));
-
+      getTotalCredit(JSON.parse(initdata.studentID))
     },
   }));
 
@@ -132,7 +147,7 @@ const StudentGrade = forwardRef((props, ref) => {
 
       <Row gutter={50}>
         <Col>
-          <p>Tổng số tín chỉ tích luỹ: {sumCredit}</p>
+          <p>Tổng số tín chỉ tích luỹ: {sumCredit}/{totalCredit}</p>
         </Col>
 
         <Col>

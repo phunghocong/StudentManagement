@@ -1,12 +1,14 @@
 import { Col, Row, Table } from "antd";
 import { findByStudentId } from "../../api/classRecord"
+import { findByID } from "../../api/students";
 import { useEffect, useRef, useState } from "react";
+import { getCurrentUser } from "../../api/accounts"
 import keys from "../../constants/keys";
 
 export default function StudyResult() {
   const [dataList, setDataList] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-
+  const [totalGPA, setTotalGPA] = useState("0");
   const columns = [
     { title: "Tên lớp học", key: "classname", dataIndex: "classname", width: "10%" },
     {
@@ -45,7 +47,8 @@ export default function StudyResult() {
     ,
   ];
   useEffect(() => {
-    getList(JSON.parse(localStorage.getItem("user")).username);
+    getList(getCurrentUser().username);
+    getTotalCredit(getCurrentUser().username);
 
   }, []);
   const getGPAchar = (score) => {
@@ -88,6 +91,15 @@ export default function StudyResult() {
       console.log("get student list error", error);
     }
   };
+  const getTotalCredit = async (studentID) => {
+    try {
+      const res = await findByID(studentID);
+      const majorLength = res.data.major.length;
+      setTotalGPA(majorLength*5 );         
+    } catch (error) {
+      console.log("get student list error", error);
+    }
+  }
   const [sumCredit, setSumCredit] = useState(0);
   const [averageGPA, setAverageGPA] = useState("0");
   const updateTotal = classList => {
@@ -97,7 +109,7 @@ export default function StudyResult() {
     var final = (classList.map(i => i.grade).reduce((a, b) => parseFloat(a) + parseFloat(b)));
 
     //gpa = (shortenDigit(gpa / classList.length, 1));
-    var gpa = shortenDigit((0.4 * midTerm + 0.6 * final) *0.4/ classList.length,1);
+    var gpa = shortenDigit((0.4 * midTerm + 0.6 * final) * 0.4 / classList.length, 1);
     setAverageGPA(gpa);
     console.log(sumCredit);
     console.log(averageGPA);
@@ -114,7 +126,7 @@ export default function StudyResult() {
 
       <Row gutter={50} >
         <Col >
-          <p>Tổng số tín chỉ tích luỹ: {sumCredit}</p>
+          <p>Tổng số tín chỉ tích luỹ: {sumCredit}/{totalGPA}</p>
         </Col>
 
         <Col >

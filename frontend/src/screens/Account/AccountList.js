@@ -31,7 +31,28 @@ export default function AccountList() {
     { title: "Họ", key: "surName", dataIndex: "surName" },
     { title: "Tên", key: "firstName", dataIndex: "firstName" },
     { title: "Email", key: "email", dataIndex: "email" },
-    { title: "Quyền hạn", key: "authorityLevel", dataIndex: "authorityLevel" },
+    {
+      title: "Quyền hạn", key: "authorityLevel", dataIndex: "authorityLevel", filters: [
+        {
+          text: 'Admin',
+          value: 'ADMIN',
+        },
+        {
+          text: 'Quản lý',
+          value: 'MOD',
+        },
+        {
+          text: 'Cố vấn học tập',
+          value: 'CON',
+        },
+        {
+          text: 'Sinh viên',
+          value: '',
+        },
+      ], 
+      onFilter: (value, record) => record.authorityLevel.indexOf(value) === 0,
+
+      },
 
     {
       title: "",
