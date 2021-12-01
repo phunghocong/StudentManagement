@@ -261,7 +261,7 @@ exports.createNotification = (req, res) => {
     read: false,
     title: req.body.title,
     message: req.body.message,
-    createTime: getCurrentDateTimeString(),
+    createdTime: getCurrentDateTimeString(),
   };
 
   Account.findOneAndUpdate(
@@ -312,6 +312,27 @@ exports.getAll = (req, res) => {
     });
 };
 
+exports.getOneByUsername = (req, res) => {
+  const username = req.params.username;
+
+  if (!username || username == "") {
+    res.status(400).send({message: "Username must be filled in!"});
+  }
+
+  Account.findOne({ username: username })
+    .then(data => {
+        if (!data) {
+            res.status(404).send({ message: `There is no account with username: ${req.params.username}`});
+        } else {
+            res.status(200).send(data);
+        }
+    })
+    .catch(err => {
+        res.status(500).send({
+            message: "Error when get data",
+        })
+    });
+}
 // Xóa tât cả các tài khoản.
 exports.deleteAll = (req, res) => {
   Account.deleteMany({})
@@ -327,6 +348,7 @@ exports.deleteAll = (req, res) => {
       });
     });
 };
+
 // Xóa tât cả các tài khoản.
 exports.deleteAllStudent = (req, res) => {
   Account.deleteMany({"authorityLevel":["","NONE"]})

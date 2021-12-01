@@ -58,7 +58,7 @@ export const updateAccount = (id, updatedAccount) => axios.post(`${url}/update/$
 // Nhận vào string _id xóa object
 export const deleteAccount = (id) => axios.delete(`${url}/delete/${id}`);
 
-// Nhận vào object gồm {message} id params là tài khoản cần tạo thông báo.
+// Nhận vào object gồm {title, message} id params là tài khoản cần tạo thông báo.
 export const createNotification = (id, notification) => axios.post(`${url}/createNotification/${id}`, notification);
 
 // Nhận vào không gì cả trả về array chứa các đối tượng thuộc model accounts
@@ -69,6 +69,12 @@ export const getNotification = (id) => axios
     .get(`${url}/get/${id}`)
     .then(data => {
         return data.data.notification;
+    });
+
+// Nhận vào string username trả về string id của object model
+export const getIdByUsername = (username) => axios.get(`${url}/getByUsername/${username}`)
+    .then(res => {
+        return res.data.id;
     });
 
 // Nhận vào object gồm {accountId, notificationId}

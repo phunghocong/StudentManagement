@@ -18,7 +18,7 @@ module.exports = mongoose => {
             { read: Boolean,
             title: String,
             message: String,
-            createTime: String,
+            createdTime: String,
             } ],
         posts: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Post' }],
         topics: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Topic' }]

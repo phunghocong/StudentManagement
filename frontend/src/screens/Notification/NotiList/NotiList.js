@@ -1,11 +1,27 @@
 import { Button, Col, List, Row } from "antd";
 import notiList from "./notiList.module.scss";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import NewNoti from "../NewNoti/NewNoti";
-import { currentUserIsStudent } from "../../../api/accounts";
+import { currentUserIsStudent, getNotification } from "../../../api/accounts";
+
 export default function NotiList() {
   const isStudent = currentUserIsStudent();
   const ref = useRef();
+
+  const [notification, setNotification] = useState([]);
+
+  const getNotificationList = async () => {
+    try {
+      const res = await getNotification(JSON.parse(localStorage.getItem("user")).id);
+      setNotification(res);
+    } catch(error) {
+      console.log(error);
+    }
+  }
+
+  useEffect(() => {
+    getNotificationList();
+  }, [])
 
   return (
     <div className="container">
@@ -27,7 +43,7 @@ export default function NotiList() {
 
       <List
         itemLayout="horizontal"
-        dataSource={[1, 2, 3, 4]}
+        dataSource={notification}
         renderItem={(item) => (
           <List.Item className={notiList["item"]} size="large">
             <List.Item.Meta
@@ -37,18 +53,13 @@ export default function NotiList() {
                   align="middle"
                   className={notiList["bar"]}
                 >
-                  <h4>Thong bao so 1</h4>
+                  <h4>{item.title}</h4>
 
-                  <p>22/11/2021</p>
+                  <p>{item.createdTime}</p>
                 </Row>
               }
             />
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolor neque
-            quisquam veritatis at hic explicabo placeat fugiat cum nesciunt
-            ipsum ad quibusdam possimus ab maxime modi, similique earum
-            laboriosam qui quas nihil ipsam eligendi! Quibusdam possimus,
-            suscipit ab a nam doloribus accusantium consectetur quod magnam
-            porro, cumque officia perferendis magni.
+            {item.message}
           </List.Item>
         )}
       />
