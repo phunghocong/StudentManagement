@@ -13,7 +13,7 @@ const NewDiscussion = forwardRef((props, ref) => {
     try {
       const res = await getAccountPoster(getCurrentUser().id);
       setPoster(res);
-    } catch(error) {
+    } catch (error) {
       console.log(error);
     }
   }
@@ -31,9 +31,10 @@ const NewDiscussion = forwardRef((props, ref) => {
 
   const onFinish = async (values) => {
     try {
-      const newTopic = {...values, poster: poster};
+      const newTopic = { ...values, poster: poster };
       createTopic(newTopic)
-        .then(data => {
+        .then( data => {
+
           window.location.reload();
 
         })

@@ -312,6 +312,7 @@ exports.getAllClass = (req, res) => {
       res.send(err);
     })
 }
+
 exports.findStudentsFromClass = (req, res) => {
   const baseClass = req.params.baseClass;
   const mode = req.params.mode;
@@ -319,8 +320,8 @@ exports.findStudentsFromClass = (req, res) => {
     = (mode == "good") ? {
       "GPA": { $gt: 3.6 }, "baseClass": baseClass
     } : (mode == "bad" ? {
-        "GPA": { $lt: 2 }, "baseClass": baseClass
-      } : { "baseClass": baseClass});
+      "GPA": { $lt: 2 }, "baseClass": baseClass
+    } : { "baseClass": baseClass });
   Student.find(condition)
     .then(data => {
       if (!data)
@@ -351,9 +352,9 @@ exports.findByMod = (req, res) => {
   const managedBy = req.params.managedBy;
   const mode = req.params.mode;
   var condition
-    = (mode == "good") ? { "GPA": { $gt: 3.6 }, "managedBy": managedBy}
-    : (mode == "bad" ? { "GPA": { $lt: 2 }, "managedBy": managedBy} : 
-      { "managedBy": managedBy });
+    = (mode == "good") ? { "GPA": { $gt: 3.6 }, "managedBy": managedBy }
+      : (mode == "bad" ? { "GPA": { $lt: 2 }, "managedBy": managedBy } :
+        { "managedBy": managedBy });
   Student.find(condition)
     .then(data => {
       if (!data)
@@ -423,7 +424,7 @@ exports.updateByID = (req, res) => {
           message: `Cannot update student with id=${id}. Maybe student was not found!`
         });
       } else {
-        res.status(200).send({message: "student was updated successfully."})
+        res.status(200).send({ message: "student was updated successfully." })
 
       };
     })
@@ -488,7 +489,37 @@ exports.deleteAll = (req, res) => {
       });
     });
 };
-
+//Graph and stuff
+exports.graphStudentCountEachYear = (req, res) => {
+  const fromYear = parseInt(req.params.from);
+  const toYear = parseInt(req.params.to);
+  const step = async _ => {
+    await Student
+      .find()
+      .distinct("startedYear")
+      .then(async data => {
+        var listYear = [];
+        for await (const yearOf of data) {
+          var yearInt = parseInt(yearOf);
+          if (yearInt >= fromYear && yearInt <= toYear) {
+            const count = await Student.countDocuments({ startedYear: yearOf })
+            var info = {
+              year: yearOf,
+              studentCount: count
+            }
+            listYear.push(info);
+          }
+        }
+        res.send(listYear);
+      })
+      .catch(err => {
+        res.status(500).send(err);
+      })
+  }
+  step().then(() => {
+    console.log("finish get graph")
+  });
+}
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const Account = db.accounts;

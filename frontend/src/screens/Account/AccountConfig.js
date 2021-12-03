@@ -1,13 +1,14 @@
 import { Button, Col, Drawer, Form, Input, Row } from "antd";
 import { useForm } from "antd/lib/form/Form";
 import { forwardRef, useImperativeHandle, useState } from "react";
-import { createAccount, updateAccount} from "../../api/accounts";
+import { createAccount, updateAccount } from "../../api/accounts";
 const types = {
   NEW: "new",
   EDIT: "edit",
 };
 
 const fieldNames = {
+  id: "id",
   username: "username",
   password: "password",
   firstName: "firstName",
@@ -40,15 +41,20 @@ const AccountConfig = forwardRef((props, ref) => {
   }));
 
   const onFinish = (values) => {
-    if(currentType==types.NEW) {
+    if (currentType == types.NEW) {
       createAccount(values)
-      .then(res=> {
-        if(res.status==200) {
-          window.location.reload(false);
-        }
-      });
-    } else { 
-      
+        .then(res => {
+          if (res.status == 200) {
+            window.location.reload(false);
+          }
+        });
+    } else {
+      updateAccount(values.id, values)
+        .then(res => {
+          if (res.status == 200) {
+            window.location.reload(false);
+          }
+        });
     }
     console.log(values);
 
@@ -98,14 +104,16 @@ const AccountConfig = forwardRef((props, ref) => {
           <Input />
         </Form.Item>
 
-        <Form.Item label="Mật khẩu" name={fieldNames.password}>
+        {/* <Form.Item label="Mật khẩu" name={fieldNames.password}>
           <Input.Password />
-        </Form.Item>
+        </Form.Item> */}
 
         <Form.Item label="Mức quyền" name={fieldNames.authorityLevel}>
-          <Input/>
+          <Input />
         </Form.Item>
-
+        <Form.Item label="Mức quyền" hidden name={fieldNames.id}>
+          <Input />
+        </Form.Item>
       </Form>
     </Drawer>
   );

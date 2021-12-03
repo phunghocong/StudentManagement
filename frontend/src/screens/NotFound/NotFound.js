@@ -8,10 +8,10 @@ export default function NotFound() {
       <Result
         status="404"
         title="404"
-        subTitle="Sorry, the page you visited does not exist."
+        subTitle="Xin lỗi, trang bạn đang vào không tồn tại."
         extra={
           <Link to={paths.BANG_DIEU_KHIEN}>
-            <Button type="primary">Back Home</Button>
+            <Button type="primary">Quay lại trang chủ</Button>
           </Link>
         }
       />

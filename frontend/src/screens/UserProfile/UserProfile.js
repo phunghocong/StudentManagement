@@ -1,13 +1,21 @@
 import { Row, Col, Avatar, Button, Form, Input } from "antd";
 import { UserOutlined } from "@ant-design/icons";
 import { useEffect, useRef, useState } from "react";
-import { getAccount,getCurrentUser,currentUserIsStudent } from "../../api/accounts";
+import { getAccount, getCurrentUser, currentUserIsStudent, updateAccount } from "../../api/accounts";
 import { useForm } from "antd/lib/form/Form";
 export default function UserProfile() {
   const onFinish = (value) => {
-    console.log(value);
+    updateAccount(value.id, value)
+      .then(res => {
+        if (res.status == 200)
+          window.location.reload();
+      })
+      .catch(err => {
+        alert("Có lỗi xảy ra.")
+      })
   };
   const fieldNames = {
+    id: "id",
     username: "username",
     password: "password",
     firstName: "firstName",
@@ -38,7 +46,7 @@ export default function UserProfile() {
     <div>
       <Row>
         <Col flex="300px" style={{ textAlign: "center" }}>
-          <Avatar size={120} src={"https://joeschmoe.io/api/v1/"+getCurrentUser().username+" - "+fullName} /><br />
+          <Avatar size={120} src={"https://joeschmoe.io/api/v1/" + getCurrentUser().username + " - " + fullName} /><br />
           {fullName}<br />
           {email}<br />
           <Button
@@ -49,7 +57,7 @@ export default function UserProfile() {
               margin: "20px auto",
             }}
             disabled={!currentUserIsStudent()}
-          
+
           >
             Xem thông tin sinh viên
           </Button>
@@ -75,13 +83,18 @@ export default function UserProfile() {
             <Row gutter={10}>
               <Col span={8}>
                 <Form.Item label="Tên đăng nhập" name={fieldNames.username} >
-                  <Input disabled/>
+                  <Input disabled />
                 </Form.Item>
               </Col>
 
               <Col span={8}>
                 <Form.Item label="email" name={fieldNames.email}>
-                  <Input/>
+                  <Input />
+                </Form.Item>
+              </Col>
+              <Col span={8}>
+                <Form.Item label="email" name={fieldNames.id} hidden>
+                  <Input />
                 </Form.Item>
               </Col>
             </Row>

@@ -9,7 +9,7 @@ module.exports = mongoose => {
       national: String,//Viet nam
       ethnic: String,//King
       gender: String,
-      religion: String,//Dao phat
+      religion: String,//Dao phat 
       bornAddress: String,
       homeAddress: String,
       citizenCardId: String, //chung minh thu

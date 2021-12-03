@@ -18,7 +18,7 @@ import discussionDetail from "./discussionDetail.module.scss";
 import moment from "moment";
 import { useState, useEffect, useRef } from "react";
 import { getAllCommentOf, getTopic, createComment } from "../../../api/forum";
-import { getAccountPoster } from "../../../api/accounts";
+import { getAccountPoster, createNotification, getIdByUsername, getCurrentUser } from "../../../api/accounts";
 
 export default function DiscussionDetail() {
   const loc = useLocation();
@@ -33,7 +33,7 @@ export default function DiscussionDetail() {
     try {
       const res = await getAccountPoster(JSON.parse(localStorage.getItem("user")).id);
       setPoster(res);
-    } catch(error) {
+    } catch (error) {
       console.log(error);
     }
   }
@@ -42,7 +42,7 @@ export default function DiscussionDetail() {
     try {
       const res = await getTopic(topicId);
       setTopic(res.data);
-    } catch(error) {
+    } catch (error) {
       console.log(error);
     }
   };
@@ -69,18 +69,36 @@ export default function DiscussionDetail() {
 
   const onFinish = async (values) => {
     try {
-      createComment(topicId, {...values, poster: poster,})
-        .then(data => {
-          //console.log(data);
+      createComment(topicId, { ...values, poster: poster, })
+        .then(async data => {
+          const destinationId = await getIdByUsername(poster.split(" - ")[0]);
+          //console.log(getCurrentUser().id);
+          //console.log(destinationId);
+          //if (getCurrentUser().id != destinationId) {
+            if (true) {
+
+            await createNotification(destinationId,
+              {
+                title: "Bạn có bình luận trên bài đăng của bạn",
+                message: "http://localhost:3000/chi-tiet-thao-luan/" + topicId
+              })
+              .then(data => {
+                console.log(data);
+              })
+              .catch(error => {
+                console.log(error);
+              })
+          }
           window.location.reload();
 
         })
         .catch(error => {
           console.log(error);
         });
-    } catch(error) {
+    } catch (error) {
       console.log(error);
     }
+
   };
 
   return (
@@ -132,7 +150,7 @@ export default function DiscussionDetail() {
           <li>
             <Comment
               author={item.poster}
-              avatar={<Avatar src={"https://joeschmoe.io/api/v1/"+item.poster} alt="Error avt" />}
+              avatar={<Avatar src={"https://joeschmoe.io/api/v1/" + item.poster} alt="Error avt" />}
               content={item.detail}
               datetime={item.createdTime}
               className={discussionDetail["comment"]}
@@ -144,7 +162,7 @@ export default function DiscussionDetail() {
       <Comment
         className={discussionDetail["rep-comment"]}
         avatar={
-          <Avatar src={"https://joeschmoe.io/api/v1/"+poster} alt="Error avt" />
+          <Avatar src={"https://joeschmoe.io/api/v1/" + poster} alt="Error avt" />
         }
         content={
           <Form onFinish={onFinish}>

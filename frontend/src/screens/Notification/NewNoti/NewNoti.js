@@ -23,7 +23,7 @@ const NewNoti = forwardRef((props, ref) => {
     try {
       setIsUserValid("");
       const destinationId = await getIdByUsername(values.id);
-      createNotification(destinationId, {title: values.title, message: values.message})
+      createNotification(destinationId, { title: values.title, message: values.message })
         .then(data => {
           // console.log(data);
           window.location.reload();
@@ -31,7 +31,7 @@ const NewNoti = forwardRef((props, ref) => {
         .catch(error => {
           console.log(error);
         })
-    } catch(error) {
+    } catch (error) {
       if (values.message && values.title) {
         setIsUserValid("User is not exist!");
       }
@@ -53,9 +53,9 @@ const NewNoti = forwardRef((props, ref) => {
 
           <Col>
             <Button type="primary" onClick={() => {
-                form.submit();
-                setIsUserValid("");
-              }
+              form.submit();
+              setIsUserValid("");
+            }
             }>
               Tạo mới
             </Button>
@@ -88,7 +88,7 @@ const NewNoti = forwardRef((props, ref) => {
           <Input />
         </Form.Item>
       </Form>
-      
+
       <div role="alert">{isUserValid}</div>
     </Drawer>
   );
