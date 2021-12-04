@@ -33,10 +33,9 @@ const NewDiscussion = forwardRef((props, ref) => {
     try {
       const newTopic = { ...values, poster: poster };
       createTopic(newTopic)
-        .then( data => {
-
+        .then(data => {
+          onClose();
           window.location.reload();
-
         })
         .catch(err => {
           console.log(err);
@@ -93,6 +92,3 @@ const NewDiscussion = forwardRef((props, ref) => {
 });
 
 export default NewDiscussion;
-
-const danhMucMau = [
-];

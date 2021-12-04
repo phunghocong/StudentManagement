@@ -21,7 +21,9 @@ const AccountConfig = forwardRef((props, ref) => {
   const [visible, setVisible] = useState(false);
   const [currentType, setCurrentType] = useState();
   const [form] = useForm();
+  
   var passChanged = false;
+
   useImperativeHandle(ref, () => ({
     openNew() {
       setVisible(true);

@@ -25,8 +25,7 @@ const NewNoti = forwardRef((props, ref) => {
       const destinationId = await getIdByUsername(values.id);
       createNotification(destinationId, { title: values.title, message: values.message })
         .then(data => {
-          // console.log(data);
-          window.location.reload();
+          onClose();
         })
         .catch(error => {
           console.log(error);

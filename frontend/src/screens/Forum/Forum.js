@@ -1,4 +1,4 @@
-import { Button, Col, Row, List, Avatar, Divider, Tag, Select } from "antd";
+import { Button, Col, Row, List, Avatar, Divider, Tag, Select, Typography } from "antd";
 import { useRef, useState, useEffect } from "react";
 import forum from "./forum.module.scss";
 import NewDiscussion from "./NewDiscussion/NewDiscussion";
@@ -7,21 +7,23 @@ import paths from "../../constants/paths";
 import { getAllTopic, deleteTopic } from "../../api/forum";
 import { DeleteOutlined, PushpinOutlined } from "@ant-design/icons"
 import { currentUserIsStudent, getCurrentUser } from "../../api/accounts";
+
 const sort = {
   ANY: "any",
   OLDEST: "oldest",
   LASTEST: "lastet",
   MOST_REPLIES: "most_replies"
 };
+
 const dateRange = {
   HOUR: "hour",
   DAY: "day",
   MONTH: "month",
   YEAR: "year"
 }
+
 export default function Forum() {
   const ref = useRef();
-
   const [data, setDataList] = useState([]);
 
   const getList = async () => {
@@ -37,35 +39,36 @@ export default function Forum() {
       console.log("get all topic error", error);
     }
   };
-  const handleDeleteTopic = async id => {
-
+  
+  const handleDeleteTopic = async (id) => {
     try {
       deleteTopic(id)
         .then(res => {
           if (res.status == 200)
-            window.location.reload();
+            getList();
         })
 
     } catch (error) {
       console.log("delete topic error", error);
     }
   }
-  const handlePinTopic = async id => {
-
+  const handlePinTopic = async (id) => {
     try {
       /* deleteTopic(id)
         .then(res => {
           if (res.status == 200)
-            window.location.reload();
+            
         }) */
 
     } catch (error) {
       console.log("pin topic error", error);
     }
   }
+
   useEffect(() => {
     getList();
   }, []);
+  
   const onChangeSortType = () => {
 
   }
@@ -145,7 +148,9 @@ export default function Forum() {
               description={<Row align="middle">@ {item.poster}</Row>}
             />
             <Divider style={{ margin: "10px 0" }} />
-            {item.detail}
+            <Typography>
+              {item.detail}
+            </Typography>
           </List.Item>
         )}
       />

@@ -16,9 +16,10 @@ import paths from "../../../constants/paths";
 import { CalendarOutlined } from "@ant-design/icons";
 import discussionDetail from "./discussionDetail.module.scss";
 import moment from "moment";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, Fragment } from "react";
 import { getAllCommentOf, getTopic, createComment } from "../../../api/forum";
 import { getAccountPoster, createNotification, getIdByUsername, getCurrentUser } from "../../../api/accounts";
+import { useForm } from "antd/lib/form/Form";
 
 export default function DiscussionDetail() {
   const loc = useLocation();
@@ -28,6 +29,7 @@ export default function DiscussionDetail() {
   const [poster, setPoster] = useState("");
   const [comment, setCommentList] = useState([]);
   const [topic, setTopic] = useState({});
+  const [commentForm] = useForm();
 
   const getPoster = async () => {
     try {
@@ -89,8 +91,10 @@ export default function DiscussionDetail() {
                 console.log(error);
               })
           }
-          window.location.reload();
-
+          getPoster();
+          getTopicTemp();
+          getList();
+          commentForm.resetFields();
         })
         .catch(error => {
           console.log(error);
@@ -98,7 +102,6 @@ export default function DiscussionDetail() {
     } catch (error) {
       console.log(error);
     }
-
   };
 
   return (
@@ -109,31 +112,37 @@ export default function DiscussionDetail() {
         title={topic.title}
         ghost={false}
         footer={
-          <Row
-            gutter={25}
-            align="middle"
-            className={discussionDetail["page-header-footer"]}
-          >
-            <Col>
-              <Row gutter={10} align="middle">
-                <Col>
-                  <Avatar size={25}>Author</Avatar>
-                </Col>
+          <Fragment>
+            <Row
+              gutter={25}
+              align="middle"
+              className={discussionDetail["page-header-footer"]}
+            >
+              <Col>
+                <Row gutter={10} align="middle">
+                  <Col>
+                    <Avatar size={25}>Author</Avatar>
+                  </Col>
 
-                <Col className={discussionDetail["data"]}>{topic.poster}</Col>
-              </Row>
-            </Col>
+                  <Col className={discussionDetail["data"]}>{topic.poster}</Col>
+                </Row>
+              </Col>
 
-            <Col>
-              <Row gutter={10} align="middle">
-                <Col>
-                  <CalendarOutlined className={discussionDetail["data"]} />
-                </Col>
+              <Col>
+                <Row gutter={10} align="middle">
+                  <Col>
+                    <CalendarOutlined className={discussionDetail["data"]} />
+                  </Col>
 
-                <Col className={discussionDetail["data"]}>{topic.createdTime}</Col>
-              </Row>
-            </Col>
-          </Row>
+                  <Col className={discussionDetail["data"]}>{topic.createdTime}</Col>
+                </Row>
+              </Col>
+            </Row>
+            <Row>
+              <br></br>
+              {topic.detail}
+            </Row>
+          </Fragment>
         }
       />
 
@@ -165,7 +174,7 @@ export default function DiscussionDetail() {
           <Avatar src={"https://joeschmoe.io/api/v1/" + poster} alt="Error avt" />
         }
         content={
-          <Form onFinish={onFinish}>
+          <Form form={commentForm} onFinish={onFinish}>
             <Form.Item
               name="detail"
               rules={[{ required: true, message: "Hãy điền bình luận" }]}
