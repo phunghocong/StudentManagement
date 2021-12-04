@@ -26,6 +26,7 @@ module.exports = app => {
   router.get('/list/class/:mode&:baseClass', students.findStudentsFromClass)
 
   router.get('/graph/graphStudentCountEachYear/:from&:to', students.graphStudentCountEachYear);
+  router.get('/graph/graphGenderCount/', students.graphGenderCount);
 
   //Get student by their studentID
   router.get('/:studentID', students.findByID);

@@ -516,9 +516,31 @@ exports.graphStudentCountEachYear = (req, res) => {
         res.status(500).send(err);
       })
   }
-  step().then(() => {
-    console.log("finish get graph")
-  });
+  step();
+}
+exports.graphGenderCount = (req, res) => {
+  const step = async _ => {
+    await Student
+      .find()
+      .distinct("gender")
+      .then(async data => {
+        var genders = [];
+        for await (const gender of data) {
+          const count = await Student.countDocuments({ gender: gender })
+          var info = {
+            gender: gender,
+            count: count
+          }
+          genders.push(info);
+
+        }
+        res.send(genders);
+      })
+      .catch(err => {
+        res.status(500).send(err);
+      })
+  }
+  step();
 }
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');

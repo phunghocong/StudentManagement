@@ -71,18 +71,18 @@ const StudentConfig = forwardRef((props, ref) => {
   })
   const onFinish = (values) => {
 
-    if (currentType == types.NEW) {
+    if (currentType === types.NEW) {
       delete values.id;
       createStudentAndRegisterNewAccount(values)
         .then(res => {
-          if (res.status == 200)
+          if (res.status ===200)
             window.location.reload(false);
           else alert("Không thể tạo tài khoản. Lỗi server")
 
         })
     } else {
       updateByID(values.id, values).then(res => {
-        if (res.status == 200)
+        if (res.status === 200)
           window.location.reload(false);
         else alert("Không thể cập nhập tài khoản. Lỗi server")
       });

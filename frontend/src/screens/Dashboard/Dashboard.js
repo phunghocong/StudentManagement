@@ -1,17 +1,19 @@
 import React from 'react';
-import { Line, Column } from '@ant-design/charts';
+import { Line, Column, Pie, G2 } from '@ant-design/charts';
 import { Row, Col, Button, Form, Input } from "antd";
 import { getAccount, getCurrentUser, currentUserIsAdmin, currentUserIsMod, currentUserIsCon, currentUserIsStudent } from '../../api/accounts';
 import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
-import { graphStudentCountEachYear } from '../../api/students';
+import { graphStudentCountEachYear, graphGenderCount } from '../../api/students';
 import { getStudentGPA } from '../../api/classRecord';
 export default function Dashboard() {
-  const allWidth = 500;
+  const G = G2.getEngine('canvas');
+
+  const allWidth = 500, allHeigh = 300;
 
   useEffect(() => {
     getUser();
     getStudentYearData();
-
+    getGenderData();
   }, []);
   const [fullName, setFullName] = useState("")
 
@@ -21,24 +23,6 @@ export default function Dashboard() {
         setFullName(res.data.surName + " " + res.data.firstName)
       });
   }
-  /*  
-      const config = {
-        data,
-        width: 400,
-        height: 300,
-        autoFit: false,
-        xField: 'year',
-        yField: 'value',
-        point: {
-          size: 5,
-          shape: 'diamond',
-        },
-        label: {
-          style: {
-            fill: '#aaa',
-          },
-        },
-      };  */
 
   let chart;
   const downloadImage = () => {
@@ -51,7 +35,7 @@ export default function Dashboard() {
     xField: 'year',
     yField: 'studentCount',
     width: allWidth,
-    height: 300,
+    height: allHeigh,
     autoFit: false,
     label: {
       position: 'bottom',
@@ -87,30 +71,81 @@ export default function Dashboard() {
         console.log(err);
       })
   }
+
+  const [genderDataIsLoading, setGenderDataIsLoading] = useState(false);
+  const [genderData, setGenderData] = useState([]);
+  const genderDatas = [{ "gender": "Khác", "count": 31 }, { "gender": "Nam", "count": 24 }, { "gender": "Nữ", "count": 18 }];
+  const genderDataGraphConfig = {
+    appendPadding: 10,
+    data: genderData,
+    angleField: 'count',
+    colorField: 'gender',
+    color: ({ gender }) => {
+      if (gender === 'Nam') {
+        return '#6495ED';
+      } else if (gender === 'Nữ') {
+        return 'pink';
+      } else
+        return '#008000';
+    },
+    width: allWidth,
+    height: allHeigh+100,
+    radius: 0.9,
+    label: {
+      type: 'inner',
+      offset: '-30%',
+      content: ({ percent }) => `${(percent * 100).toFixed(0)}%`,
+      style: {
+        fontSize: 14,
+        textAlign: 'center',
+      },
+    },
+    interactions: [
+      {
+        type: 'element-active',
+      },
+    ],
+  };
+  const getGenderData = () => {
+    setGenderDataIsLoading(true);
+    graphGenderCount()
+      .then(res => {
+        setGenderData(res.data);
+        console.log(genderData);
+        setGenderDataIsLoading(false);
+      })
+      .catch(err => {
+        console.log(err);
+      })
+  }
+
   return (
     <div>
       <Row><h1>Xin chào {fullName}</h1></Row>
-      <Row align="middle" >
+      <Row gutter={10}>
         <Col span={12}>
           <h2>Số lượng sinh viên theo từng năm</h2>
-
-          {/*           <button type="button" onClick={downloadImage} style={{ marginRight: 24 }}>
-            Export Image
-          </button> */}
           <Row>
             <Column {...studentYearDataGraphConfig} loading={studentYearDataIsLoading} />
           </Row>
           <Row>
-            <Col span={8}><Input addonBefore="Từ" defaultValue={from} 
-            onChange={e => { from = e.target.value }} 
-            onPressEnter={getStudentYearData}/></Col>
-            <Col span={8}><Input addonBefore="Đến" defaultValue={to} 
-            onChange={e => { to = e.target.value }}
+            <Col span={8}><Input addonBefore="Từ" defaultValue={from}
+              onChange={e => { from = e.target.value }}
+              onPressEnter={getStudentYearData} /></Col>
+            <Col span={8}><Input addonBefore="Đến" defaultValue={to}
+              onChange={e => { to = e.target.value }}
               onPressEnter={getStudentYearData} /></Col>
             <Col span={4}><Button type="primary" onClick={getStudentYearData}>Cập nhập</Button></Col>
-
           </Row>
         </Col>
+        <Col span={12}>
+          <h2>Tỷ lệ giới tính</h2>
+          <Pie {...genderDataGraphConfig} loading={genderDataIsLoading} />
+        </Col>
+      </Row>
+      <Row>
+
+
       </Row>
     </div>
   );

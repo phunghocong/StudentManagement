@@ -25,3 +25,4 @@ export const createStudentAndRegisterNewAccount = (newStudent) => axios.post(`${
 export const deleteStudent = (studentID) => axios.delete(`${url}/id/${studentID}`);
 //export const deleteAllStudent = () => axios.delete(url);
 export const graphStudentCountEachYear = (from, to) => axios.get(`${url}/graph/graphStudentCountEachYear/${from}&${to}`);
+export const graphGenderCount = () => axios.get(`${url}/graph/graphGenderCount/`);
