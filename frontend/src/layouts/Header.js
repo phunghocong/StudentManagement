@@ -23,10 +23,12 @@ export default function Header() {
 
       });
   }, []);
+
   const handleLogout = () => {
     localStorage.removeItem(keys.USER);
     window.location.reload();
   };
+
   const menu = (
     <Menu>
       <Menu.Item key="0">
@@ -46,7 +48,9 @@ export default function Header() {
 
     </Menu>
   );
+
   var fullInfo = getCurrentUser().username + " - " + fullName;
+  
   return (
     <Layout.Header className={layouts["header-container"]}>
       <Row justify="space-between" align="right">
