@@ -1,5 +1,5 @@
 import { Col, Modal, Row, Table } from "antd";
-import { forwardRef, useImperativeHandle, useState } from "react";
+import { forwardRef, useImperativeHandle, useState, useRef } from "react";
 import { findByStudentId } from "../../api/classRecord"
 import { useEffect } from "react";
 import { findByID } from "../../api/students";
@@ -8,6 +8,11 @@ const StudentGrade = forwardRef((props, ref) => {
   const [dataList, setDataList] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [totalCredit, setTotalCredit] = useState("0");
+
+  const [visible, setVisible] = useState(false);
+  const [initdata, setInitdata] = useState({});
+  const [sumCredit, setSumCredit] = useState(0);
+  const [averageGPA, setAverageGPA] = useState("0");
 
   const columns = [
     { title: "Tên lớp học", key: "classname", dataIndex: "classname", width: "10%" },
@@ -45,10 +50,20 @@ const StudentGrade = forwardRef((props, ref) => {
       title: "Tích luỹ GPA", key: "gpa", dataIndex: "gpa", width: "7%"
     }
     ,
+
   ];
+  useImperativeHandle(ref, () => ({
+    open(data) {
+      setVisible(true);
+      setInitdata(data);
+      getList(JSON.parse(data.studentID))
+      getTotalCredit(JSON.parse(data.studentID))
+      
+    },
+  }));
   useEffect(() => {
 
-  }, []);
+  });
   const getGPAchar = (score) => {
     if (score < 4) return "F";
     else if (score <= 4.9) return "D";
@@ -101,8 +116,7 @@ const StudentGrade = forwardRef((props, ref) => {
       console.log("get student list error", error);
     }
   }
-  const [sumCredit, setSumCredit] = useState(0);
-  const [averageGPA, setAverageGPA] = useState("0");
+
   const updateTotal = classList => {
 
     setSumCredit(classList.map(i => i.subjectCredit).reduce((a, b) => parseInt(a) + parseInt(b)));
@@ -115,18 +129,7 @@ const StudentGrade = forwardRef((props, ref) => {
     //console.log(sumCredit);
     //console.log(averageGPA);
   }
-  const [visible, setVisible] = useState(false);
-  const [initdata, setInitdata] = useState({});
 
-  useImperativeHandle(ref, () => ({
-    open(data) {
-      setVisible(true);
-
-      setInitdata(data);
-      getList(JSON.parse(initdata.studentID));
-      getTotalCredit(JSON.parse(initdata.studentID))
-    },
-  }));
 
   return (
     <Modal

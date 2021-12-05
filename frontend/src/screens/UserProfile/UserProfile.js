@@ -1,9 +1,15 @@
 import { Row, Col, Avatar, Button, Form, Input } from "antd";
 import { UserOutlined } from "@ant-design/icons";
 import { useEffect, useRef, useState } from "react";
+import UserPasswordChange from "./UserPasswordChange";
 import { getAccount, getCurrentUser, currentUserIsStudent, updateAccount } from "../../api/accounts";
 import { useForm } from "antd/lib/form/Form";
+import paths from "../../constants/paths";
+import { useHistory, withRouter } from "react-router-dom";
+
 export default function UserProfile() {
+  const history = useHistory();
+
   const onFinish = (value) => {
     updateAccount(value.id, value)
       .then(res => {
@@ -14,6 +20,7 @@ export default function UserProfile() {
         alert("Có lỗi xảy ra.")
       })
   };
+  const passwordChangeRef = useRef();
   const fieldNames = {
     id: "id",
     username: "username",
@@ -49,6 +56,7 @@ export default function UserProfile() {
           <Avatar size={120} src={"https://joeschmoe.io/api/v1/" + getCurrentUser().username + " - " + fullName} /><br />
           {fullName}<br />
           {email}<br />
+          {currentUserIsStudent()?<div>
           <Button
             type="primary"
             style={{
@@ -57,11 +65,26 @@ export default function UserProfile() {
               margin: "20px auto",
             }}
             disabled={!currentUserIsStudent()}
-
+            onClick={()=>history.push(paths.HO_SO_SINH_VIEN)}
           >
             Xem thông tin sinh viên
           </Button>
-          <Button type="primary">Đổi mật khẩu</Button>
+          <Button
+            type="primary"
+            style={{
+              display: "block",
+              textAlign: "center",
+              margin: "20px auto",
+            }}
+            disabled={!currentUserIsStudent()}
+            onClick={()=>history.push(paths.KET_QUA_HOC_TAP)}
+          >
+            Xem thông kết quả học tập
+          </Button>
+          </div>
+          :""}
+
+          <Button type="primary" onClick={() => passwordChangeRef.current.open()}>Đổi mật khẩu</Button>
         </Col>
 
         <Col flex="auto">
@@ -105,6 +128,7 @@ export default function UserProfile() {
           </Button>
         </Col>
       </Row>
+      <UserPasswordChange ref={passwordChangeRef} />
     </div>
   );
 }

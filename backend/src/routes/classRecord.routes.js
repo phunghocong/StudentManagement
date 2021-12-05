@@ -20,6 +20,8 @@ module.exports = app => {
   router.get('/class/students/:classname', classRecords.getStudentListFromClass);
 
   router.delete('/', classRecords.deleteAll);
+  router.get('/graph/graphGPAPerYear/:from&:to', classRecords.graphGPAPerYear);
+  router.get('/graph/graphGradeCount/:year&:semeter', classRecords.graphGradeCount);
 
   app.use("/api/classRecords", router);
   };

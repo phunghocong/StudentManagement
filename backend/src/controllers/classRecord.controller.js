@@ -3,21 +3,21 @@ const { students } = require("../models");
 const db = require("../models");
 const ClassRecord = db.classRecords;
 const Student = db.students;
-var classNamePrefix = Array('INT', 'INT', 'INT', 'INT', 'MAT', 'ESL', 'POL', 'DOC', 'ENG', 'VIE', 'SCI','OMC','ALP');
+var classNamePrefix = Array('INT', 'INT', 'INT', 'INT', 'MAT', 'ESL', 'POL', 'DOC', 'ENG', 'VIE', 'SCI', 'OMC', 'ALP');
 var subjectName = Array('Quản lý dự án phần mềm', 'An toàn và an ninh mạng',
   'Đồ họa máy tính', 'Chủ nghĩa xã hội khoa học', 'Phát triển ứng dụng Web',
   'Kinh tế chính trị Mác – Lênin', 'Lý thuyết thông tin', 'Cơ sở dữ liệu', 'Vật lý đại cương',
   'Toán cao cấp', 'Cấu Trúc Dữ Liệu và Giải Thuật', 'Kiến Trúc Máy Tính', 'Lập Trình Cơ Bản',
   'Lập Trình Nâng Cao', 'Tín Hiệu Hệ Thống', 'Xử Lý Ảnh', 'Trí tuệ nhân tạo', 'Toán Rời Rạc',
-  'Lập trình hướng đối tượng', 'Giải Tích', 'Kiểm thử và đảm bảo chất lượng phần mềm', 
+  'Lập trình hướng đối tượng', 'Giải Tích', 'Kiểm thử và đảm bảo chất lượng phần mềm',
   'Phát triển phần mềm dựa trên thành phần', 'Phương pháp hình thức', 'Phương pháp hình thức',
   'Thu thập và phân tích yêu cầu', 'Phân tích và thiết kế hướng đối tượng',
   'Phân tích và thiết kế hướng đối tượng', 'Xử lý tiếng nói',
-  'Hệ quản trị cơ sở dữ liệu', 'Xử lý phân tích thông tin trực tuyến','Khai phá dữ liệu hướng lĩnh vực',
-  'Khai phá dữ liệu hướng lĩnh vực', 'Hệ thống đảm bảo an toàn thông tin','Truyền thông đa phương tiện',
+  'Hệ quản trị cơ sở dữ liệu', 'Xử lý phân tích thông tin trực tuyến', 'Khai phá dữ liệu hướng lĩnh vực',
+  'Khai phá dữ liệu hướng lĩnh vực', 'Hệ thống đảm bảo an toàn thông tin', 'Truyền thông đa phương tiện',
   'Truyền thông đa phương tiện', 'Phân tích và thiết kế mạng máy tính', 'Xử lý ngôn ngữ tự nhiên',
-  'Các vấn đề hiện đại của Công nghệ thông tin', 'Các hệ thống thương mại điện tử','Kiến trúc hướng dịch vụ',
-  'Bóng chuyền','Bóng rổ','Cầu lông','Bóng đá','Bóng bàn','Golf');
+  'Các vấn đề hiện đại của Công nghệ thông tin', 'Các hệ thống thương mại điện tử', 'Kiến trúc hướng dịch vụ',
+  'Bóng chuyền', 'Bóng rổ', 'Cầu lông', 'Bóng đá', 'Bóng bàn', 'Golf');
 var semeterEnum = Array('1', '2')
 function getRandomArbitrary(min, max) {
   return Math.random() * (max - min) + min;
@@ -52,7 +52,7 @@ exports.generateMockData = (req, res) => {
         midtermGrade = getRandomArbitrary(6, 8)
       } else {
         midtermGrade = getRandomArbitrary(8, 10)
-      } 
+      }
       if (roll2 < 10) {
         grade = getRandomArbitrary(0, 3)
       } else if (roll1 < 35) {
@@ -334,3 +334,86 @@ exports.findTest = (req, res) => {
         .send({ message: "Error retrieving Tutorial with title=" + title });
     });
 };
+
+//Graph
+exports.graphGPAPerYear = (req, res) => {
+  const from = req.params.from;
+  const to = req.params.to;
+
+
+  ClassRecord.aggregate([
+    { $match: { year: { $gte: from, $lte: to } } },
+    {
+      $group:
+      {
+        _id: '$year',
+        /*         "averageMidtermGrade": {
+                  $avg: { $convert: { input: '$midtermGrade', to: "double" } }
+                },
+                "averageFinalGrade": {
+                  $avg: { $convert: { input: '$grade', to: "double" } }
+                }, */
+        "totalGrade": {//averageMidtermGrade
+          $avg: {
+            $add: [
+              {
+                $multiply: [
+                  { $convert: { input: '$midtermGrade', to: "double" } }, 0.4]
+              },
+              {
+                $multiply: [
+                  { $convert: { input: '$grade', to: "double" } }, 0.6]
+              },
+            ]
+          }
+        }
+      }
+    }
+
+  ])
+    .sort({ "_id": 'asc' })
+    .then(data => {
+      console.log(data);
+      res.status(200).send(data);
+    })
+    .catch(err => {
+      res.status(500).send(err);
+    })
+  //step();
+}
+exports.graphGradeCount = (req, res) => {
+  const year = req.params.year;
+  const semeter = req.params.semeter
+
+  ClassRecord.aggregate([
+    { $match: { year: year, semeter: semeter } },
+    {
+      $project:
+      {
+        'score': {
+          $add: [
+            {
+              $multiply: [
+                { $convert: { input: '$midtermGrade', to: "double" } }, 0.4]
+            },
+            {
+              $multiply: [
+                { $convert: { input: '$grade', to: "double" } }, 0.6]
+            },
+          ]
+        }
+
+      }
+    }
+
+  ])
+    .sort({ "_id": 'asc' })
+    .then(data => {
+      console.log(data);
+      res.status(200).send(data);
+    })
+    .catch(err => {
+      res.status(500).send(err);
+    })
+  //step();
+}

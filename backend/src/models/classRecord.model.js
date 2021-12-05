@@ -4,7 +4,7 @@ module.exports = mongoose => {
   var classRecordSchema = mongoose.Schema(
     {
       classname: String, //INT2021_22
-      subjectName: String,//Toán cao cấp
+      subjectName:  String,//Toán cao cấp
       subjectCredit: String,//2,3
       belongToStudent: String,//MSSV
       year: String,//2015

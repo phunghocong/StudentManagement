@@ -21,8 +21,7 @@ const AccountConfig = forwardRef((props, ref) => {
   const [visible, setVisible] = useState(false);
   const [currentType, setCurrentType] = useState();
   const [form] = useForm();
-  
-  var passChanged = false;
+
 
   useImperativeHandle(ref, () => ({
     openNew() {
@@ -49,14 +48,20 @@ const AccountConfig = forwardRef((props, ref) => {
           if (res.status == 200) {
             window.location.reload(false);
           }
-        });
+        })
+        .catch(err => {
+          alert("Có lỗi xảy ra khi thêm tài khoản");
+        })
     } else {
       updateAccount(values.id, values)
         .then(res => {
           if (res.status == 200) {
             window.location.reload(false);
           }
-        });
+        })
+        .catch(err => {
+          alert("Có lỗi xảy ra khi cập nhập tài khoản");
+        })
     }
     console.log(values);
 
@@ -66,7 +71,17 @@ const AccountConfig = forwardRef((props, ref) => {
     form.resetFields();
     setVisible(false);
   };
+  const resetPassword = () => {
+    const password = {
+      password: form.getFieldValue(fieldNames.username)
+    }
+    //console.log(password);
+    updateAccount(form.getFieldValue(fieldNames.id), password)
+      .then(res => {
+        setVisible(false);
+      })
 
+  }
   return (
     <Drawer
       visible={visible}
@@ -80,6 +95,9 @@ const AccountConfig = forwardRef((props, ref) => {
           <Col>
             <Button onClick={onCancel}>Huỷ bỏ</Button>
           </Col>
+          <Col>
+            <Button onClick={resetPassword}>Đặt lại mật khẩu</Button>
+          </Col>
 
           <Col>
             <Button type="primary" onClick={() => form.submit()}>
@@ -90,30 +108,41 @@ const AccountConfig = forwardRef((props, ref) => {
       }
     >
       <Form form={form} layout="vertical" onFinish={onFinish}>
-        <Form.Item label="Họ" name={fieldNames.surName}>
+        <Form.Item label="Họ" name={fieldNames.surName} rules={[
+          { required: true, message: "Hãy nhập họ của người dùng" }]}>
           <Input />
         </Form.Item>
 
-        <Form.Item label="Tên" name={fieldNames.firstName}>
+        <Form.Item label="Tên" name={fieldNames.firstName} rules={[
+          { required: true, message: "Hãy nhập tên của người dùng" }]}>
           <Input />
         </Form.Item>
 
-        <Form.Item label="Email" name={fieldNames.email}>
+        <Form.Item label="Email" name={fieldNames.email} rules={[
+          { required: true, message: "Hãy nhập email của người dùng" }
+/*           , { type: email, message: "Email không hợp lệ" }
+ */          ]}>
           <Input />
         </Form.Item>
 
-        <Form.Item label="Tên tài khoản" name={fieldNames.username}>
+        <Form.Item label="Tên tài khoản" name={fieldNames.username} rules={[
+          { required: true, message: "Hãy nhập tên tài khoản của người dùng" },
+          { whitespace: true }]}>
           <Input />
         </Form.Item>
 
-        {/* <Form.Item label="Mật khẩu" name={fieldNames.password}>
+        {currentType === types.NEW ? <Form.Item label="Mật khẩu" name={fieldNames.password} rules={[
+          { required: true, message: "Hãy nhập mật khẩu" },
+          { min: 6, message: "Mật khẩu phải có ít nhất 6 chữ" }]}>
           <Input.Password />
-        </Form.Item> */}
+        </Form.Item> : ""}
 
-        <Form.Item label="Mức quyền" name={fieldNames.authorityLevel}>
+        <Form.Item label="Mức quyền" name={fieldNames.authorityLevel} rules={[
+          { required: true, message: "Hãy nhập quyền hạn" },
+          { enum: ["", "CON", "MOD", "ADMIN"], message: "Mật khẩu phải có ít nhất 6 chữ" }]}>
           <Input />
         </Form.Item>
-        <Form.Item label="Mức quyền" hidden name={fieldNames.id}>
+        <Form.Item label="Mức quyền" hidden name={fieldNames.id} >
           <Input />
         </Form.Item>
       </Form>

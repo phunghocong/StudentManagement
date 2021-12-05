@@ -76,8 +76,8 @@ export default function DiscussionDetail() {
           const destinationId = await getIdByUsername(poster.split(" - ")[0]);
           //console.log(getCurrentUser().id);
           //console.log(destinationId);
-          //if (getCurrentUser().id != destinationId) {
-            if (true) {
+          if (false) {
+            //if (true) {
 
             await createNotification(destinationId,
               {

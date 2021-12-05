@@ -1,5 +1,5 @@
 import { Layout, Row, Menu, Dropdown } from "antd";
-import { DownOutlined, LogoutOutlined, DownCircleOutlined, UserOutlined } from '@ant-design/icons';
+import { LogoutOutlined, DownCircleOutlined, UserOutlined } from '@ant-design/icons';
 import { useEffect, useRef, useState } from "react";
 import { useHistory, withRouter } from "react-router-dom";
 
