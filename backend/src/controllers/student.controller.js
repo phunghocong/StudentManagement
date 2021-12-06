@@ -1,6 +1,12 @@
 const db = require("../models");
 const accounts = require("./account.controller");
 const Student = db.students;
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const Account = db.accounts;
+const { Parser } = require("json2csv");
+const fs = require("fs");
+const excelToJson = require('convert-excel-to-json');
 
 /*
 Đổi, sửa, xóa thông tin cá nhân
@@ -8,6 +14,56 @@ fix front end
 
 */
 //Will make studentID auto increment based on the student count at currentYear
+function createMultipleStudentFromArray(studentList) {
+  const forLoop = async () => {
+    for await (let stu of studentList) {
+      var year = stu.startedYear;
+      await Student
+        .countDocuments({ "startedYear": year })
+        .then(docCount => {
+          var id = year + (String)(docCount).padStart(4, "0");
+          const student = new Student({
+            studentID: id,
+            firstName: stu.firstName,
+            surName: stu.surName,
+            gender: stu.gender,
+            birthday: stu.birthday,
+            national: stu.national,
+            ethnic: stu.ethnic,//King
+            religion: stu.religion,//Dao phat
+            homeAddress: stu.homeAddress,
+            bornAddress: stu.bornAddress,
+            citizenCardId: stu.citizenCardId, //chung minh thu
+            currentAddress: stu.currentAddress,
+            phoneNumber: stu.phoneNumber,
+            email: stu.email,
+            fatherPhoneNumber: stu.fatherPhoneNumber,
+            motherPhoneNumber: stu.motherPhoneNumber,
+            isEnlisted: stu.isEnlisted,
+            draftDate: stu.draftDate,
+            school: stu.school,// UET
+            academyMethod: stu.academyMethod, //chinh quy...
+            levelOfAcademy: stu.levelOfAcademy, //University, Doctorate
+            schoolYearGroup: stu.schoolYearGroup, //K64,.. ??
+            baseClass: stu.baseClass, //CA-CLC4
+            major: stu.major,//Khoa hoc may tinh
+            startedYear: year,
+            GPA: "",
+            managedBy: "",
+            note: ""
+          });
+          accounts.createAccountFromStudent(student);
+          student
+            .save(student)
+            .catch(err => {
+              return false;
+            });
+        });
+    }
+  }
+  forLoop();
+  return true;
+}
 
 // Create a new student
 exports.createStudent = (req, res) => {
@@ -77,6 +133,7 @@ exports.createStudent = (req, res) => {
       })
     });
 }
+
 exports.createStudentAndRegisterNewAccount = (req, res) => {
   // Kiểm tra req.     
   console.log(res.body);
@@ -156,60 +213,7 @@ exports.createStudentAndRegisterNewAccount = (req, res) => {
     ]
   }
  */
-exports.createMultipleStudent = (req, res) => {
-  var studentList = req.body.studentList;
-  const forLoop = async _ => {
-    // for (var index = 0; index < studentList.length; index++) {      
-    //    var stu = studentList[index];
-    for await (let stu of studentList) {
-      var year = stu.startedYear;
-      await Student
-        .countDocuments({ "startedYear": year })
-        .then(docCount => {
-          var id = year + (String)(docCount).padStart(4, "0");
-          const student = new Student({
-            studentID: id,
-            firstName: stu.firstName,
-            surName: stu.surName,
-            gender: stu.gender,
-            birthday: stu.birthday,
-            national: stu.national,
-            ethnic: stu.ethnic,//King
-            religion: stu.religion,//Dao phat
-            homeAddress: stu.homeAddress,
-            bornAddress: stu.bornAddress,
-            citizenCardId: stu.citizenCardId, //chung minh thu
-            currentAddress: stu.currentAddress,
-            phoneNumber: stu.phoneNumber,
-            email: stu.email,
-            fatherPhoneNumber: stu.fatherPhoneNumber,
-            motherPhoneNumber: stu.motherPhoneNumber,
-            isEnlisted: stu.isEnlisted,
-            draftDate: stu.draftDate,
-            school: stu.school,// UET
-            academyMethod: stu.academyMethod, //chinh quy...
-            levelOfAcademy: stu.levelOfAcademy, //University, Doctorate
-            schoolYearGroup: stu.schoolYearGroup, //K64,.. ??
-            baseClass: stu.baseClass, //CA-CLC4
-            major: stu.major,//Khoa hoc may tinh
-            startedYear: year,
-            GPA: "",
-            managedBy: "",
-            note: ""
-          });
-          student
-            .save(student)
-            .catch(err => {
-              res.status(500).send({
-                message: err.message + ", Error when create studentData."
-              });
-            });
-        });
-    }
-  }
-  forLoop();
-  res.send({ message: "successfully added " + studentList.length + " students" });
-}
+
 exports.countStudent = (req, res) => {
   const year = req.query.year;
   Student
@@ -218,6 +222,7 @@ exports.countStudent = (req, res) => {
       res.send(docCount)
     });
 };
+
 // Danh sách tất cả hs.
 exports.findAll = (req, res) => {
   const mode = req.params.mode;
@@ -239,6 +244,7 @@ exports.findAll = (req, res) => {
       });
     });
 };
+
 exports.findAllToStudentList = (req, res) => {
   const mode = req.params.mode;
   var condition
@@ -263,6 +269,7 @@ exports.findAllToStudentList = (req, res) => {
       });
     });
 };
+
 // not working
 exports.findRange = (req, res) => {
   const page = req.query.page;
@@ -279,6 +286,7 @@ exports.findRange = (req, res) => {
       });
     });
 };
+
 exports.updateDatabaseGPA = (req, res) => {
   const ClassRecord = require("./classRecord.controller");
   const step = async _ => {
@@ -302,6 +310,7 @@ exports.updateDatabaseGPA = (req, res) => {
       res.send("Finised updating GPA");
     })
 }
+
 exports.getAllClass = (req, res) => {
   Student.find()
     .distinct('baseClass')
@@ -334,6 +343,7 @@ exports.findStudentsFromClass = (req, res) => {
         .send({ message: "Error retrieving student with baseClass=" + baseClass });
     });
 };
+
 exports.findByID = (req, res) => {
   const studentID = req.params.studentID;
   Student.findOne({ "studentID": studentID })
@@ -348,6 +358,7 @@ exports.findByID = (req, res) => {
         .send({ message: "Error retrieving student with id=" + studentID });
     });
 };
+
 exports.findByMod = (req, res) => {
   const managedBy = req.params.managedBy;
   const mode = req.params.mode;
@@ -367,6 +378,7 @@ exports.findByMod = (req, res) => {
         .send({ message: "Error retrieving managed by user=" + managedBy });
     });
 };
+
 exports.findByYear = (req, res) => {
   const startedYear = req.params.startedYear;
 
@@ -382,6 +394,7 @@ exports.findByYear = (req, res) => {
         .send({ message: "Error retrieving student with id=" + startedYear });
     });
 };
+
 // Update a student by the studentID in the request
 exports.update = (req, res) => {
   if (!req.body) {
@@ -406,6 +419,7 @@ exports.update = (req, res) => {
       });
     });
 };
+
 exports.updateByID = (req, res) => {
   if (req.body.constructor === Object && Object.keys(req.body).length === 0) {
     return res.status(400).send({
@@ -434,6 +448,7 @@ exports.updateByID = (req, res) => {
       });
     });
 };
+
 exports.deleteWithID = (req, res) => {
   const studentID = req.params.studentID;
   Student.deleteMany({ "studentID": studentID })
@@ -454,6 +469,7 @@ exports.deleteWithID = (req, res) => {
       });
     });
 };
+
 exports.deleteWithFirstname = (req, res) => {
   const firstName = req.params.firstName;
 
@@ -475,6 +491,7 @@ exports.deleteWithFirstname = (req, res) => {
       });
     });
 };
+
 exports.deleteAll = (req, res) => {
   Student.deleteMany({})
     .then(data => {
@@ -489,6 +506,7 @@ exports.deleteAll = (req, res) => {
       });
     });
 };
+
 //Graph and stuff
 exports.graphStudentCountEachYear = (req, res) => {
   const fromYear = parseInt(req.params.from);
@@ -518,6 +536,7 @@ exports.graphStudentCountEachYear = (req, res) => {
   }
   step();
 }
+
 exports.graphGenderCount = (req, res) => {
   const step = async _ => {
     await Student
@@ -542,9 +561,7 @@ exports.graphGenderCount = (req, res) => {
   }
   step();
 }
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const Account = db.accounts;
+
 
 function dateToPassword(date) {
   date = date.split("-");
@@ -596,6 +613,7 @@ exports.generateStudentAccount = (req, res) => {
   res.send("finished");
 
 };
+
 var fields = [{ label: 'Mã số sinh viên', value: 'studentID' }, { label: 'Họ', value: 'surName' },
 { label: 'Tên', value: 'firstName' }, { label: 'Giới tính', value: 'gender' }, { label: 'Ngày sinh', value: 'birthday' },
 { label: 'Quốc tịch', value: 'national' }, { label: 'Dân tộc', value: 'ethnic' }, { label: 'Tôn giáo', value: 'religion' },
@@ -606,8 +624,6 @@ var fields = [{ label: 'Mã số sinh viên', value: 'studentID' }, { label: 'H�
 { label: 'Hình thức học tập', value: 'academyMethod' }, { label: 'Trình độ học tập', value: 'levelOfAcademy' },
 { label: 'Khóa', value: 'schoolYearGroup' }, { label: 'Lớp', value: 'baseClass' }, { label: 'Ngành', value: 'major' },
 { label: 'Năm học', value: 'startedYear' }, { label: 'GPA', value: 'GPA'},{ label: 'Quản lý bởi', value: 'managedBy' }, { label: 'Ghi chú', value: 'note' },];
-const { Parser } = require("json2csv");
-const fs = require("fs");
 
 exports.export2csvStudentData = (req, res) => {
   const mode = req.params.mode;
@@ -642,6 +658,7 @@ exports.export2csvStudentData = (req, res) => {
       });
     });
 }
+
 exports.export2csvStudentDataMod = (req, res) => {
   const managedBy = req.params.managedBy;
   const mode = req.params.mode;
@@ -681,6 +698,7 @@ exports.export2csvStudentDataMod = (req, res) => {
       });
     });
 }
+
 exports.export2csvStudentDataClass = (req, res) => {
   const baseClass = req.params.baseClass;
   const mode = req.params.mode;
@@ -715,4 +733,46 @@ exports.export2csvStudentDataClass = (req, res) => {
         message: err.message || "Error."
       });
     });
+}
+
+exports.importData = (req, res) => {
+  try {
+    let result = excelToJson({
+      sourceFile: './mockData/danh_sach_sinh_vien.xlsx',
+      header: {
+        rows: 1
+      },
+      columnToKey: {
+        'A': 'id',
+        'B': 'surName',
+        'C': 'firstName',
+        'D': 'gender',
+        'E': 'birthday',
+        'F': 'national',
+        'G': 'ethnic',
+        'H': 'religion',
+        'I': 'homeAddress',
+        'J': 'bornAddress',
+        'K': 'citizenCardId',
+        'L': 'currentAddress',
+        'M': 'phoneNumber',
+        'N': 'email',
+        'O': 'fartherPhoneNumber',
+        'P': 'motherPhoneNumber',
+        'Q': 'isEnListed', 
+        'R': 'academyMethod',
+        'S': 'levelOfAcademy',
+        'T': 'schoolYearGroup',
+        'U': 'baseClass',
+        'V': 'major',
+        'W': 'startedYear',
+        'X': 'GPA',
+        'Y': 'managedBy'
+      },
+    });
+    // createMultipleStudentFromArray(result);
+    res.status(200).send(result);
+  } catch(error) {
+    res.status(500).send("Error!", error);
+  }
 }

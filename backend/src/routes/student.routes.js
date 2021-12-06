@@ -7,7 +7,6 @@ module.exports = app => {
   //Create a student and automatically register an account
   router.post('/createStudentAndRegisterNewAccount', students.createStudentAndRegisterNewAccount);
   //Create a bunch of student from an array
-  router.post('/createMultipleStudent', students.createMultipleStudent);
   router.post('/createMultipleAccountFromExistingStudent', students.generateStudentAccount);
 
   router.post('/updateGPA', students.updateDatabaseGPA);
@@ -48,6 +47,8 @@ module.exports = app => {
 
   router.delete("/id/:studentID", students.deleteWithID);
   router.delete("/firstname/:firstname", students.deleteWithFirstname);
+
+  router.post('/importData', students.importData);
 
   app.use("/api/students", router);
 };
