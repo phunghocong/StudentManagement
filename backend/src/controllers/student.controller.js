@@ -4,9 +4,7 @@ const Student = db.students;
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const Account = db.accounts;
-const { Parser } = require("json2csv");
-const fs = require("fs");
-const excelToJson = require('convert-excel-to-json');
+
 
 /*
 Đổi, sửa, xóa thông tin cá nhân
@@ -39,8 +37,6 @@ function createMultipleStudentFromArray(studentList) {
             email: stu.email,
             fatherPhoneNumber: stu.fatherPhoneNumber,
             motherPhoneNumber: stu.motherPhoneNumber,
-            isEnlisted: stu.isEnlisted,
-            draftDate: stu.draftDate,
             school: stu.school,// UET
             academyMethod: stu.academyMethod, //chinh quy...
             levelOfAcademy: stu.levelOfAcademy, //University, Doctorate
@@ -70,7 +66,7 @@ exports.createStudent = (req, res) => {
   // Kiểm tra req. 
   if (!req.body.firstName || !req.body.surName || !req.body.birthday || !req.body.national || !req.body.ethnic
     || !req.body.religion || !req.body.bornAddress || !req.body.citizenCardId || !req.body.currentAddress
-    || !req.body.phoneNumber || !req.body.email || !req.body.isEnlisted || !req.body.gender/* || !req.body.draftDate can be null*/
+    || !req.body.phoneNumber || !req.body.email|| !req.body.gender
   ) {
     res.status(400).send({ message: "Some basic info is empty" });
     return;
@@ -103,8 +99,6 @@ exports.createStudent = (req, res) => {
         email: req.body.email,
         fatherPhoneNumber: req.body.fatherPhoneNumber,
         motherPhoneNumber: req.body.motherPhoneNumber,
-        isEnlisted: req.body.isEnlisted,
-        draftDate: req.body.draftDate,
         school: req.body.school,// UET
         academyMethod: req.body.academyMethod, //chinh quy...a
         levelOfAcademy: req.body.levelOfAcademy, //University, Doctorate
@@ -140,7 +134,7 @@ exports.createStudentAndRegisterNewAccount = (req, res) => {
 
   if (!req.body.firstName || !req.body.surName || !req.body.birthday || !req.body.national || !req.body.ethnic
     || !req.body.religion || !req.body.bornAddress || !req.body.citizenCardId || !req.body.currentAddress
-    || !req.body.phoneNumber || !req.body.email || !req.body.isEnlisted /* || !req.body.draftDate can be null*/
+    || !req.body.phoneNumber || !req.body.email 
   ) {
     res.status(400).send({ message: "Some basic info is empty" });
     return;
@@ -173,8 +167,7 @@ exports.createStudentAndRegisterNewAccount = (req, res) => {
         email: req.body.email,
         fatherPhoneNumber: req.body.fatherPhoneNumber,
         motherPhoneNumber: req.body.motherPhoneNumber,
-        isEnlisted: req.body.isEnlisted,
-        draftDate: req.body.draftDate,
+
         school: req.body.school,// UET
         academyMethod: req.body.academyMethod, //chinh quy...a
         levelOfAcademy: req.body.levelOfAcademy, //University, Doctorate
@@ -242,8 +235,7 @@ exports.createMultipleStudent = (req, res) => {
             email: stu.email,
             fatherPhoneNumber: stu.fatherPhoneNumber,
             motherPhoneNumber: stu.motherPhoneNumber,
-            isEnlisted: stu.isEnlisted,
-            draftDate: stu.draftDate,
+
             school: stu.school,// UET
             academyMethod: stu.academyMethod, //chinh quy...
             levelOfAcademy: stu.levelOfAcademy, //University, Doctorate
@@ -294,8 +286,7 @@ exports.createMultipleStudentFromArray = (studentList) => {
             email: stu.email,
             fatherPhoneNumber: stu.fatherPhoneNumber,
             motherPhoneNumber: stu.motherPhoneNumber,
-            isEnlisted: stu.isEnlisted,
-            draftDate: stu.draftDate,
+
             school: stu.school,// UET
             academyMethod: stu.academyMethod, //chinh quy...
             levelOfAcademy: stu.levelOfAcademy, //University, Doctorate
@@ -726,7 +717,6 @@ var fields = [{ label: 'Mã số sinh viên', value: 'studentID' }, { label: 'H�
 { label: 'Số điện thoại', value: 'phoneNumber' }, { label: 'email', value: 'email' },
 { label: 'Số điện thoại bố', value: 'fatherPhoneNumber' }, { label: 'Số điện thoại mẹ', value: 'motherPhoneNumber' },
 
-{ label: 'Tình trạng nhập ngũ', value: 'isEnlisted' }, { label: 'Ngày nhập ngũ', value: 'draftDate' },
 
 { label: 'Tên trường', value: 'school' },
 { label: 'Hình thức học tập', value: 'academyMethod' }, { label: 'Trình độ học tập', value: 'levelOfAcademy' },
@@ -893,7 +883,7 @@ exports.importData = (req, res) => {
         'N': 'email',
         'O': 'fartherPhoneNumber',
         'P': 'motherPhoneNumber',
-        'Q': 'isEnListed',
+        'Q': 'school',
         'R': 'academyMethod',
         'S': 'levelOfAcademy',
         'T': 'schoolYearGroup',
@@ -901,7 +891,8 @@ exports.importData = (req, res) => {
         'V': 'major',
         'W': 'startedYear',
         'X': 'GPA',
-        'Y': 'managedBy'
+        'Y': 'managedBy',
+        'Z': 'note'
       },
     });
     // createMultipleStudentFromArray(result);

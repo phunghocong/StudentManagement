@@ -139,7 +139,6 @@ export default function StudentList() {
             <Upload 
             action={()=> {
               console.log("a");
-              abort
             }} 
             listType="picture" 
             accept=".xlsx" 

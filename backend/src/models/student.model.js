@@ -21,9 +21,7 @@ module.exports = mongoose => {
       fatherPhoneNumber: String,
       motherPhoneNumber: String,
       //activity info
-      //military
-      isEnlisted: Boolean,
-      draftDate: String,
+
 
       //school info
       school: String,// UET
