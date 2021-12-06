@@ -46,6 +46,17 @@ function getCurrentDateTimeString() {
   );
 }
 
+function sortDate(noti1, noti2) {
+  const aDate = noti1.createdTime.split('-')[0].split("/");
+  const bDate = noti2.createdTime.split('-')[0].split("/");
+  const aTime = noti1.createdTime.split('-')[1].split(":");
+  const bTime = noti2.createdTime.split('-')[1].split(":");
+  const aDateTime = new Date(...aDate, ...aTime);
+  const bDateTime = new Date(...bDate, ...bTime);
+  
+  return bDateTime - aDateTime;
+};
+
 // Đăng nhập sẽ nhận request gồm username và password - sau đó trả về JSON {username, _id của đối tượng acocunt trên database, jwtoken sử dụng cho phiên làm việc}.
 exports.login = (req, res) => {
   // Tiếp nhận request
@@ -361,6 +372,31 @@ exports.deleteAllStudent = (req, res) => {
       res.status(500).send({
         message:
           err.message || "Some error occurred while removing all student account."
+      });
+    });
+};
+
+// lấy thông báo của 1 tài khoản từ id.
+exports.getNotification = (req, res) => {
+  if (!req.params.id) {
+    return res.status(400).send({ message: "Username be filled in" });
+  }
+
+  Account.findById(req.params.id)
+    .sort({notification: -1})
+    .then((data) => {
+      if (!data) {
+        res
+          .status(404)
+          .send({ message: `There is no account with id: ${req.params.id}` });
+      } else {
+        let dataRes = data.notification.sort(sortDate);
+        res.status(200).send(dataRes);
+      }
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: "Error when get data",
       });
     });
 };

@@ -66,9 +66,9 @@ export const getAllAccount = () => axios.get(`${url}/getAll/`);
 
 // Nhận vào id object account trả về array chứa tất cả các object thông báo {title, message, createTime}
 export const getNotification = (id) => axios
-    .get(`${url}/get/${id}`)
+    .get(`${url}/getNotification/${id}`)
     .then(data => {
-        return data.data.notification;
+        return data.data;
     });
 
 // Nhận vào string username trả về string id của object model

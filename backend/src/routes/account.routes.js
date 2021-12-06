@@ -45,6 +45,9 @@ module.exports = app => {
   
   // // Lấy một model account từ username
   router.get('/getByUsername/:username', accounts.getOneByUsername);
+
+  // lấy thông báo của 1 tài khoản.
+  router.get('/getNotification/:id', accounts.getNotification);
  
   app.use("/api/accounts", router);
   };

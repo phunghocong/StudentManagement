@@ -14,6 +14,7 @@ const AccountDelete = forwardRef((props, ref) => {
 
   const onOk = () => {
     deleteAccount(id);
+    window.location.reload(false);
     setVisible(false);
   };
 
