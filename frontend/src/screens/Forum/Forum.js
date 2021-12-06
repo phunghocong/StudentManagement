@@ -9,10 +9,10 @@ import { DeleteOutlined, PushpinOutlined } from "@ant-design/icons"
 import { currentUserIsStudent, getCurrentUser } from "../../api/accounts";
 
 const sort = {
-  ANY: "any",
+  //ANY: "any",
   OLDEST: "oldest",
   LASTEST: "lastet",
-  MOST_REPLIES: "most_replies"
+  //MOST_REPLIES: "most_replies"
 };
 
 const dateRange = {
@@ -26,9 +26,9 @@ export default function Forum() {
   const ref = useRef();
   const [data, setDataList] = useState([]);
 
-  const getList = async () => {
+  const getList = async (sortType = sort.LASTEST) => {
     try {
-      const res = await getAllTopic();
+      const res = await getAllTopic(sortType);
       setDataList(
         res.data.map((item) => ({
           ...item,
@@ -69,9 +69,7 @@ export default function Forum() {
     getList();
   }, []);
   
-  const onChangeSortType = () => {
 
-  }
   return (
     <div className="container">
       <Row align="middle" gutter={20}>
@@ -86,20 +84,20 @@ export default function Forum() {
         </Col>
         <div >
           <Select
-            onChange={onChangeSortType}
-            defaultValue={sort.ANY}
+            onChange={data=>getList(data)}
+            defaultValue={sort.LASTEST}
             style={{ width: 200 }}
           >
             {Object.values(sort).map((val, index) => (
               <Select.Option key={index} value={val}>
-                {val === sort.ANY ? "Tất cả"
-                  : val === sort.LASTEST ? "Mới nhất"
+              {/* val === sort.ANY ? "Tất cả" 
+                  : */val === sort.LASTEST ? "Mới nhất"
                     : val === sort.OLDEST ? "Cũ nhất"
-                      : "Nhiều bình luận nhất"}
+                      : ""}{/* //"Nhiều bình luận nhất" */}
               </Select.Option>
             ))}
           </Select>
-          <Select
+{/*           <Select
             onChange={onChangeSortType}
             defaultValue={dateRange.HOUR}
             style={{ width: 200 }}
@@ -112,7 +110,7 @@ export default function Forum() {
                       : "Trong 1 năm"}
               </Select.Option>
             ))}
-          </Select>
+          </Select> */}
         </div>
       </Row>
 

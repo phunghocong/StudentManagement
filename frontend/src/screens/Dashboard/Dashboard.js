@@ -1,21 +1,35 @@
 import React from 'react';
 import { Line, Column, Pie, G2 } from '@ant-design/charts';
-import { Row, Col, Button, Form, Input } from "antd";
+import { Row, Col, Button, Form, Input, Progress ,Avatar} from "antd";
 import { getAccount, getCurrentUser, currentUserIsAdmin, currentUserIsMod, currentUserIsCon, currentUserIsStudent } from '../../api/accounts';
 import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
 import { graphStudentCountEachYear, graphGenderCount } from '../../api/students';
-import { getStudentGPA, graphGPAPerYear, graphGradeCount } from '../../api/classRecord';
+import { useHistory } from 'react-router';
+import paths from "../../constants/paths";
+
+import { getStudentGPA, graphGPAPerYear, graphGradeCount, graphGradeCountOfStudent } from '../../api/classRecord';
 export default function Dashboard() {
   const G = G2.getEngine('canvas');
+  const history = useHistory();
 
   const allWidth = 500, allHeigh = 300;
-
+  const [GPA, setGPA] = useState(0);
   useEffect(() => {
     getUser();
-    getStudentYearData();
-    getGenderData();
-    getGpaPerYearData();
-    getgradeCountData();
+    if (!currentUserIsStudent()) {
+      getStudentYearData();
+      getGenderData();
+      getGpaPerYearData();
+      getgradeCountData();
+    } else {
+      getStudentGradeCountData();
+      //console.log(getStudentGPA(getCurrentUser().username));
+      getStudentGPA(getCurrentUser().username)
+        .then(data => {
+          setGPA(data.data.GPA);
+        })
+    }
+
   }, []);
   const [fullName, setFullName] = useState("")
 
@@ -135,6 +149,7 @@ export default function Dashboard() {
       size: 5,
       shape: 'diamond',
     },
+
     annotations: [
       {
         type: 'regionFilter',
@@ -183,6 +198,28 @@ export default function Dashboard() {
     data: gradeCountData,
     xField: "grade",
     yField: "count",
+    color: ({ grade }) => {
+      if (grade === 'A+') {
+        return '#5DEA60';
+      } else if (grade === 'A') {
+        return '#6FE080';
+      } else if (grade === 'B+') {
+        return '#5DEA60';
+      } else if (grade === 'B') {
+        return '#F1F957';
+      } else if (grade === 'C+') {
+        return '#FCE43A';
+      } else if (grade === 'C') {
+        return '#FFC94C';
+      } else if (grade === 'D+') {
+        return '#FFC94C';
+      } else if (grade === 'D') {
+        return '#FC7E1E';
+      } else if (grade === 'F') {
+        return '#FC7E1E';
+      }
+
+    },
     width: allWidth,
     height: allHeigh,
     autoFit: false,
@@ -259,74 +296,210 @@ export default function Dashboard() {
         console.log(err);
       });
   };
+  const [studentGradeIsLoading, setStudentGradeIsLoading] = useState(false);
+  const [studentGradeData, setStudentGradeData] = useState([]);
+  const studentGradeDataGraphConfig = {
+    data: studentGradeData,
+    xField: "grade",
+    yField: "count",
+    color: ({ grade }) => {
+      if (grade === 'A+') {
+        return '#5DEA60';
+      } else if (grade === 'A') {
+        return '#6FE080';
+      } else if (grade === 'B+') {
+        return '#5DEA60';
+      } else if (grade === 'B') {
+        return '#F1F957';
+      } else if (grade === 'C+') {
+        return '#FCE43A';
+      } else if (grade === 'C') {
+        return '#FFC94C';
+      } else if (grade === 'D+') {
+        return '#FFC94C';
+      } else if (grade === 'D') {
+        return '#FC7E1E';
+      } else if (grade === 'F') {
+        return '#FC7E1E';
+      }
+
+    },
+    width: allWidth,
+    height: allHeigh,
+    autoFit: false,
+    label: {
+      position: "bottom",
+      style: {
+        fill: "#FFFFFF",
+        opacity: 0.6,
+      },
+    },
+    xAxis: {
+      label: {
+        autoHide: true,
+        autoRotate: false,
+      },
+    },
+    meta: {
+      grade: {
+        alias: "Điểm",
+      },
+      count: {
+        alias: "Số lượng",
+      },
+    },
+  };
+
+
+  const getStudentGradeCountData = () => {
+    setStudentGradeIsLoading(true);
+    graphGradeCountOfStudent(getCurrentUser().username)
+      .then((res) => {
+        var scoreList = {
+          'A+': 0,
+          'A': 0,
+          'B+': 0,
+          'B': 0,
+          'C+': 0,
+          'C': 0,
+          'D+': 0,
+          'D': 0,
+          'F': 0,
+
+        };
+        for (const value of res.data) {
+
+          var char = getGPAchar(value.score);
+          scoreList[char]++;
+        }
+        var list = []
+        for (const val in scoreList) {
+          list.push({
+            'grade': val,
+            'count': scoreList[val]
+          })
+        }
+        setStudentGradeData(list);
+        setStudentGradeIsLoading(false);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
   return (
     <div>
       <Row><h1>Xin chào {fullName}</h1></Row>
 
-         {!currentUserIsStudent() ? <div>
+      {!currentUserIsStudent() ? <div>
 
-      <Row gutter={10}>
-        <Col span={12}>
-          <h2>Số lượng sinh viên theo từng năm</h2>
-          <Row>
-            <Column {...studentYearDataGraphConfig} loading={studentYearDataIsLoading} />
-          </Row>
-          <Row>
-            <Col span={8}
-            ><Input addonBefore="Từ" defaultValue={getStudentYearDataFrom}
-              onChange={e => { getStudentYearDataFrom = e.target.value }}
-              onPressEnter={getStudentYearData} />
-            </Col>
-            <Col span={8}><Input addonBefore="Đến" defaultValue={getStudentYearDataTo}
-              onChange={e => { getStudentYearDataTo = e.target.value }}
-              onPressEnter={getStudentYearData} /></Col>
-            <Col span={4}><Button type="primary" onClick={getStudentYearData}>Cập nhập</Button></Col>
-          </Row>
-        </Col>
-        <Col span={12}>
-          <h2>Tỷ lệ giới tính</h2>
-          <Row>
-            <Pie {...genderDataGraphConfig} loading={genderDataIsLoading} />
-          </Row>
+        <Row gutter={10}>
+          <Col span={12}>
+            <h2>Số lượng sinh viên theo từng năm</h2>
+            <Row>
+              <Column {...studentYearDataGraphConfig} loading={studentYearDataIsLoading} />
+            </Row>
+            <Row>
+              <Col span={8}
+              ><Input addonBefore="Từ" defaultValue={getStudentYearDataFrom}
+                onChange={e => { getStudentYearDataFrom = e.target.value }}
+                onPressEnter={getStudentYearData} />
+              </Col>
+              <Col span={8}><Input addonBefore="Đến" defaultValue={getStudentYearDataTo}
+                onChange={e => { getStudentYearDataTo = e.target.value }}
+                onPressEnter={getStudentYearData} /></Col>
+              <Col span={4}><Button type="primary" onClick={getStudentYearData}>Cập nhập</Button></Col>
+            </Row>
+          </Col>
+          <Col span={12}>
+            <h2>Tỷ lệ giới tính</h2>
+            <Row>
+              <Pie {...genderDataGraphConfig} loading={genderDataIsLoading} />
+            </Row>
 
-        </Col>
-      </Row>
-      <Row>
-        <Col span={12}>
-          <h2>Điểm trung bình của sinh viên từng năm</h2>
-          <Row>
-            <Line {...gpaPerYearGraphConfig} loading={gpaPerYearIsLoading} />
-          </Row>
-          <Row>
-            <Col span={8}><Input addonBefore="Từ" defaultValue={getStudentYearDataFrom}
-              onChange={e => { getGpaPerYearDataFrom = e.target.value }}
-              onPressEnter={getGpaPerYearData} /></Col>
-            <Col span={8}><Input addonBefore="Đến" defaultValue={getStudentYearDataTo}
-              onChange={e => { getGpaPerYearDataTo = e.target.value }}
-              onPressEnter={getGpaPerYearData} /></Col>
-            <Col span={4}><Button type="primary" onClick={getGpaPerYearData}>Cập nhập</Button></Col>
-          </Row>
-        </Col>
-        <Col span={12}>
-          <h2>Kết quả học tập kì {gradeCountSemeter} năm {gradeCountYear}</h2>
-          <Row>
-            <Column {...gradeCountDataGraphConfig} loading={gradeCountIsLoading} />
-          </Row>
-          <Row>
-            <Col span={8}
-            ><Input addonBefore="Kì" defaultValue={gradeCountSemeter}
-              onChange={e => { setGradeCountSemeter(e.target.value) }}
-              onPressEnter={getgradeCountData} />
-            </Col>
-            <Col span={8}><Input addonBefore="Năm" defaultValue={gradeCountYear}
-              onChange={e => { setGradeCountYear(e.target.value) }}
-              onPressEnter={getgradeCountData} /></Col>
-            <Col span={4}><Button type="primary" onClick={getgradeCountData}>Cập nhập</Button></Col>
-          </Row>
-        </Col>
-      </Row>
-    </div> : ""}  </div>
+          </Col>
+        </Row>
+        <Row>
+          <Col span={12}>
+            <h2>Điểm trung bình của sinh viên từng năm</h2>
+            <Row>
+              <Line {...gpaPerYearGraphConfig} loading={gpaPerYearIsLoading} />
+            </Row>
+            <Row>
+              <Col span={8}><Input addonBefore="Từ" defaultValue={getStudentYearDataFrom}
+                onChange={e => { getGpaPerYearDataFrom = e.target.value }}
+                onPressEnter={getGpaPerYearData} /></Col>
+              <Col span={8}><Input addonBefore="Đến" defaultValue={getStudentYearDataTo}
+                onChange={e => { getGpaPerYearDataTo = e.target.value }}
+                onPressEnter={getGpaPerYearData} /></Col>
+              <Col span={4}><Button type="primary" onClick={getGpaPerYearData}>Cập nhập</Button></Col>
+            </Row>
+          </Col>
+          <Col span={12}>
+            <h2>Kết quả học tập toàn trường kì {gradeCountSemeter} năm {gradeCountYear}</h2>
+            <Row>
+              <Column {...gradeCountDataGraphConfig} loading={gradeCountIsLoading} />
+            </Row>
+            <Row>
+              <Col span={8}
+              ><Input addonBefore="Kì" defaultValue={gradeCountSemeter}
+                onChange={e => { setGradeCountSemeter(e.target.value) }}
+                onPressEnter={getgradeCountData} />
+              </Col>
+              <Col span={8}><Input addonBefore="Năm" defaultValue={gradeCountYear}
+                onChange={e => { setGradeCountYear(e.target.value) }}
+                onPressEnter={getgradeCountData} /></Col>
+              <Col span={4}><Button type="primary" onClick={getgradeCountData}>Cập nhập</Button></Col>
+            </Row>
+          </Col>
+        </Row>
+      </div> :
+        <Row gutter={10}>
+          <Col span={6} flex="300px" style={{ textAlign: "center" }}>
+            <Avatar size={120} src={"https://joeschmoe.io/api/v1/" + getCurrentUser().username + " - " + fullName} /><br />
+            Bạn có thể:
+            <Button
+              type="primary"
+              style={{
+                display: "block",
+                textAlign: "center",
+                margin: "20px auto",
+              }}
+              disabled={!currentUserIsStudent()}
+              onClick={() => history.push(paths.HO_SO_SINH_VIEN)}
+            >
+              Xem thông tin cá nhân
+            </Button>
+            hoặc
+            <Button
+              type="primary"
+              style={{
+                display: "block",
+                textAlign: "center",
+                margin: "20px auto",
+              }}
+              disabled={!currentUserIsStudent()}
+              onClick={() => history.push(paths.KET_QUA_HOC_TAP)}
+            >
+              Xem kết quả học tập
+            </Button>
+          </Col>
+          <Col span={6}>
+            <h2>GPA của bạn: </h2>
+            <Row>
+              <Progress type="circle" percent={GPA * 100 / 4} format={percent => GPA + "/4"} width={150} />
+            </Row>
+          </Col>
+          <Col span={12}>
+            <h2>Kết quả học tập của bạn:</h2>
+            <Row>
+              <Column {...studentGradeDataGraphConfig} loading={studentGradeIsLoading} />
+            </Row>
+          </Col>
+
+        </Row>}
+
+    </div>
 
   );
 };

@@ -19,7 +19,7 @@ module.exports = app => {
     router.post("/createComment/:id", topics.createComment);
 
     // Lấy array tất các object Topic
-    router.get("/getAll/", topics.getAllTopic);
+    router.get("/getAll/:sortType", topics.getAllTopic);
 
     // Xóa tất cả topic
     router.delete("/deleteAll/", topics.deleteAll);

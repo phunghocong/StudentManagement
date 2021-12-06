@@ -79,7 +79,7 @@ export default function UserProfile() {
             disabled={!currentUserIsStudent()}
             onClick={()=>history.push(paths.KET_QUA_HOC_TAP)}
           >
-            Xem thông kết quả học tập
+            Xem kết quả học tập
           </Button>
           </div>
           :""}

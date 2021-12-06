@@ -417,3 +417,38 @@ exports.graphGradeCount = (req, res) => {
     })
   //step();
 }
+exports.graphGradeCountOfStudent = (req, res) => {
+  const studentID = req.params.studentID;
+
+  ClassRecord.aggregate([
+    { $match: { belongToStudent: studentID } },
+    {
+      $project:
+      {
+        'score': {
+          $add: [
+            {
+              $multiply: [
+                { $convert: { input: '$midtermGrade', to: "double" } }, 0.4]
+            },
+            {
+              $multiply: [
+                { $convert: { input: '$grade', to: "double" } }, 0.6]
+            },
+          ]
+        }
+
+      }
+    }
+
+  ])
+    .sort({ "_id": 'asc' })
+    .then(data => {
+      console.log(data);
+      res.status(200).send(data);
+    })
+    .catch(err => {
+      res.status(500).send(err);
+    })
+  //step();
+}

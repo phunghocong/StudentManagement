@@ -21,26 +21,26 @@ function getCurrentDateTimeString() {
 
 // Tạo 1 topic mới
 exports.createTopic = (req, res) => {
-    if (req.body) {
-      const topic = new Topic({
-          title: req.body.title,
-          detail: req.body.detail,
-          comment: [],
-          poster: req.body.poster,
-          createdTime: getCurrentDateTimeString(),
-      });
+  if (req.body) {
+    const topic = new Topic({
+      title: req.body.title,
+      detail: req.body.detail,
+      comment: [],
+      poster: req.body.poster,
+      createdTime: getCurrentDateTimeString(),
+    });
 
-      topic
+    topic
       .save(topic)
       .then((data) => {
-          res.send(data);
+        res.send(data);
       })
       .catch(err => {
-          res.status(500).send({message: "error when create topic", err: err});
+        res.status(500).send({ message: "error when create topic", err: err });
       })
-    } else {
-        res.status(400).send({message: "Data must be filled in"});
-    }
+  } else {
+    res.status(400).send({ message: "Data must be filled in" });
+  }
 };
 
 // Xóa 1 topic
@@ -121,7 +121,10 @@ exports.getOneById = (req, res) => {
 
 // Lấy danh sách tất cả các object model tài khoản.
 exports.getAllTopic = (req, res) => {
+  const sortType = req.params.sortType;
+  const sort = sortType == "oldest"? 1: -1;
   Topic.find()
+    .sort({ createdAt: sort })
     .then((data) => {
       if (!data) {
         res.status(404).send({ message: "There is no Topic in database!" });
@@ -183,19 +186,19 @@ exports.createComment = (req, res) => {
 
 // Xóa 1 comment của 1 topic
 exports.deleteComment = (req, res) => {
-    const topicId = req.body.topicId;
-    const commentId = req.body.commentId;
+  const topicId = req.body.topicId;
+  const commentId = req.body.commentId;
 
-    Topic.findOneAndUpdate(
-        { _id: topicId },
-        { $pull: { comment: { _id: commentId }} },
-        { safe: true, multi: false }
-    )
+  Topic.findOneAndUpdate(
+    { _id: topicId },
+    { $pull: { comment: { _id: commentId } } },
+    { safe: true, multi: false }
+  )
     .then(data => {
-        res.status(200).send({message: "Deleted Comment!"});
+      res.status(200).send({ message: "Deleted Comment!" });
     })
     .catch(error => {
-        res.status(500).send({message: `Error when delete comment ${error}`});
+      res.status(500).send({ message: `Error when delete comment ${error}` });
     })
-     
+
 }

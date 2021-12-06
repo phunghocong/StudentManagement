@@ -10,5 +10,6 @@ export const findClass = (classname, year, semeter) => axios.get(`${url}/class/$
 //Not working
 export const getStudentListFromClass = (classname) => axios.get(`${url}/class/students/${classname}`);
 export const deleteAll = () => axios.delete(url);
-export const graphGPAPerYear = (from, to) => axios.get(`${url}/graph/graphGPAPerYear/${from}&${to}`)
-export const graphGradeCount = (year, semeter) => axios.get(`${url}/graph/graphGradeCount/${year}&${semeter}`)
+export const graphGPAPerYear = (from, to) => axios.get(`${url}/graph/graphGPAPerYear/${from}&${to}`);
+export const graphGradeCount = (year, semeter) => axios.get(`${url}/graph/graphGradeCount/${year}&${semeter}`);
+export const graphGradeCountOfStudent = (studentID) => axios.get(`${url}/graph/graphGradeCountOfStudent/${studentID}`);

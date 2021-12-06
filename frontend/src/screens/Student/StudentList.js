@@ -161,7 +161,7 @@ export default function StudentList() {
               {val === studentType.ANY
                 ? "Tất cả"
                 : val === studentType.GOOD
-                  ? "Tốt"
+                  ? "Xuất sắc"
                   : "Kém"}
             </Select.Option>
           ))}

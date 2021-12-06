@@ -18,7 +18,7 @@ export const deleteTopic = (id) => axios.delete(`${url}/delete/${id}`);
 export const createComment = (id, comment) => axios.post(`${url}/createComment/${id}`, comment);
 
 // Nhận vào không gì cả trả về array chứa các đối tượng thuộc model accounts
-export const getAllTopic = () => axios.get(`${url}/getAll/`);
+export const getAllTopic = (sortType) => axios.get(`${url}/getAll/${sortType}`);
 
 // Nhận vào id trả về Array chứa các object Comment của 1 Topic.
 export const getAllCommentOf = (id) => axios.get(`${url}/get/${id}`)
