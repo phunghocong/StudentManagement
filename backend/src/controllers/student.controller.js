@@ -4,7 +4,7 @@ const Student = db.students;
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const Account = db.accounts;
-
+const excelToJson = require('convert-excel-to-json');
 
 /*
 Đổi, sửa, xóa thông tin cá nhân
@@ -14,7 +14,7 @@ fix front end
 //Will make studentID auto increment based on the student count at currentYear
 function createMultipleStudentFromArray(studentList) {
   const forLoop = async () => {
-    for await (let stu of studentList) {
+    for (let stu of studentList) {
       var year = stu.startedYear;
       await Student
         .countDocuments({ "startedYear": year })
@@ -57,7 +57,10 @@ function createMultipleStudentFromArray(studentList) {
         });
     }
   }
-  forLoop();
+  forLoop()
+  .catch(err => {
+    return false;
+  });
   return true;
 }
 
@@ -66,7 +69,7 @@ exports.createStudent = (req, res) => {
   // Kiểm tra req. 
   if (!req.body.firstName || !req.body.surName || !req.body.birthday || !req.body.national || !req.body.ethnic
     || !req.body.religion || !req.body.bornAddress || !req.body.citizenCardId || !req.body.currentAddress
-    || !req.body.phoneNumber || !req.body.email|| !req.body.gender
+    || !req.body.phoneNumber || !req.body.email || !req.body.gender
   ) {
     res.status(400).send({ message: "Some basic info is empty" });
     return;
@@ -134,7 +137,7 @@ exports.createStudentAndRegisterNewAccount = (req, res) => {
 
   if (!req.body.firstName || !req.body.surName || !req.body.birthday || !req.body.national || !req.body.ethnic
     || !req.body.religion || !req.body.bornAddress || !req.body.citizenCardId || !req.body.currentAddress
-    || !req.body.phoneNumber || !req.body.email 
+    || !req.body.phoneNumber || !req.body.email
   ) {
     res.status(400).send({ message: "Some basic info is empty" });
     return;
@@ -261,54 +264,7 @@ exports.createMultipleStudent = (req, res) => {
   forLoop();
   res.send({ message: "successfully added " + studentList.length + " students" });
 }
-exports.createMultipleStudentFromArray = (studentList) => {
-  const forLoop = async () => {
-    for await (let stu of studentList) {
-      var year = stu.startedYear;
-      await Student
-        .countDocuments({ "startedYear": year })
-        .then(docCount => {
-          var id = year + (String)(docCount).padStart(4, "0");
-          const student = new Student({
-            studentID: id,
-            firstName: stu.firstName,
-            surName: stu.surName,
-            gender: stu.gender,
-            birthday: stu.birthday,
-            national: stu.national,
-            ethnic: stu.ethnic,//King
-            religion: stu.religion,//Dao phat
-            homeAddress: stu.homeAddress,
-            bornAddress: stu.bornAddress,
-            citizenCardId: stu.citizenCardId, //chung minh thu
-            currentAddress: stu.currentAddress,
-            phoneNumber: stu.phoneNumber,
-            email: stu.email,
-            fatherPhoneNumber: stu.fatherPhoneNumber,
-            motherPhoneNumber: stu.motherPhoneNumber,
 
-            school: stu.school,// UET
-            academyMethod: stu.academyMethod, //chinh quy...
-            levelOfAcademy: stu.levelOfAcademy, //University, Doctorate
-            schoolYearGroup: stu.schoolYearGroup, //K64,.. ??
-            baseClass: stu.baseClass, //CA-CLC4
-            major: stu.major,//Khoa hoc may tinh
-            startedYear: year,
-            GPA: "",
-            managedBy: "",
-            note: ""
-          });
-          accounts.createAccountFromStudent(student);
-          student
-            .save(student)
-            .catch(err => {
-              return true;
-            });
-        });
-    }
-  }
-  forLoop();
-}
 exports.countStudent = (req, res) => {
   const year = req.query.year;
   Student
@@ -862,7 +818,7 @@ exports.export2csvStudentDataClass = (req, res) => {
 exports.importData = (req, res) => {
   try {
     let result = excelToJson({
-      sourceFile: './mockData/danh_sach_sinh_vien.xlsx',
+      sourceFile: './mockData/danh_sach.xlsx',
       header: {
         rows: 1
       },
@@ -895,9 +851,14 @@ exports.importData = (req, res) => {
         'Z': 'note'
       },
     });
-    // createMultipleStudentFromArray(result);
-    res.status(200).send(result);
+    //console.log(result);
+    if (createMultipleStudentFromArray(result.Sheet1)) {
+      res.status(200).send("Finished");
+    } else {
+      res.status(500).send({ message: "Maybe some data is duplicate" });
+    }
   } catch (error) {
-    res.status(500).send("Error!", error);
+    console.error(error);
+    res.status(500).send({ message: error });
   }
 }

@@ -5,13 +5,13 @@ import {
 } from "@ant-design/icons";
 import { Button, Col, Row, Table, Select, Upload } from "antd";
 import { useEffect, useRef, useState } from "react";
-import { findAll, findByMod, exportToCsvAll, exportToCsvByMod } from "../../api/students";
+import { findAll, findByMod, exportToCsvAll, exportToCsvByMod, importData } from "../../api/students";
 import StudentDelete from "./StudentDelete";
 import StudentConfig from "./StudentConfig";
 import StudentGrade from "./StudentGrade";
 import { currentUserIsCon, currentUserIsMod, getCurrentUser } from "../../api/accounts";
 import { useHistory } from "react-router";
-import { UploadOutlined, DownloadOutlined, PlusCircleOutlined} from "@ant-design/icons"
+import { UploadOutlined, DownloadOutlined, PlusCircleOutlined } from "@ant-design/icons"
 const studentType = {
   ANY: "any",
   GOOD: "good",
@@ -132,26 +132,40 @@ export default function StudentList() {
 
           <Col>
             <Button type="primary" onClick={() => configRef.current.openNew()}>
-              <PlusCircleOutlined/>Tạo mới
+              <PlusCircleOutlined />Tạo mới
             </Button>
           </Col>
           <Col>
-            <Upload 
-            action={()=> {
-              console.log("a");
-            }} 
-            listType="picture" 
-            accept=".xlsx" 
-            customRequest={()=> {}}>
+            <Upload
+              action={file => {
+                //console.trace(file);
+              }}
+              listType="picture"
+              accept=".xlsx"
+              customRequest={file => {
+                // console.log(file.file);
+              }}
+              onChange={file => {
+                importData("")
+                  .then(() => {
+                    console.log("suc");
+                    file.file.response = { "status": "success" };
+                    file.file.status = 'done';
+                    getList();
+                  });
+              }}
+            >
               <Button icon={<UploadOutlined />}>Nhập dữ liệu</Button>
             </Upload>
           </Col>
           <Col>
-            <Button type="primary" 
-            onClick={() => { currentUserIsCon() ? 
-              exportToCsvByMod(currentMode, getCurrentUser().username) :
-             exportToCsvAll(currentMode) }}>
-              <DownloadOutlined/>Xuất dữ liệu
+            <Button type="primary"
+              onClick={() => {
+                currentUserIsCon() ?
+                  exportToCsvByMod(currentMode, getCurrentUser().username) :
+                  exportToCsvAll(currentMode)
+              }}>
+              <DownloadOutlined />Xuất dữ liệu
             </Button>
           </Col>
         </Row>

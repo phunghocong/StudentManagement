@@ -41,13 +41,13 @@ const UserPasswordChange = forwardRef((props, ref) => {
       width={300}
     >
       <Form form={form} layout="vertical" onFinish={onFinish}>
-        <Row>
+        {/* <Row>
           <Form.Item label="Mật khẩu hiện tại" name="password" rules={[
             { required: true, message: "Hãy nhập mật khẩu hiện tại" },
             { min: 6, message: "Mật khẩu phải có ít nhất 6 chữ" }]}>
             <Input.Password />
           </Form.Item>
-        </Row>
+        </Row> */}
         <Row>
           <Form.Item label="Mật khẩu mới" name="newPassword" rules={[
             { required: true, message: "Hãy nhập mật khẩu mới" },

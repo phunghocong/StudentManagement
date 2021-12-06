@@ -14,7 +14,9 @@ const StudentDelete = forwardRef((props, ref) => {
   const onOk = () => {
     console.log("deleted"+studentID);
     setVisible(false);
-    deleteStudent(studentID);
+    deleteStudent(studentID)
+    
+    ;
   };
 
   return (

@@ -245,7 +245,7 @@ exports.createAccountFromStudent = (student) => {
         account
           .save(account)
           .then((data) => {
-            console.log(data);
+            //console.log(data);
           })
           .catch((err) => {
             console.log("Error when create data");

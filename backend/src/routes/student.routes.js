@@ -8,7 +8,8 @@ module.exports = app => {
   router.post('/createStudentAndRegisterNewAccount', students.createStudentAndRegisterNewAccount);
   //Create a bunch of student from an array
   router.post('/createMultipleAccountFromExistingStudent', students.generateStudentAccount);
-
+  router.post('/createMultipleStudent', students.createMultipleStudent);
+  
   router.post('/updateGPA', students.updateDatabaseGPA);
   //Export to excel readable file 
   router.get('/list/export/:mode', students.export2csvStudentData);
