@@ -44,21 +44,23 @@ exports.generateMockData = (req, res) => {
         subjectName[choose].charCodeAt(subjectNameLength - 1);
       var roll1 = getRandomArbitrary(0, 100), roll2 = getRandomArbitrary(0, 100);
       var midtermGrade, grade;
-      if (roll1 < 15) {
+      if (roll1 < 10) {
         midtermGrade = getRandomArbitrary(1, 3)
-      } else if (roll1 < 30) {
+      } else if (roll1 < 20) {
         midtermGrade = getRandomArbitrary(3, 6)
-      } else if (roll1 < 70) {
+      } else if (roll1 < 50) {
         midtermGrade = getRandomArbitrary(6, 8)
       } else {
         midtermGrade = getRandomArbitrary(8, 10)
       }
-      if (roll2 < 10) {
+      if (roll2 < 5) {
         grade = getRandomArbitrary(0, 3)
-      } else if (roll1 < 35) {
-        grade = getRandomArbitrary(3, 5)
-      } else if (roll1 < 75) {
-        grade = getRandomArbitrary(5, 8)
+      } else if (roll1 < 25) {
+        grade = getRandomArbitrary(3, 4)
+      } else if (roll1 < 50) {
+        grade = getRandomArbitrary(4, 6)
+      } else if (roll1 < 85) {
+        grade = getRandomArbitrary(6, 8)
       } else {
         grade = getRandomArbitrary(8, 10)
       }

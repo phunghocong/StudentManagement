@@ -1,7 +1,7 @@
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { Button, Col, Row, Table } from "antd";
 import { useEffect, useRef, useState } from "react";
-import { getAllAccount } from "../../api/accounts";
+import { getAllAccount, currentUserIsCon } from "../../api/accounts";
 import AccountDelete from "./AccountDelete";
 import AccountConfig from "./AccountConfig";
 
@@ -49,10 +49,10 @@ export default function AccountList() {
           text: 'Sinh viên',
           value: '',
         },
-      ], 
+      ],
       onFilter: (value, record) => record.authorityLevel.indexOf(value) === 0,
 
-      },
+    },
 
     {
       title: "",
@@ -112,11 +112,11 @@ export default function AccountList() {
           <h1>Danh sách tài khoản</h1>
         </Col>
 
-        <Col>
+        {currentUserIsCon() ? "" : <Col>
           <Button type="primary" onClick={() => configRef.current.openNew()}>
             Tạo mới
           </Button>
-        </Col>
+        </Col>}
       </Row>
 
       <br />

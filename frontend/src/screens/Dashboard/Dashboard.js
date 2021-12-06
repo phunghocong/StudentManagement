@@ -169,7 +169,7 @@ export default function Dashboard() {
       {
         type: 'line',
         start: ['min', '6'],
-        end: ['max', 'median'],
+        end: ['max', '6'],
         style: {
           stroke: '#F4664A',
           lineDash: [2, 2],

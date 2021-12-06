@@ -223,7 +223,7 @@ exports.findAll = (req, res) => {
   const mode = req.params.mode;
   var condition
     = (mode == "good") ? {
-      "GPA": { $gt: 3.6 }
+      "GPA": { $gt: 3.5 }
     } : (mode == "bad" ? {
       "GPA": { $lt: 2 }
     } : {});
@@ -243,7 +243,7 @@ exports.findAllToStudentList = (req, res) => {
   const mode = req.params.mode;
   var condition
     = (mode == "good") ? {
-      "GPA": { $gt: 3.6 }
+      "GPA": { $gt: 3.5 }
     } : (mode == "bad" ? {
       "GPA": { $lt: 2 }
     } : {})
@@ -318,7 +318,7 @@ exports.findStudentsFromClass = (req, res) => {
   const mode = req.params.mode;
   var condition
     = (mode == "good") ? {
-      "GPA": { $gt: 3.6 }, "baseClass": baseClass
+      "GPA": { $gt: 3.5 }, "baseClass": baseClass
     } : (mode == "bad" ? {
       "GPA": { $lt: 2 }, "baseClass": baseClass
     } : { "baseClass": baseClass });
@@ -352,7 +352,7 @@ exports.findByMod = (req, res) => {
   const managedBy = req.params.managedBy;
   const mode = req.params.mode;
   var condition
-    = (mode == "good") ? { "GPA": { $gt: 3.6 }, "managedBy": managedBy }
+    = (mode == "good") ? { "GPA": { $gt: 3.5 }, "managedBy": managedBy }
       : (mode == "bad" ? { "GPA": { $lt: 2 }, "managedBy": managedBy } :
         { "managedBy": managedBy });
   Student.find(condition)
@@ -612,7 +612,7 @@ const fs = require("fs");
 exports.export2csvStudentData = (req, res) => {
   const mode = req.params.mode;
   var condition = (mode == "good") ? {
-    "GPA": { $gt: 3.6 }
+    "GPA": { $gt: 3.5 }
   } : (mode == "bad" ? {
     "GPA": { $lt: 2 }
   } : {});
@@ -646,7 +646,7 @@ exports.export2csvStudentDataMod = (req, res) => {
   const managedBy = req.params.managedBy;
   const mode = req.params.mode;
   var condition
-    = (mode == "good") ? { "GPA": { $gt: 3.6 }, "managedBy": managedBy }
+    = (mode == "good") ? { "GPA": { $gt: 3.5 }, "managedBy": managedBy }
       : (mode == "bad" ? { "GPA": { $lt: 2 }, "managedBy": managedBy } :
         { "managedBy": managedBy });
   Student.find(condition)
@@ -685,7 +685,7 @@ exports.export2csvStudentDataClass = (req, res) => {
   const baseClass = req.params.baseClass;
   const mode = req.params.mode;
   var condition
-    = (mode == "good") ? { "GPA": { $gt: 3.6 }, "baseClass": baseClass }
+    = (mode == "good") ? { "GPA": { $gt: 3.5 }, "baseClass": baseClass }
       : (mode == "bad" ? { "GPA": { $lt: 2 }, "baseClass": baseClass } :
         { "baseClass": baseClass });
   Student.find(condition)
