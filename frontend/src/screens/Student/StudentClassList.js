@@ -5,7 +5,7 @@ import {
 } from "@ant-design/icons";
 import { Button, Col, Row, Table, Select } from "antd";
 import { useEffect, useRef, useState } from "react";
-import { findStudentsFromClass } from "../../api/students";
+import { findStudentsFromClass, exportToCsvByClass } from "../../api/students";
 import StudentDelete from "./StudentDelete";
 import StudentConfig from "./StudentConfig";
 import StudentGrade from "./StudentGrade";
@@ -84,6 +84,7 @@ export default function StudentClassList() {
   const configRef = useRef();
   const deleteRef = useRef();
   const gradeRef = useRef();
+  const [currentMode, setCurrentMode] = useState(studentType);
 
   const [dataList, setDataList] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -95,6 +96,8 @@ export default function StudentClassList() {
   }, []);
 
   const getList = async (baseClass, mode = studentType.ANY) => {
+    setCurrentMode(mode);
+
     try {
       setIsLoading(true);
       const res = await findStudentsFromClass(mode,baseClass);
@@ -117,7 +120,12 @@ export default function StudentClassList() {
         <Row align="middle" gutter={20}>
           <Col>
             <h1>Danh sách sinh viên của lớp {baseClass}</h1>
-          </Col>          
+          </Col>      
+          <Col>
+            <Button type="primary" onClick={() => { exportToCsvByClass(currentMode,baseClass) }}>
+              Xuất dữ liệu
+            </Button>
+          </Col>
         </Row>
 
 {/*         <Select

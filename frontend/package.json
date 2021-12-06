@@ -14,6 +14,7 @@
     "boxicons": "^2.0.9",
     "craco-less": "^1.20.0",
     "crypto-random-string": "^4.0.0",
+    "js-file-download": "^0.4.12",
     "less": "^4.1.2",
     "node-sass": "^5.0.0",
     "react": "^17.0.2",

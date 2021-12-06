@@ -11,10 +11,15 @@ module.exports = app => {
   router.post('/createMultipleAccountFromExistingStudent', students.generateStudentAccount);
 
   router.post('/updateGPA', students.updateDatabaseGPA);
+  //Export to excel readable file 
+  router.get('/list/export/:mode', students.export2csvStudentData);
+  //Export to excel readable file, for student managed by x
+
+  router.get('/list/mod/export/:mode&:managedBy', students.export2csvStudentDataMod);
 
   //Get all student listed alphabetically 
   router.get('/list/:mode', students.findAll);
-    //Get student by their manager
+  //Get student by their manager
   router.get('/list/mod/:mode&:managedBy', students.findByMod);
 
   //Get all student listed alphabetically and smaller size
@@ -24,6 +29,7 @@ module.exports = app => {
   //router.get('/class/:baseClass', students.findStudentsFromClass)
   //Find students from class X
   router.get('/list/class/:mode&:baseClass', students.findStudentsFromClass)
+  router.get('/list/class/export/:mode&:baseClass', students.export2csvStudentDataClass)
 
   router.get('/graph/graphStudentCountEachYear/:from&:to', students.graphStudentCountEachYear);
   router.get('/graph/graphGenderCount/', students.graphGenderCount);
@@ -39,10 +45,9 @@ module.exports = app => {
   router.get('/count/:year', students.countStudent);
 
   router.delete("/", students.deleteAll);
-  
+
   router.delete("/id/:studentID", students.deleteWithID);
   router.delete("/firstname/:firstname", students.deleteWithFirstname);
 
   app.use("/api/students", router);
-  };
-  
+};

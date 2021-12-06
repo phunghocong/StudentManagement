@@ -261,9 +261,11 @@ export default function Dashboard() {
   };
 
   return (
-    <div>   {!currentUserIsStudent() ? <div>
-
+    <div>
       <Row><h1>Xin chào {fullName}</h1></Row>
+
+         {!currentUserIsStudent() ? <div>
+
       <Row gutter={10}>
         <Col span={12}>
           <h2>Số lượng sinh viên theo từng năm</h2>

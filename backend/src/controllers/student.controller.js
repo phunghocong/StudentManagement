@@ -596,3 +596,123 @@ exports.generateStudentAccount = (req, res) => {
   res.send("finished");
 
 };
+var fields = [{ label: 'Mã số sinh viên', value: 'studentID' }, { label: 'Họ', value: 'surName' },
+{ label: 'Tên', value: 'firstName' }, { label: 'Giới tính', value: 'gender' }, { label: 'Ngày sinh', value: 'birthday' },
+{ label: 'Quốc tịch', value: 'national' }, { label: 'Dân tộc', value: 'ethnic' }, { label: 'Tôn giáo', value: 'religion' },
+{ label: 'Nơi sinh', value: 'bornAddress' }, { label: 'Địa chỉ cư trú', value: 'homeAddress' }, { label: 'CCCD', value: 'citizenCardId' },
+{ label: 'Địa chỉ hiện tại', value: 'currentAddress' }, { label: 'Số điện thoại', value: 'phoneNumber' }, { label: 'email', value: 'email' },
+{ label: 'Số điện thoại bố', value: 'fatherPhoneNumber' }, { label: 'Số điện thoại bố', value: 'motherPhoneNumber' },
+{ label: 'Tình trạng nhập ngũ', value: 'isEnlisted' }, { label: 'Ngày nhập ngũ', value: 'draftDate' }, { label: 'Tên trường', value: 'school' },
+{ label: 'Hình thức học tập', value: 'academyMethod' }, { label: 'Trình độ học tập', value: 'levelOfAcademy' },
+{ label: 'Khóa', value: 'schoolYearGroup' }, { label: 'Lớp', value: 'baseClass' }, { label: 'Ngành', value: 'major' },
+{ label: 'Năm học', value: 'startedYear' }, { label: 'GPA', value: 'GPA'},{ label: 'Quản lý bởi', value: 'managedBy' }, { label: 'Ghi chú', value: 'note' },];
+const { Parser } = require("json2csv");
+const fs = require("fs");
+
+exports.export2csvStudentData = (req, res) => {
+  const mode = req.params.mode;
+  var condition = (mode == "good") ? {
+    "GPA": { $gt: 3.6 }
+  } : (mode == "bad" ? {
+    "GPA": { $lt: 2 }
+  } : {});
+
+  Student.find(condition)
+    .sort({ "firstName": 1 })
+    .then(data => {
+      if (data) {
+        const json2csvParser = new Parser({
+          header: true, fields: fields, withBOM: true, withBOM: true
+        });
+        const csv = json2csvParser.parse(data);
+        var path = "./mockData/danh_sach_sinh_vien.csv"
+        fs.writeFile(path, csv, function (err, data) {
+          (err) ? res.status(500).send(err) :
+            res.status(200).download(path);
+        });
+      } else {
+        res.status(500).send({
+          message: "No data."
+        });
+      }
+    })
+    .catch(err => {
+      res.status(500).send({
+        message: err.message || "Error."
+      });
+    });
+}
+exports.export2csvStudentDataMod = (req, res) => {
+  const managedBy = req.params.managedBy;
+  const mode = req.params.mode;
+  var condition
+    = (mode == "good") ? { "GPA": { $gt: 3.6 }, "managedBy": managedBy }
+      : (mode == "bad" ? { "GPA": { $lt: 2 }, "managedBy": managedBy } :
+        { "managedBy": managedBy });
+  Student.find(condition)
+    .sort({ "firstName": 1 })
+    .then(data => {
+      if (data) {
+        const json2csvParser = new Parser({
+          header: true, fields: fields, withBOM: true, withBOM: true
+        });
+        const csv = json2csvParser.parse(data);
+        var path = `./mockData/danh_sach_sinh_vien_quan_ly_boi_${managedBy}.csv`
+        fs.writeFile(path, csv, function (err, data) {
+          if (err) res.status(500).send(err)
+          else {
+            res.status(200).download(path);
+/*             fs.unlink(path, (err) => {
+              if (err) throw err;
+              console.log(path+' was deleted');
+            }); */
+          }
+
+        });
+      } else {
+        res.status(500).send({
+          message: "No data."
+        });
+      }
+    })
+    .catch(err => {
+      res.status(500).send({
+        message: err.message || "Error."
+      });
+    });
+}
+exports.export2csvStudentDataClass = (req, res) => {
+  const baseClass = req.params.baseClass;
+  const mode = req.params.mode;
+  var condition
+    = (mode == "good") ? { "GPA": { $gt: 3.6 }, "baseClass": baseClass }
+      : (mode == "bad" ? { "GPA": { $lt: 2 }, "baseClass": baseClass } :
+        { "baseClass": baseClass });
+  Student.find(condition)
+    .sort({ "firstName": 1 })
+    .then(data => {
+      if (data) {
+        const json2csvParser = new Parser({
+          header: true, fields: fields, withBOM: true, withBOM: true
+        });
+        const csv = json2csvParser.parse(data);
+        var path = `./mockData/danh_sach_sinh_vien_lop_${baseClass}.csv`
+        fs.writeFile(path, csv, function (err, data) {
+          if (err) res.status(500).send(err)
+          else {
+            res.status(200).download(path);
+          }
+
+        });
+      } else {
+        res.status(500).send({
+          message: "No data."
+        });
+      }
+    })
+    .catch(err => {
+      res.status(500).send({
+        message: err.message || "Error."
+      });
+    });
+}

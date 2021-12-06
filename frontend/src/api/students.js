@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { Axios } from 'axios';
 
 const url = 'http://localhost:8080/api/students';
 //mode can be "any","good","bad" 
@@ -11,8 +11,47 @@ export const findByMod = (mode, managedBy) => axios.get(`${url}/list/mod/${mode}
 export const findStudentsFromClass = (mode, baseClass) => axios.get(`${url}/list/class/${mode}&${baseClass}`);
 
 export const findByID = (studentID) => axios.get(`${url}/${studentID}`);
+const FileDownload = require('js-file-download');
+
+//export const exportToCsvAll = (mode) => axios.get(`${url}/list/export/${mode}`);
+export const exportToCsvAll = (mode) => axios({
+    url: `${url}/list/export/${mode}`, //your url
+    method: 'GET',
+    responseType: 'blob', // important
+}).then((response) => {
+    const url = window.URL.createObjectURL(new Blob([response.data]));
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', 'danh_sach_sinh_vien.csv'); //or any other extension
+    document.body.appendChild(link);
+    link.click();
+});
 
 
+export const exportToCsvByMod = (mode, managedBy) => axios({
+    url: `${url}/list/mod/export/${mode}&${managedBy}`, //your url
+    method: 'GET',
+    responseType: 'blob', // important
+}).then((response) => {
+    const url = window.URL.createObjectURL(new Blob([response.data]));
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', `danh_sach_sv_quan_ly_boi_${managedBy}.csv`); //or any other extension
+    document.body.appendChild(link);
+    link.click();
+});
+export const exportToCsvByClass = (mode, baseClass) => axios({
+    url: `${url}/list/class/export/${mode}&${baseClass}`, //your url
+    method: 'GET',
+    responseType: 'blob', // important
+}).then((response) => {
+    const url = window.URL.createObjectURL(new Blob([response.data]));
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', `danh_sach_sinh_vien_lop_${baseClass}.csv`); //or any other extension
+    document.body.appendChild(link);
+    link.click();
+});
 
 export const getAllClass = () => axios.get(`${url}/class/list`);
 

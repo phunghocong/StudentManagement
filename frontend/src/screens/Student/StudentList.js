@@ -5,11 +5,12 @@ import {
 } from "@ant-design/icons";
 import { Button, Col, Row, Table, Select } from "antd";
 import { useEffect, useRef, useState } from "react";
-import { findAll, findByMod } from "../../api/students";
+import { findAll, findByMod, exportToCsvAll, exportToCsvByMod } from "../../api/students";
 import StudentDelete from "./StudentDelete";
 import StudentConfig from "./StudentConfig";
 import StudentGrade from "./StudentGrade";
 import { currentUserIsCon, currentUserIsMod, getCurrentUser } from "../../api/accounts";
+import { useHistory } from "react-router";
 const studentType = {
   ANY: "any",
   GOOD: "good",
@@ -77,6 +78,7 @@ export default function StudentList() {
       ),
     },
   ];
+  const history = useHistory();
 
   const configRef = useRef();
   const deleteRef = useRef();
@@ -84,16 +86,17 @@ export default function StudentList() {
 
   const [dataList, setDataList] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-
+  const [currentMode, setCurrentMode] = useState(studentType);
   useEffect(() => {
     getList();
   }, []);
 
   const getList = async (mode = studentType.ANY) => {
     try {
+      setCurrentMode(mode);
       setIsLoading(true);
       var res;
-      if(currentUserIsCon()) {
+      if (currentUserIsCon()) {
         res = await findByMod(mode, getCurrentUser().username)
         console.log(res);
       } else {
@@ -110,13 +113,20 @@ export default function StudentList() {
       console.log("get student list error", error);
     }
   };
+/*   const downLoadData = (mode) =>{
+    let path;
+    (!currentUserIsCon)
+    ? path = "http://localhost:8080/api/students/list/export/"+mode
+      : path = "http://localhost:8080/api/students/list/mod/export/" + mode + "&" + getCurrentUser().username
+    history.push(path);
 
+  } */
   return (
     <div className="container">
       <Row justify="space-between" align="middle">
         <Row align="middle" gutter={20}>
           <Col>
-            <h1>Danh sách sinh viên {currentUserIsCon()?" của cố vấn học tập "+getCurrentUser().username:""}</h1>
+            <h1>Danh sách sinh viên {currentUserIsCon() ? " của cố vấn học tập " + getCurrentUser().username : ""}</h1>
           </Col>
 
           <Col>
@@ -124,15 +134,21 @@ export default function StudentList() {
               Tạo mới
             </Button>
           </Col>
-          <Col>
-            <Button type="primary" disabled onClick={() => {}}>
+{/*           <Col>
+            <Button type="primary" hidden onClick={() => { }}>
               Nhập dữ liệu
             </Button>
-          </Col>          <Col>
-            <Button type="primary" disabled onClick={() => {}}>
+          </Col>     */}     
+            <Col>
+            <Button type="primary" onClick={() => { currentUserIsCon() ? exportToCsvByMod(currentMode, getCurrentUser().username) : exportToCsvAll(currentMode) }}>
               Xuất dữ liệu
             </Button>
-          </Col>
+          </Col> 
+{/*           <Col>
+            <Button type="primary" onClick={downLoadData(currentMode)}>
+              Xuất dữ liệu
+            </Button>
+          </Col> */}
         </Row>
 
         <Select
@@ -145,8 +161,8 @@ export default function StudentList() {
               {val === studentType.ANY
                 ? "Tất cả"
                 : val === studentType.GOOD
-                ? "Tốt"
-                : "Kém"}
+                  ? "Tốt"
+                  : "Kém"}
             </Select.Option>
           ))}
         </Select>
