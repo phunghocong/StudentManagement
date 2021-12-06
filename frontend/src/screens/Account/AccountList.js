@@ -1,4 +1,4 @@
-import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
+import { DeleteOutlined, EditOutlined, PlusCircleOutlined } from "@ant-design/icons";
 import { Button, Col, Row, Table } from "antd";
 import { useEffect, useRef, useState } from "react";
 import { getAllAccount, currentUserIsCon } from "../../api/accounts";
@@ -114,7 +114,7 @@ export default function AccountList() {
 
         {currentUserIsCon() ? "" : <Col>
           <Button type="primary" onClick={() => configRef.current.openNew()}>
-            Tạo mới
+            <PlusCircleOutlined />Tạo mới
           </Button>
         </Col>}
       </Row>

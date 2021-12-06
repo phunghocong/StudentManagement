@@ -2,6 +2,7 @@ import { Button, Col, Drawer, Form, Input, Row } from "antd";
 import { useForm } from "antd/lib/form/Form";
 import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
 import { getIdByUsername, createNotification } from "../../../api/accounts";
+import { PlusCircleOutlined } from "@ant-design/icons"
 
 const NewNoti = forwardRef((props, ref) => {
   const [visible, setVisible] = useState(false);
@@ -56,7 +57,7 @@ const NewNoti = forwardRef((props, ref) => {
               setIsUserValid("");
             }
             }>
-              Tạo mới
+              <PlusCircleOutlined/>Tạo mới
             </Button>
           </Col>
         </Row>

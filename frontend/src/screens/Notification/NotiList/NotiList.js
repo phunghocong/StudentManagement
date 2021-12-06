@@ -3,6 +3,7 @@ import notiList from "./notiList.module.scss";
 import { useEffect, useRef, useState } from "react";
 import NewNoti from "../NewNoti/NewNoti";
 import { currentUserIsStudent, getNotification } from "../../../api/accounts";
+import { PlusCircleOutlined } from "@ant-design/icons"
 
 export default function NotiList() {
   const isStudent = currentUserIsStudent();
@@ -33,7 +34,7 @@ export default function NotiList() {
         {!isStudent && (
           <Col>
             <Button type="primary" onClick={() => ref.current.open()}>
-              Tạo mới
+              <PlusCircleOutlined/>Tạo mới
             </Button>
           </Col>
         )}

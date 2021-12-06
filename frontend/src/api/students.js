@@ -22,7 +22,7 @@ export const exportToCsvAll = (mode) => axios({
     const url = window.URL.createObjectURL(new Blob([response.data]));
     const link = document.createElement('a');
     link.href = url;
-    link.setAttribute('download', 'danh_sach_sinh_vien.csv'); //or any other extension
+    link.setAttribute('download', 'danh_sach_sinh_vien.xlsx'); //or any other extension
     document.body.appendChild(link);
     link.click();
 });
@@ -36,7 +36,7 @@ export const exportToCsvByMod = (mode, managedBy) => axios({
     const url = window.URL.createObjectURL(new Blob([response.data]));
     const link = document.createElement('a');
     link.href = url;
-    link.setAttribute('download', `danh_sach_sv_quan_ly_boi_${managedBy}.csv`); //or any other extension
+    link.setAttribute('download', `danh_sach_sv_quan_ly_boi_${managedBy}.xlsx`); //or any other extension
     document.body.appendChild(link);
     link.click();
 });
@@ -48,7 +48,7 @@ export const exportToCsvByClass = (mode, baseClass) => axios({
     const url = window.URL.createObjectURL(new Blob([response.data]));
     const link = document.createElement('a');
     link.href = url;
-    link.setAttribute('download', `danh_sach_sinh_vien_lop_${baseClass}.csv`); //or any other extension
+    link.setAttribute('download', `danh_sach_sinh_vien_lop_${baseClass}.xlsx`); //or any other extension
     document.body.appendChild(link);
     link.click();
 });

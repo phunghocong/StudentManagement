@@ -3,7 +3,7 @@ import {
   EditOutlined,
   InfoCircleOutlined,
 } from "@ant-design/icons";
-import { Button, Col, Row, Table, Select } from "antd";
+import { Button, Col, Row, Table, Select, Upload } from "antd";
 import { useEffect, useRef, useState } from "react";
 import { findAll, findByMod, exportToCsvAll, exportToCsvByMod } from "../../api/students";
 import StudentDelete from "./StudentDelete";
@@ -11,6 +11,7 @@ import StudentConfig from "./StudentConfig";
 import StudentGrade from "./StudentGrade";
 import { currentUserIsCon, currentUserIsMod, getCurrentUser } from "../../api/accounts";
 import { useHistory } from "react-router";
+import { UploadOutlined, DownloadOutlined, PlusCircleOutlined} from "@ant-design/icons"
 const studentType = {
   ANY: "any",
   GOOD: "good",
@@ -113,14 +114,14 @@ export default function StudentList() {
       console.log("get student list error", error);
     }
   };
-/*   const downLoadData = (mode) =>{
-    let path;
-    (!currentUserIsCon)
-    ? path = "http://localhost:8080/api/students/list/export/"+mode
-      : path = "http://localhost:8080/api/students/list/mod/export/" + mode + "&" + getCurrentUser().username
-    history.push(path);
-
-  } */
+  /*   const downLoadData = (mode) =>{
+      let path;
+      (!currentUserIsCon)
+      ? path = "http://localhost:8080/api/students/list/export/"+mode
+        : path = "http://localhost:8080/api/students/list/mod/export/" + mode + "&" + getCurrentUser().username
+      history.push(path);
+  
+    } */
   return (
     <div className="container">
       <Row justify="space-between" align="middle">
@@ -131,24 +132,29 @@ export default function StudentList() {
 
           <Col>
             <Button type="primary" onClick={() => configRef.current.openNew()}>
-              Tạo mới
+              <PlusCircleOutlined/>Tạo mới
             </Button>
           </Col>
-{/*           <Col>
-            <Button type="primary" hidden onClick={() => { }}>
-              Nhập dữ liệu
+          <Col>
+            <Upload 
+            action={()=> {
+              console.log("a");
+              abort
+            }} 
+            listType="picture" 
+            accept=".xlsx" 
+            customRequest={()=> {}}>
+              <Button icon={<UploadOutlined />}>Nhập dữ liệu</Button>
+            </Upload>
+          </Col>
+          <Col>
+            <Button type="primary" 
+            onClick={() => { currentUserIsCon() ? 
+              exportToCsvByMod(currentMode, getCurrentUser().username) :
+             exportToCsvAll(currentMode) }}>
+              <DownloadOutlined/>Xuất dữ liệu
             </Button>
-          </Col>     */}     
-            <Col>
-            <Button type="primary" onClick={() => { currentUserIsCon() ? exportToCsvByMod(currentMode, getCurrentUser().username) : exportToCsvAll(currentMode) }}>
-              Xuất dữ liệu
-            </Button>
-          </Col> 
-{/*           <Col>
-            <Button type="primary" onClick={downLoadData(currentMode)}>
-              Xuất dữ liệu
-            </Button>
-          </Col> */}
+          </Col>
         </Row>
 
         <Select
