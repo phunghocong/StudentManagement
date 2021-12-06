@@ -5,7 +5,7 @@ import NewDiscussion from "./NewDiscussion/NewDiscussion";
 import { Link } from "react-router-dom";
 import paths from "../../constants/paths";
 import { getAllTopic, deleteTopic } from "../../api/forum";
-import { DeleteOutlined, PushpinOutlined } from "@ant-design/icons"
+import { DeleteOutlined, PushpinOutlined, PlusCircleOutlined } from "@ant-design/icons"
 import { currentUserIsStudent, getCurrentUser } from "../../api/accounts";
 
 const sort = {
@@ -79,7 +79,7 @@ export default function Forum() {
 
         <Col>
           <Button type="primary" onClick={() => ref.current.open()}>
-            Tạo mới
+            <PlusCircleOutlined/>Tạo mới
           </Button>
         </Col>
         <div >

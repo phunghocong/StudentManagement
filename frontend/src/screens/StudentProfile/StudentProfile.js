@@ -20,8 +20,6 @@ export default function UserProfile() {
     email: "email",
     fatherPhoneNumber: "fatherPhoneNumber",
     motherPhoneNumber: "motherPhoneNumber",
-    isEnlisted: "isEnlisted",
-    draftDate: "draftDate",
     school: "school", // UET
     academyMethod: "academyMethod", //chinh quy...a
     levelOfAcademy: "levelOfAcademy", //University, Doctorate
@@ -145,19 +143,7 @@ export default function UserProfile() {
           </Col>
 
           <Col flex="500px">
-            <b>Thông tin Nhập ngũ</b>
-            <Row gutter={10}>
-              <Col span={8}>
-                <Form.Item label="Đã đi nhập ngũ" name={fieldNames.isEnlisted}>
-                  <Checkbox />
-                </Form.Item>
-              </Col>
-              <Col span={8}>
-                <Form.Item label="Ngày nhập ngũ" name={fieldNames.draftDate}>
-                  <Input />
-                </Form.Item>
-              </Col>
-            </Row>
+
             <b>Thông tin trường</b>
             <Row gutter={10}>
               <Col span={10}>

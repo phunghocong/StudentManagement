@@ -1,6 +1,10 @@
 const db = require("../models");
 const accounts = require("./account.controller");
 const Student = db.students;
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const Account = db.accounts;
+
 
 /*
 Đổi, sửa, xóa thông tin cá nhân
@@ -8,13 +12,61 @@ fix front end
 
 */
 //Will make studentID auto increment based on the student count at currentYear
+function createMultipleStudentFromArray(studentList) {
+  const forLoop = async () => {
+    for await (let stu of studentList) {
+      var year = stu.startedYear;
+      await Student
+        .countDocuments({ "startedYear": year })
+        .then(docCount => {
+          var id = year + (String)(docCount).padStart(4, "0");
+          const student = new Student({
+            studentID: id,
+            firstName: stu.firstName,
+            surName: stu.surName,
+            gender: stu.gender,
+            birthday: stu.birthday,
+            national: stu.national,
+            ethnic: stu.ethnic,//King
+            religion: stu.religion,//Dao phat
+            homeAddress: stu.homeAddress,
+            bornAddress: stu.bornAddress,
+            citizenCardId: stu.citizenCardId, //chung minh thu
+            currentAddress: stu.currentAddress,
+            phoneNumber: stu.phoneNumber,
+            email: stu.email,
+            fatherPhoneNumber: stu.fatherPhoneNumber,
+            motherPhoneNumber: stu.motherPhoneNumber,
+            school: stu.school,// UET
+            academyMethod: stu.academyMethod, //chinh quy...
+            levelOfAcademy: stu.levelOfAcademy, //University, Doctorate
+            schoolYearGroup: stu.schoolYearGroup, //K64,.. ??
+            baseClass: stu.baseClass, //CA-CLC4
+            major: stu.major,//Khoa hoc may tinh
+            startedYear: year,
+            GPA: "",
+            managedBy: "",
+            note: ""
+          });
+          accounts.createAccountFromStudent(student);
+          student
+            .save(student)
+            .catch(err => {
+              return false;
+            });
+        });
+    }
+  }
+  forLoop();
+  return true;
+}
 
 // Create a new student
 exports.createStudent = (req, res) => {
   // Kiểm tra req. 
   if (!req.body.firstName || !req.body.surName || !req.body.birthday || !req.body.national || !req.body.ethnic
     || !req.body.religion || !req.body.bornAddress || !req.body.citizenCardId || !req.body.currentAddress
-    || !req.body.phoneNumber || !req.body.email || !req.body.isEnlisted || !req.body.gender/* || !req.body.draftDate can be null*/
+    || !req.body.phoneNumber || !req.body.email|| !req.body.gender
   ) {
     res.status(400).send({ message: "Some basic info is empty" });
     return;
@@ -47,8 +99,6 @@ exports.createStudent = (req, res) => {
         email: req.body.email,
         fatherPhoneNumber: req.body.fatherPhoneNumber,
         motherPhoneNumber: req.body.motherPhoneNumber,
-        isEnlisted: req.body.isEnlisted,
-        draftDate: req.body.draftDate,
         school: req.body.school,// UET
         academyMethod: req.body.academyMethod, //chinh quy...a
         levelOfAcademy: req.body.levelOfAcademy, //University, Doctorate
@@ -77,13 +127,14 @@ exports.createStudent = (req, res) => {
       })
     });
 }
+
 exports.createStudentAndRegisterNewAccount = (req, res) => {
   // Kiểm tra req.     
   console.log(res.body);
 
   if (!req.body.firstName || !req.body.surName || !req.body.birthday || !req.body.national || !req.body.ethnic
     || !req.body.religion || !req.body.bornAddress || !req.body.citizenCardId || !req.body.currentAddress
-    || !req.body.phoneNumber || !req.body.email || !req.body.isEnlisted /* || !req.body.draftDate can be null*/
+    || !req.body.phoneNumber || !req.body.email 
   ) {
     res.status(400).send({ message: "Some basic info is empty" });
     return;
@@ -116,8 +167,7 @@ exports.createStudentAndRegisterNewAccount = (req, res) => {
         email: req.body.email,
         fatherPhoneNumber: req.body.fatherPhoneNumber,
         motherPhoneNumber: req.body.motherPhoneNumber,
-        isEnlisted: req.body.isEnlisted,
-        draftDate: req.body.draftDate,
+
         school: req.body.school,// UET
         academyMethod: req.body.academyMethod, //chinh quy...a
         levelOfAcademy: req.body.levelOfAcademy, //University, Doctorate
@@ -156,6 +206,7 @@ exports.createStudentAndRegisterNewAccount = (req, res) => {
     ]
   }
  */
+
 exports.createMultipleStudent = (req, res) => {
   var studentList = req.body.studentList;
   const forLoop = async _ => {
@@ -184,8 +235,7 @@ exports.createMultipleStudent = (req, res) => {
             email: stu.email,
             fatherPhoneNumber: stu.fatherPhoneNumber,
             motherPhoneNumber: stu.motherPhoneNumber,
-            isEnlisted: stu.isEnlisted,
-            draftDate: stu.draftDate,
+
             school: stu.school,// UET
             academyMethod: stu.academyMethod, //chinh quy...
             levelOfAcademy: stu.levelOfAcademy, //University, Doctorate
@@ -197,6 +247,7 @@ exports.createMultipleStudent = (req, res) => {
             managedBy: "",
             note: ""
           });
+          accounts.createAccountFromStudent(student);
           student
             .save(student)
             .catch(err => {
@@ -210,6 +261,54 @@ exports.createMultipleStudent = (req, res) => {
   forLoop();
   res.send({ message: "successfully added " + studentList.length + " students" });
 }
+exports.createMultipleStudentFromArray = (studentList) => {
+  const forLoop = async () => {
+    for await (let stu of studentList) {
+      var year = stu.startedYear;
+      await Student
+        .countDocuments({ "startedYear": year })
+        .then(docCount => {
+          var id = year + (String)(docCount).padStart(4, "0");
+          const student = new Student({
+            studentID: id,
+            firstName: stu.firstName,
+            surName: stu.surName,
+            gender: stu.gender,
+            birthday: stu.birthday,
+            national: stu.national,
+            ethnic: stu.ethnic,//King
+            religion: stu.religion,//Dao phat
+            homeAddress: stu.homeAddress,
+            bornAddress: stu.bornAddress,
+            citizenCardId: stu.citizenCardId, //chung minh thu
+            currentAddress: stu.currentAddress,
+            phoneNumber: stu.phoneNumber,
+            email: stu.email,
+            fatherPhoneNumber: stu.fatherPhoneNumber,
+            motherPhoneNumber: stu.motherPhoneNumber,
+
+            school: stu.school,// UET
+            academyMethod: stu.academyMethod, //chinh quy...
+            levelOfAcademy: stu.levelOfAcademy, //University, Doctorate
+            schoolYearGroup: stu.schoolYearGroup, //K64,.. ??
+            baseClass: stu.baseClass, //CA-CLC4
+            major: stu.major,//Khoa hoc may tinh
+            startedYear: year,
+            GPA: "",
+            managedBy: "",
+            note: ""
+          });
+          accounts.createAccountFromStudent(student);
+          student
+            .save(student)
+            .catch(err => {
+              return true;
+            });
+        });
+    }
+  }
+  forLoop();
+}
 exports.countStudent = (req, res) => {
   const year = req.query.year;
   Student
@@ -218,6 +317,7 @@ exports.countStudent = (req, res) => {
       res.send(docCount)
     });
 };
+
 // Danh sách tất cả hs.
 exports.findAll = (req, res) => {
   const mode = req.params.mode;
@@ -239,6 +339,7 @@ exports.findAll = (req, res) => {
       });
     });
 };
+
 exports.findAllToStudentList = (req, res) => {
   const mode = req.params.mode;
   var condition
@@ -263,6 +364,7 @@ exports.findAllToStudentList = (req, res) => {
       });
     });
 };
+
 // not working
 exports.findRange = (req, res) => {
   const page = req.query.page;
@@ -279,6 +381,7 @@ exports.findRange = (req, res) => {
       });
     });
 };
+
 exports.updateDatabaseGPA = (req, res) => {
   const ClassRecord = require("./classRecord.controller");
   const step = async _ => {
@@ -302,6 +405,7 @@ exports.updateDatabaseGPA = (req, res) => {
       res.send("Finised updating GPA");
     })
 }
+
 exports.getAllClass = (req, res) => {
   Student.find()
     .distinct('baseClass')
@@ -334,6 +438,7 @@ exports.findStudentsFromClass = (req, res) => {
         .send({ message: "Error retrieving student with baseClass=" + baseClass });
     });
 };
+
 exports.findByID = (req, res) => {
   const studentID = req.params.studentID;
   Student.findOne({ "studentID": studentID })
@@ -348,6 +453,7 @@ exports.findByID = (req, res) => {
         .send({ message: "Error retrieving student with id=" + studentID });
     });
 };
+
 exports.findByMod = (req, res) => {
   const managedBy = req.params.managedBy;
   const mode = req.params.mode;
@@ -367,6 +473,7 @@ exports.findByMod = (req, res) => {
         .send({ message: "Error retrieving managed by user=" + managedBy });
     });
 };
+
 exports.findByYear = (req, res) => {
   const startedYear = req.params.startedYear;
 
@@ -382,6 +489,7 @@ exports.findByYear = (req, res) => {
         .send({ message: "Error retrieving student with id=" + startedYear });
     });
 };
+
 // Update a student by the studentID in the request
 exports.update = (req, res) => {
   if (!req.body) {
@@ -406,6 +514,7 @@ exports.update = (req, res) => {
       });
     });
 };
+
 exports.updateByID = (req, res) => {
   if (req.body.constructor === Object && Object.keys(req.body).length === 0) {
     return res.status(400).send({
@@ -434,6 +543,7 @@ exports.updateByID = (req, res) => {
       });
     });
 };
+
 exports.deleteWithID = (req, res) => {
   const studentID = req.params.studentID;
   Student.deleteMany({ "studentID": studentID })
@@ -454,6 +564,7 @@ exports.deleteWithID = (req, res) => {
       });
     });
 };
+
 exports.deleteWithFirstname = (req, res) => {
   const firstName = req.params.firstName;
 
@@ -475,6 +586,7 @@ exports.deleteWithFirstname = (req, res) => {
       });
     });
 };
+
 exports.deleteAll = (req, res) => {
   Student.deleteMany({})
     .then(data => {
@@ -489,6 +601,7 @@ exports.deleteAll = (req, res) => {
       });
     });
 };
+
 //Graph and stuff
 exports.graphStudentCountEachYear = (req, res) => {
   const fromYear = parseInt(req.params.from);
@@ -518,6 +631,7 @@ exports.graphStudentCountEachYear = (req, res) => {
   }
   step();
 }
+
 exports.graphGenderCount = (req, res) => {
   const step = async _ => {
     await Student
@@ -542,9 +656,7 @@ exports.graphGenderCount = (req, res) => {
   }
   step();
 }
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const Account = db.accounts;
+
 
 function dateToPassword(date) {
   date = date.split("-");
@@ -596,18 +708,24 @@ exports.generateStudentAccount = (req, res) => {
   res.send("finished");
 
 };
+
 var fields = [{ label: 'Mã số sinh viên', value: 'studentID' }, { label: 'Họ', value: 'surName' },
 { label: 'Tên', value: 'firstName' }, { label: 'Giới tính', value: 'gender' }, { label: 'Ngày sinh', value: 'birthday' },
 { label: 'Quốc tịch', value: 'national' }, { label: 'Dân tộc', value: 'ethnic' }, { label: 'Tôn giáo', value: 'religion' },
-{ label: 'Nơi sinh', value: 'bornAddress' }, { label: 'Địa chỉ cư trú', value: 'homeAddress' }, { label: 'CCCD', value: 'citizenCardId' },
-{ label: 'Địa chỉ hiện tại', value: 'currentAddress' }, { label: 'Số điện thoại', value: 'phoneNumber' }, { label: 'email', value: 'email' },
-{ label: 'Số điện thoại bố', value: 'fatherPhoneNumber' }, { label: 'Số điện thoại bố', value: 'motherPhoneNumber' },
-{ label: 'Tình trạng nhập ngũ', value: 'isEnlisted' }, { label: 'Ngày nhập ngũ', value: 'draftDate' }, { label: 'Tên trường', value: 'school' },
+{ label: 'Địa chỉ cư trú', value: 'homeAddress' }, { label: 'Nơi sinh', value: 'bornAddress' },
+{ label: 'CCCD', value: 'citizenCardId' }, { label: 'Địa chỉ hiện tại', value: 'currentAddress' },
+{ label: 'Số điện thoại', value: 'phoneNumber' }, { label: 'email', value: 'email' },
+{ label: 'Số điện thoại bố', value: 'fatherPhoneNumber' }, { label: 'Số điện thoại mẹ', value: 'motherPhoneNumber' },
+
+
+{ label: 'Tên trường', value: 'school' },
 { label: 'Hình thức học tập', value: 'academyMethod' }, { label: 'Trình độ học tập', value: 'levelOfAcademy' },
 { label: 'Khóa', value: 'schoolYearGroup' }, { label: 'Lớp', value: 'baseClass' }, { label: 'Ngành', value: 'major' },
-{ label: 'Năm học', value: 'startedYear' }, { label: 'GPA', value: 'GPA'},{ label: 'Quản lý bởi', value: 'managedBy' }, { label: 'Ghi chú', value: 'note' },];
+{ label: 'Năm học', value: 'startedYear' }, { label: 'GPA', value: 'GPA' }, { label: 'Quản lý bởi', value: 'managedBy' }, { label: 'Ghi chú', value: 'note' },];
 const { Parser } = require("json2csv");
 const fs = require("fs");
+const path = require("path");
+const convertCsvToXlsx = require('@aternus/csv-to-xlsx');
 
 exports.export2csvStudentData = (req, res) => {
   const mode = req.params.mode;
@@ -616,19 +734,29 @@ exports.export2csvStudentData = (req, res) => {
   } : (mode == "bad" ? {
     "GPA": { $lt: 2 }
   } : {});
-
   Student.find(condition)
     .sort({ "firstName": 1 })
     .then(data => {
       if (data) {
         const json2csvParser = new Parser({
-          header: true, fields: fields, withBOM: true, withBOM: true
+          header: true, fields: fields
         });
         const csv = json2csvParser.parse(data);
-        var path = "./mockData/danh_sach_sinh_vien.csv"
-        fs.writeFile(path, csv, function (err, data) {
-          (err) ? res.status(500).send(err) :
-            res.status(200).download(path);
+        const filename = "danh_sach_sinh_vien"
+        var csvPath = `./mockData/${filename}.csv`
+        fs.writeFile(csvPath, csv, function (err, data) {
+          if (err) res.status(500).send(err)
+          else {
+            let source = path.join(__dirname, `../../mockData/${filename}.csv`);
+            let destination = path.join(__dirname, `../../mockData/${filename}.xlsx`);
+            if (fs.existsSync(destination)) fs.unlinkSync(destination);
+            try {
+              convertCsvToXlsx(source, destination);
+              res.status(200).download(destination);
+            } catch (e) {
+              console.error(e.toString());
+            }
+          };
         });
       } else {
         res.status(500).send({
@@ -642,6 +770,7 @@ exports.export2csvStudentData = (req, res) => {
       });
     });
 }
+
 exports.export2csvStudentDataMod = (req, res) => {
   const managedBy = req.params.managedBy;
   const mode = req.params.mode;
@@ -654,20 +783,24 @@ exports.export2csvStudentDataMod = (req, res) => {
     .then(data => {
       if (data) {
         const json2csvParser = new Parser({
-          header: true, fields: fields, withBOM: true, withBOM: true
+          header: true, fields: fields
         });
         const csv = json2csvParser.parse(data);
-        var path = `./mockData/danh_sach_sinh_vien_quan_ly_boi_${managedBy}.csv`
-        fs.writeFile(path, csv, function (err, data) {
+        const filename = `danh_sach_sinh_vien_quan_ly_boi_${managedBy}`
+        var csvPath = `./mockData/${filename}.csv`
+        fs.writeFile(csvPath, csv, function (err, data) {
           if (err) res.status(500).send(err)
           else {
-            res.status(200).download(path);
-/*             fs.unlink(path, (err) => {
-              if (err) throw err;
-              console.log(path+' was deleted');
-            }); */
-          }
-
+            let source = path.join(__dirname, `../../mockData/${filename}.csv`);
+            let destination = path.join(__dirname, `../../mockData/${filename}.xlsx`);
+            if (fs.existsSync(destination)) fs.unlinkSync(destination);
+            try {
+              convertCsvToXlsx(source, destination);
+              res.status(200).download(destination);
+            } catch (e) {
+              console.error(e.toString());
+            }
+          };
         });
       } else {
         res.status(500).send({
@@ -681,6 +814,7 @@ exports.export2csvStudentDataMod = (req, res) => {
       });
     });
 }
+
 exports.export2csvStudentDataClass = (req, res) => {
   const baseClass = req.params.baseClass;
   const mode = req.params.mode;
@@ -693,16 +827,24 @@ exports.export2csvStudentDataClass = (req, res) => {
     .then(data => {
       if (data) {
         const json2csvParser = new Parser({
-          header: true, fields: fields, withBOM: true, withBOM: true
+          header: true, fields: fields
         });
         const csv = json2csvParser.parse(data);
-        var path = `./mockData/danh_sach_sinh_vien_lop_${baseClass}.csv`
-        fs.writeFile(path, csv, function (err, data) {
+        const filename = `danh_sach_sinh_vien_lop_${baseClass}`
+        var csvPath = `./mockData/${filename}.csv`
+        fs.writeFile(csvPath, csv, function (err, data) {
           if (err) res.status(500).send(err)
           else {
-            res.status(200).download(path);
-          }
-
+            let source = path.join(__dirname, `../../mockData/${filename}.csv`);
+            let destination = path.join(__dirname, `../../mockData/${filename}.xlsx`);
+            if (fs.existsSync(destination)) fs.unlinkSync(destination);
+            try {
+              convertCsvToXlsx(source, destination);
+              res.status(200).download(destination);
+            } catch (e) {
+              console.error(e.toString());
+            }
+          };
         });
       } else {
         res.status(500).send({
@@ -715,4 +857,47 @@ exports.export2csvStudentDataClass = (req, res) => {
         message: err.message || "Error."
       });
     });
+}
+
+exports.importData = (req, res) => {
+  try {
+    let result = excelToJson({
+      sourceFile: './mockData/danh_sach_sinh_vien.xlsx',
+      header: {
+        rows: 1
+      },
+      columnToKey: {
+        'A': 'id',
+        'B': 'surName',
+        'C': 'firstName',
+        'D': 'gender',
+        'E': 'birthday',
+        'F': 'national',
+        'G': 'ethnic',
+        'H': 'religion',
+        'I': 'homeAddress',
+        'J': 'bornAddress',
+        'K': 'citizenCardId',
+        'L': 'currentAddress',
+        'M': 'phoneNumber',
+        'N': 'email',
+        'O': 'fartherPhoneNumber',
+        'P': 'motherPhoneNumber',
+        'Q': 'school',
+        'R': 'academyMethod',
+        'S': 'levelOfAcademy',
+        'T': 'schoolYearGroup',
+        'U': 'baseClass',
+        'V': 'major',
+        'W': 'startedYear',
+        'X': 'GPA',
+        'Y': 'managedBy',
+        'Z': 'note'
+      },
+    });
+    // createMultipleStudentFromArray(result);
+    res.status(200).send(result);
+  } catch (error) {
+    res.status(500).send("Error!", error);
+  }
 }

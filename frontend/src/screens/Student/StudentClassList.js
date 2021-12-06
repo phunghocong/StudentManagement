@@ -1,7 +1,7 @@
 import {
   DeleteOutlined,
   EditOutlined,
-  InfoCircleOutlined,
+  InfoCircleOutlined, DownloadOutlined
 } from "@ant-design/icons";
 import { Button, Col, Row, Table, Select } from "antd";
 import { useEffect, useRef, useState } from "react";
@@ -11,6 +11,7 @@ import StudentConfig from "./StudentConfig";
 import StudentGrade from "./StudentGrade";
 import paths from "../../constants/paths";
 import { useLocation } from "react-router";
+
 const studentType = {
   ANY: "a",
   GOOD: "good",
@@ -100,7 +101,7 @@ export default function StudentClassList() {
 
     try {
       setIsLoading(true);
-      const res = await findStudentsFromClass(mode,baseClass);
+      const res = await findStudentsFromClass(mode, baseClass);
       console.log(baseClass);
       setDataList(
         res.data.map((item) => ({
@@ -120,15 +121,15 @@ export default function StudentClassList() {
         <Row align="middle" gutter={20}>
           <Col>
             <h1>Danh sách sinh viên của lớp {baseClass}</h1>
-          </Col>      
+          </Col>
           <Col>
-            <Button type="primary" onClick={() => { exportToCsvByClass(currentMode,baseClass) }}>
-              Xuất dữ liệu
+            <Button type="primary" onClick={() => { exportToCsvByClass(currentMode, baseClass) }}>
+              <DownloadOutlined />Xuất dữ liệu
             </Button>
           </Col>
         </Row>
 
-{/*         <Select
+        {/*         <Select
           onChange={(data) => getList(data)}
           defaultValue={studentType.ANY}
           style={{ width: 200 }}

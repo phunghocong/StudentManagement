@@ -3,7 +3,7 @@ import { useForm } from "antd/lib/form/Form";
 import { forwardRef, useEffect, useImperativeHandle, useState, useRef } from "react";
 import { createTopic } from "../../../api/forum";
 import { getAccountPoster, getCurrentUser } from "../../../api/accounts";
-
+import { PlusCircleOutlined} from "@ant-design/icons"
 const NewDiscussion = forwardRef((props, ref) => {
   const [poster, setPoster] = useState("");
   const [visible, setVisible] = useState(false);
@@ -64,7 +64,7 @@ const NewDiscussion = forwardRef((props, ref) => {
 
           <Col>
             <Button type="primary" onClick={() => form.submit()}>
-              Tạo mới
+              <PlusCircleOutlined/> Tạo mới
             </Button>
           </Col>
         </Row>

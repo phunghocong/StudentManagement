@@ -25,8 +25,6 @@ const fieldNames = {
   email: "email",
   fatherPhoneNumber: "fatherPhoneNumber",
   motherPhoneNumber: "motherPhoneNumber",
-  isEnlisted: "isEnlisted",
-  draftDate: "draftDate",
   school: "school", // UET
   academyMethod: "academyMethod", //chinh quy...a
   levelOfAcademy: "levelOfAcademy", //University, Doctorate
@@ -43,7 +41,6 @@ const StudentConfig = forwardRef((props, ref) => {
   const [visible, setVisible] = useState(false);
   const [currentType, setCurrentType] = useState();
   const [form] = useForm();
-  const [isEnlisted, setIsEnlisted] = useState(false);
 
   useImperativeHandle(ref, () => ({
     openNew() {
@@ -54,8 +51,6 @@ const StudentConfig = forwardRef((props, ref) => {
       setVisible(true);
 
       setCurrentType(types.EDIT);
-      setIsEnlisted(data.isEnlisted);
-      //console.log("openEdit" + isEnlisted);
 
       form.setFields(
         Object.values(fieldNames).map((name) => ({
@@ -66,7 +61,6 @@ const StudentConfig = forwardRef((props, ref) => {
     },
   }));
   useEffect(() => {
-    //console.log("useEffect" + isEnlisted);
 
   })
   const onFinish = (values) => {
@@ -204,20 +198,7 @@ const StudentConfig = forwardRef((props, ref) => {
         <Form.Item label="Căn cước công dân" name={fieldNames.citizenCardId} rules={[{ required: true, message: "Hãy nhập căn cước công dân của sinh viên" }]}>
           <Input />
         </Form.Item>
-        <Row gutter={10}>
-          <Col span={8}>
-            <Form.Item label="Đã đi nhập ngũ" name={fieldNames.isEnlisted}>
-              {/*  <Checkbox defaultChecked={isEnlisted} /> */}
-              <Input />
-
-            </Form.Item>
-          </Col>
-          <Col span={8}>
-            <Form.Item label="Ngày nhập ngũ" name={fieldNames.draftDate}>
-              <Input />
-            </Form.Item>
-          </Col>
-        </Row>
+        
         Thông tin trường
         <Row gutter={10}>
           <Col span={10}>
