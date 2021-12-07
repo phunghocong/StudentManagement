@@ -1,0 +1,123 @@
+.container {
+  .right-col {
+    background-color: #fff;
+    height: calc(100vh - 120px);
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    .top-bar {
+      padding: 17px 20px;
+      border-bottom: 1px solid #bababa40;
+
+      h3 {
+        text-align: center;
+      }
+    }
+
+    .chat-bar {
+      padding: 15px 20px;
+      border-top: 1px solid #00000025;
+    }
+
+    .chat-window {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      overflow: hidden;
+
+      .chat-inner {
+        padding: 15px 25px;
+        overflow: hidden auto;
+
+        /* width */
+        &::-webkit-scrollbar {
+          width: 8px;
+        }
+
+        /* Track */
+        &::-webkit-scrollbar-track {
+          background: #f1f1f1;
+        }
+
+        /* Handle */
+        &::-webkit-scrollbar-thumb {
+          background: #00000025;
+          border-radius: 5px;
+        }
+
+        /* Handle on hover */
+        &::-webkit-scrollbar-thumb:hover {
+          background: #00000050;
+          border-radius: 5px;
+        }
+
+        .bubble {
+          background-color: #00000010;
+          padding: 10px;
+          border-radius: 10px;
+          margin-top: 10px;
+        }
+      }
+    }
+  }
+
+  .left-col {
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 20px !important;
+    height: calc(100vh - 120px);
+
+    h3 {
+      margin-bottom: -10px !important;
+    }
+
+    .chat-room-list {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      height: calc(100vh - 240px);
+      overflow: auto;
+
+      /* width */
+      &::-webkit-scrollbar {
+        width: 8px;
+      }
+
+      /* Track */
+      &::-webkit-scrollbar-track {
+        background: #f1f1f1;
+      }
+
+      /* Handle */
+      &::-webkit-scrollbar-thumb {
+        background: #00000025;
+        border-radius: 5px;
+      }
+
+      /* Handle on hover */
+      &::-webkit-scrollbar-thumb:hover {
+        background: #00000050;
+        border-radius: 5px;
+      }
+
+      .chat-room {
+        border: 1px solid #00000015;
+        padding: 10px 20px;
+        border-radius: 5px;
+
+        p {
+          font-size: 18px;
+          font-weight: 600;
+        }
+
+        span {
+          font-size: 15px;
+          color: #bababa;
+        }
+      }
+    }
+  }
+}
